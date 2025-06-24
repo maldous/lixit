@@ -19,6 +19,8 @@
     "type-check": "turbo run type-check",
     "clean": "turbo run clean && rm -rf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "storybook": "turbo run storybook --filter=@lixit/web",
+    "build-storybook": "turbo run build-storybook --filter=@lixit/web",
     "web": "cd apps/web && yarn run dev",
     "mobile": "cd apps/mobile && yarn run start",
     "api": "cd services/ingestion-api && yarn run dev"
