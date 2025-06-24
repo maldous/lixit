@@ -91,6 +91,14 @@ describe('PDFGenerator', () => {
   });
 });
 
+describe('BaseFileGenerator', () => {
+  test('should generate file name with lender code', () => {
+    const generator = new JSONGenerator();
+    const fileName = (generator as any).generateFileName('test-submission', 'TEST_LENDER');
+    expect(fileName).toContain('TEST_LENDER-');
+  });
+});
+
 describe('fileGenerationService singleton', () => {
   test('should be instance of FileGenerationServiceImpl', () => {
     expect(fileGenerationService).toBeInstanceOf(FileGenerationServiceImpl);

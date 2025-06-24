@@ -198,6 +198,20 @@ describe('TransformerRegistry', () => {
     const result = registry.createSubmission('TEST_LENDER', {}, 'Application');
     expect(result?.data.type).toBe('Application');
   });
+
+  test('should cover getTransformer method', () => {
+    const registry = new TransformerRegistry();
+    const transformer = new GenericLIXITransformer('TEST_LENDER');
+    
+    registry.register('TEST_LENDER', transformer);
+    
+    // Test getTransformer method (which is different from get method)
+    const retrieved = registry.getTransformer('TEST_LENDER');
+    expect(retrieved).toBe(transformer);
+    
+    const notFound = registry.getTransformer('NON_EXISTENT');
+    expect(notFound).toBeUndefined();
+  });
 });
 
 describe('transformerRegistry singleton', () => {
