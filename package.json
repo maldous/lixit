@@ -16,9 +16,9 @@
     "type-check": "turbo run type-check",
     "clean": "turbo run clean && rm -rf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "web": "cd apps/web && npm run dev",
-    "mobile": "cd apps/mobile && npm run start",
-    "api": "cd services/ingestion-api && npm run dev"
+    "web": "cd apps/web && yarn run dev",
+    "mobile": "cd apps/mobile && yarn run start",
+    "api": "cd services/ingestion-api && yarn run dev"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",
