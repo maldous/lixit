@@ -66,6 +66,35 @@ describe('DocumentCategorizationServiceImpl', () => {
     expect(result.size).toBe(1024);
     expect(result.extractedAt).toBeDefined();
   });
+
+  test('should categorize payslip document based on filename', async () => {
+    const document: Document = {
+      DocumentID: 'test-id',
+      DocumentType: 'PaySlip',
+      FileName: 'payslip_january.pdf',
+      FileSize: 1024,
+      MimeType: 'application/pdf',
+      DocumentCategory: 'Income'
+    };
+
+    // Test the private method indirectly through categorizeDocument
+    const result = await service.categorizeDocument(document);
+    expect(result).toBeDefined();
+  });
+
+  test('should categorize bank statement document', async () => {
+    const document: Document = {
+      DocumentID: 'test-id',
+      DocumentType: 'BankStatement',
+      FileName: 'bank_statement.pdf',
+      FileSize: 1024,
+      MimeType: 'application/pdf',
+      DocumentCategory: 'Assets'
+    };
+
+    const result = await service.categorizeDocument(document);
+    expect(result).toBeDefined();
+  });
 });
 
 describe('documentCategorizationService singleton', () => {

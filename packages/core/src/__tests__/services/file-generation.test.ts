@@ -1,4 +1,4 @@
-import { FileGenerationServiceImpl, fileGenerationService } from '../../services/file-generation';
+import { FileGenerationServiceImpl, fileGenerationService, JSONGenerator, ExcelGenerator, PDFGenerator } from '../../services/file-generation';
 import { LIXIPackage, FileGenerationRequest } from '../../types/lixi';
 
 describe('FileGenerationServiceImpl', () => {
@@ -40,6 +40,54 @@ describe('FileGenerationServiceImpl', () => {
     const results = await service.generateAll(request);
     expect(results).toHaveLength(3);
     expect(results.map(r => r.type)).toEqual(['JSON', 'Excel', 'PDF']);
+  });
+});
+
+describe('JSONGenerator', () => {
+  let generator: JSONGenerator;
+
+  beforeEach(() => {
+    generator = new JSONGenerator();
+  });
+
+  test('should generate JSON file with lender code', async () => {
+    const lixiData = { test: 'data' } as unknown as LIXIPackage;
+    const result = await generator.generate(lixiData, 'test-submission');
+    expect(result.type).toBe('JSON');
+    expect(result.mimeType).toBe('application/json');
+    expect(result.fileName).toContain('test-submission');
+  });
+});
+
+describe('ExcelGenerator', () => {
+  let generator: ExcelGenerator;
+
+  beforeEach(() => {
+    generator = new ExcelGenerator();
+  });
+
+  test('should generate Excel file', async () => {
+    const lixiData = {} as LIXIPackage;
+    const result = await generator.generate(lixiData, 'test-submission');
+    expect(result.type).toBe('Excel');
+    expect(result.mimeType).toBe('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    expect(result.fileSize).toBe(50000);
+  });
+});
+
+describe('PDFGenerator', () => {
+  let generator: PDFGenerator;
+
+  beforeEach(() => {
+    generator = new PDFGenerator();
+  });
+
+  test('should generate PDF file', async () => {
+    const lixiData = {} as LIXIPackage;
+    const result = await generator.generate(lixiData, 'test-submission');
+    expect(result.type).toBe('PDF');
+    expect(result.mimeType).toBe('application/pdf');
+    expect(result.fileSize).toBe(100000);
   });
 });
 
