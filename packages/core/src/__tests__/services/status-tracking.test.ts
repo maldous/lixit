@@ -156,7 +156,7 @@ describe('StatusTrackingServiceImpl', () => {
     if (submission) {
       // Set timestamp to be older than cutoff
       submission.updatedAt = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
-      (service as any).statusStore.set('test-submission', submission);
+      (service as unknown as { statusStore: Map<string, unknown> }).statusStore.set('test-submission', submission);
     }
     
     const oldActivity = await service.getRecentActivity(24);
@@ -178,7 +178,7 @@ describe('StatusTrackingServiceImpl', () => {
     if (submission) {
       // Set timestamp to be older than cutoff to test the false branch
       submission.updatedAt = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
-      (service as any).statusStore.set('test-submission-1', submission);
+      (service as unknown as { statusStore: Map<string, unknown> }).statusStore.set('test-submission-1', submission);
     }
     
     // Test the branch where submission.updatedAt <= cutoff (false branch)
@@ -259,7 +259,7 @@ describe('StatusTrackingServiceImpl', () => {
     const submission1 = await service.getStatus('test-submission-1');
     if (submission1) {
       submission1.updatedAt = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
-      (service as any).statusStore.set('test-submission-1', submission1);
+      (service as unknown as { statusStore: Map<string, unknown> }).statusStore.set('test-submission-1', submission1);
     }
     activity = await service.getRecentActivity(24);
     expect(activity).toHaveLength(0);
@@ -272,7 +272,7 @@ describe('StatusTrackingServiceImpl', () => {
     const submission2 = await service.getStatus('test-submission-2');
     if (submission2) {
       submission2.updatedAt = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
-      (service as any).statusStore.set('test-submission-2', submission2);
+      (service as unknown as { statusStore: Map<string, unknown> }).statusStore.set('test-submission-2', submission2);
     }
     
     activity = await service.getRecentActivity(24);
@@ -291,8 +291,8 @@ describe('StatusTrackingServiceImpl', () => {
       submission3.updatedAt = new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(); // 1 hour ago
       submission4.updatedAt = new Date(Date.now() - 0.5 * 60 * 60 * 1000).toISOString(); // 30 minutes ago
       
-      (service as any).statusStore.set('test-submission-3', submission3);
-      (service as any).statusStore.set('test-submission-4', submission4);
+      (service as unknown as { statusStore: Map<string, unknown> }).statusStore.set('test-submission-3', submission3);
+      (service as unknown as { statusStore: Map<string, unknown> }).statusStore.set('test-submission-4', submission4);
     }
     
     activity = await service.getRecentActivity(24);
@@ -305,7 +305,7 @@ describe('StatusTrackingServiceImpl', () => {
     const exactCutoffTime = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     if (submission3) {
       submission3.updatedAt = exactCutoffTime;
-      (service as any).statusStore.set('test-submission-3', submission3);
+      (service as unknown as { statusStore: Map<string, unknown> }).statusStore.set('test-submission-3', submission3);
     }
     
     activity = await service.getRecentActivity(24);
@@ -349,8 +349,8 @@ describe('StatusTrackingServiceImpl', () => {
         submission2.updatedAt = afterCutoffTime;
         
         // Update the store
-        (service as any).statusStore.set('test-submission-1', submission1);
-        (service as any).statusStore.set('test-submission-2', submission2);
+        (service as unknown as { statusStore: Map<string, unknown> }).statusStore.set('test-submission-1', submission1);
+        (service as unknown as { statusStore: Map<string, unknown> }).statusStore.set('test-submission-2', submission2);
       }
       
       // Test the filter with 24 hours

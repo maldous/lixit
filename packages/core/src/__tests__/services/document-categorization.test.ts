@@ -78,7 +78,7 @@ describe('DocumentCategorizationServiceImpl', () => {
     };
 
     const service = new DocumentCategorizationServiceImpl();
-    const features = (service as any).extractFeatures(document);
+    const features = (service as unknown as { extractFeatures: (doc: Document) => Record<string, unknown> }).extractFeatures(document);
     expect(features).toEqual({});
   });
 
@@ -123,8 +123,8 @@ describe('DocumentCategorizationServiceImpl', () => {
 
     // Access the private method through reflection to test the branch
     const service = new DocumentCategorizationServiceImpl();
-    const features = (service as any).extractFeatures(document);
-    const result = await (service as any).classifyDocument(features);
+    const features = (service as unknown as { extractFeatures: (doc: Document) => Record<string, unknown> }).extractFeatures(document);
+    const result = await (service as unknown as { classifyDocument: (features: Record<string, unknown>) => Promise<{ category: string }> }).classifyDocument(features);
     expect(result.category).toBe('other');
   });
 
@@ -142,10 +142,9 @@ describe('DocumentCategorizationServiceImpl', () => {
     };
 
     // Mock the private classifyDocument method to test the branch
-    const originalClassifyDocument = (service as any).classifyDocument;
-    (service as any).classifyDocument = async function(features: Record<string, unknown>) {
+    (service as unknown as { classifyDocument: (features: Record<string, unknown>) => Promise<{ category: string; confidence: number; metadata: Record<string, unknown> }> }).classifyDocument = async function(_features: Record<string, unknown>) {
       // Test the branch where category rules are used
-      const categoryRules = this.categoryRules;
+      const categoryRules = (this as unknown as { categoryRules: Map<string, { category: string; confidence: number }> }).categoryRules;
       const fileName = 'payslip';
       
       // This tests the if condition in line 48
@@ -175,10 +174,9 @@ describe('DocumentCategorizationServiceImpl', () => {
     const service = new DocumentCategorizationServiceImpl();
     
     // Mock the classifyDocument method to test the branch where category rules are used
-    const originalClassifyDocument = (service as any).classifyDocument;
-    (service as any).classifyDocument = async function(features: Record<string, unknown>) {
+    (service as unknown as { classifyDocument: (features: Record<string, unknown>) => Promise<{ category: string; confidence: number; metadata: Record<string, unknown> }> }).classifyDocument = async function(_features: Record<string, unknown>) {
       // Test the branch where we check category rules
-      const categoryRules = this.categoryRules;
+      const categoryRules = (this as unknown as { categoryRules: Map<string, { category: string; confidence: number }> }).categoryRules;
       const fileName = 'payslip';
       
       // This tests the if condition in line 48
@@ -217,7 +215,7 @@ describe('DocumentCategorizationServiceImpl', () => {
     const service = new DocumentCategorizationServiceImpl();
     
     // Access the private categoryRules to test both branches
-    const categoryRules = (service as any).categoryRules;
+    const categoryRules = (service as unknown as { categoryRules: Map<string, { category: string; confidence: number }> }).categoryRules;
     
     // Test the branch where a rule exists
     expect(categoryRules.has('payslip')).toBe(true);
@@ -241,8 +239,7 @@ describe('DocumentCategorizationServiceImpl', () => {
     const service = new DocumentCategorizationServiceImpl();
     
     // Mock the classifyDocument method to test metadata assignment
-    const originalClassifyDocument = (service as any).classifyDocument;
-    (service as any).classifyDocument = async function(features: Record<string, unknown>) {
+    (service as unknown as { classifyDocument: (features: Record<string, unknown>) => Promise<{ category: string; confidence: number; metadata: Record<string, unknown> }> }).classifyDocument = async function(_features: Record<string, unknown>) {
       const prediction = {
         category: 'other' as const,
         confidence: 0.5,
@@ -274,8 +271,7 @@ describe('DocumentCategorizationServiceImpl', () => {
     const service = new DocumentCategorizationServiceImpl();
     
     // Mock the classifyDocument method to return undefined metadata
-    const originalClassifyDocument = (service as any).classifyDocument;
-    (service as any).classifyDocument = async function(features: Record<string, unknown>) {
+    (service as unknown as { classifyDocument: (features: Record<string, unknown>) => Promise<{ category: string; confidence: number; metadata: Record<string, unknown> | undefined }> }).classifyDocument = async function(_features: Record<string, unknown>) {
       const prediction = {
         category: 'other' as const,
         confidence: 0.5,
@@ -328,8 +324,7 @@ describe('DocumentCategorizationServiceImpl', () => {
     const service = new DocumentCategorizationServiceImpl();
     
     // Test the case where metadata exists
-    const originalClassifyDocument = (service as any).classifyDocument;
-    (service as any).classifyDocument = async function(features: Record<string, unknown>) {
+    (service as unknown as { classifyDocument: (features: Record<string, unknown>) => Promise<{ category: string; confidence: number; metadata: Record<string, unknown> }> }).classifyDocument = async function(_features: Record<string, unknown>) {
       return {
         category: 'other' as const,
         confidence: 0.5,
@@ -350,7 +345,7 @@ describe('DocumentCategorizationServiceImpl', () => {
     expect(result.metadata).toEqual({ hasMetadata: true });
 
     // Test the case where metadata is null/undefined
-    (service as any).classifyDocument = async function(features: Record<string, unknown>) {
+    (service as unknown as { classifyDocument: (features: Record<string, unknown>) => Promise<{ category: string; confidence: number; metadata: null }> }).classifyDocument = async function(_features: Record<string, unknown>) {
       return {
         category: 'other' as const,
         confidence: 0.5,

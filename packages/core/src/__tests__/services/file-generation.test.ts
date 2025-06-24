@@ -94,7 +94,7 @@ describe('PDFGenerator', () => {
 describe('BaseFileGenerator', () => {
   test('should generate file name with lender code', () => {
     const generator = new JSONGenerator();
-    const fileName = (generator as any).generateFileName('test-submission', 'TEST_LENDER');
+    const fileName = (generator as unknown as { generateFileName: (submissionId: string, lenderCode: string) => string }).generateFileName('test-submission', 'TEST_LENDER');
     expect(fileName).toContain('TEST_LENDER-');
   });
 });
