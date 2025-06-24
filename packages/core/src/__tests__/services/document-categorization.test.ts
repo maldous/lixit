@@ -161,9 +161,7 @@ describe("DocumentCategorizationServiceImpl", () => {
     // Mock the private classifyDocument method to test the branch
     (
       service as unknown as {
-        classifyDocument: (
-          features: Record<string, unknown>,
-        ) => Promise<{
+        classifyDocument: (features: Record<string, unknown>) => Promise<{
           category: string;
           confidence: number;
           metadata: Record<string, unknown>;
@@ -207,9 +205,7 @@ describe("DocumentCategorizationServiceImpl", () => {
     // Mock the classifyDocument method to test the branch where category rules are used
     (
       service as unknown as {
-        classifyDocument: (
-          features: Record<string, unknown>,
-        ) => Promise<{
+        classifyDocument: (features: Record<string, unknown>) => Promise<{
           category: string;
           confidence: number;
           metadata: Record<string, unknown>;
@@ -290,9 +286,7 @@ describe("DocumentCategorizationServiceImpl", () => {
     // Mock the classifyDocument method to test metadata assignment
     (
       service as unknown as {
-        classifyDocument: (
-          features: Record<string, unknown>,
-        ) => Promise<{
+        classifyDocument: (features: Record<string, unknown>) => Promise<{
           category: string;
           confidence: number;
           metadata: Record<string, unknown>;
@@ -332,9 +326,7 @@ describe("DocumentCategorizationServiceImpl", () => {
     // Mock the classifyDocument method to return undefined metadata
     (
       service as unknown as {
-        classifyDocument: (
-          features: Record<string, unknown>,
-        ) => Promise<{
+        classifyDocument: (features: Record<string, unknown>) => Promise<{
           category: string;
           confidence: number;
           metadata: Record<string, unknown> | undefined;
@@ -395,9 +387,7 @@ describe("DocumentCategorizationServiceImpl", () => {
     // Test the case where metadata exists
     (
       service as unknown as {
-        classifyDocument: (
-          features: Record<string, unknown>,
-        ) => Promise<{
+        classifyDocument: (features: Record<string, unknown>) => Promise<{
           category: string;
           confidence: number;
           metadata: Record<string, unknown>;
