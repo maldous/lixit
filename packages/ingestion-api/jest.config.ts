@@ -8,10 +8,10 @@ const config: Config = {
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
-    '!src/__tests__/**',
+    '!src/**/__tests__/**',
+    '!src/**/*.spec.ts',
+    '!src/**/*.test.ts',
   ],
-  coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html'],
   coverageThreshold: {
     global: {
       branches: 100,
@@ -21,5 +21,5 @@ const config: Config = {
     },
   },
 };
-
 export default config;
+
