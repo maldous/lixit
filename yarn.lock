@@ -1587,7 +1587,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.29.0":
+"@eslint/js@npm:9.29.0, @eslint/js@npm:^9.29.0":
   version: 9.29.0
   resolution: "@eslint/js@npm:9.29.0"
   checksum: 10c0/d0ccf37063fa27a3fae9347cb044f84ca10b5a2fa19ffb2b3fedf3b96843ac1ff359ea9f0ab0e80f2f16fda4cb0dc61ea0fed0375090f050fe0a029e7d6de3a3
@@ -11567,6 +11567,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "lixit-monorepo@workspace:."
   dependencies:
+    "@eslint/js": "npm:^9.29.0"
     "@testing-library/dom": "npm:^10.4.0"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^24.0.3"

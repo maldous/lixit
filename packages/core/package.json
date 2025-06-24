@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint src",
     "test": "jest",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist"

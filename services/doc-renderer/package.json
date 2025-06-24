@@ -6,7 +6,7 @@
     "build": "tsc",
     "start": "node dist/main.js",
     "dev": "ts-node src/main.ts",
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint src",
     "test": "jest",
     "type-check": "tsc --noEmit"
   },

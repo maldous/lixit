@@ -9,7 +9,7 @@
     "ios": "yarn expo run:ios",
     "web": "yarn expo start --web",
     "build": "tsc --noEmit",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint .",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
