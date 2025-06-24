@@ -23,7 +23,7 @@ describe('Main Bootstrap', () => {
   });
 
   it('should return false when module is not main', () => {
-    const mockModule = {} as NodeModule;
+    const mockModule = {} as typeof module;
     expect(isMainModule(mockModule)).toBe(false);
   });
 

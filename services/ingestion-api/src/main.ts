@@ -6,7 +6,7 @@ export async function bootstrap() {
   await app.listen(3000);
 }
 
-export function isMainModule(mainModule: NodeModule | undefined): boolean {
+export function isMainModule(mainModule: typeof module | undefined): boolean {
   return mainModule === module;
 }
 
