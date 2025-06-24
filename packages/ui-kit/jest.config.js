@@ -1,6 +1,6 @@
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.test.{ts,tsx}'],
   collectCoverage: true,
@@ -9,7 +9,8 @@ module.exports = {
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
     '!src/**/*.d.ts',
-    '!src/**/index.ts'
+    '!src/**/index.ts',
+    '!src/setupTests.ts'
   ],
   coverageThreshold: {
     global: {
@@ -19,5 +20,11 @@ module.exports = {
       statements: 100
     }
   },
-  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts']
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(react-native|@react-native|react-native-web)/)'
+  ],
+  moduleNameMapper: {
+    '^react-native$': 'react-native-web'
+  }
 };

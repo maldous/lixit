@@ -12,7 +12,6 @@ const config: Config = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
-  coverageProvider: 'v8',
   coverageThreshold: {
     global: {
       branches: 100,
