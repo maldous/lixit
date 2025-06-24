@@ -137,3 +137,6 @@ dist
 
 # turbo
 .turbo
+
+# Expo
+.expo/
