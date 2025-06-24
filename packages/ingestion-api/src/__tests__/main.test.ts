@@ -22,17 +22,23 @@ describe('Main Bootstrap', () => {
 
   test('should bootstrap the application', async () => {
     await bootstrap();
-    
     expect(mockCreate).toHaveBeenCalledWith(AppModule);
     expect(mockApp.listen).toHaveBeenCalledWith(3000);
   });
 
-  test('should create NestJS application and listen on port 3000', async () => {
-    // Test the bootstrap function logic step by step
-    const app = await NestFactory.create(AppModule);
-    await app.listen(3000);
+  test('should test require.main branch', () => {
+    // Mock require.main to test the conditional execution
+    const originalMain = require.main;
+    require.main = module;
     
-    expect(mockCreate).toHaveBeenCalledWith(AppModule);
-    expect(mockApp.listen).toHaveBeenCalledWith(3000);
+    // Import main.ts to trigger the conditional
+    jest.isolateModules(() => {
+      require('../main');
+    });
+    
+    // Restore original
+    require.main = originalMain;
+    
+    expect(mockCreate).toHaveBeenCalled();
   });
 });
