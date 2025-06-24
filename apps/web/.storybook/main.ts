@@ -1,4 +1,5 @@
 import type { StorybookConfig } from '@storybook/nextjs';
+import path from 'path';
 
 const config: StorybookConfig = {
   stories: [
@@ -23,7 +24,17 @@ const config: StorybookConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       'react-native$': 'react-native-web',
+      '@lixit/ui-kit': path.resolve(__dirname, '../../packages/ui-kit/src'),
+      '@lixit/core': path.resolve(__dirname, '../../packages/core/src'),
     };
+    
+    // Add workspace packages to module resolution
+    config.resolve.modules = [
+      ...(config.resolve.modules || []),
+      path.resolve(__dirname, '../../packages'),
+      path.resolve(__dirname, '../../node_modules'),
+    ];
+    
     return config;
   },
 };
