@@ -1,13 +1,13 @@
 // Jest setup file for UI Kit tests
-import 'jest-environment-jsdom';
+import '@testing-library/jest-dom';
 
-// Mock React Native modules
+// Mock React Native StyleSheet
 jest.mock('react-native', () => ({
-  Platform: {
-    OS: 'web',
-    select: jest.fn((obj) => obj.web || obj.default),
+  StyleSheet: {
+    create: (styles: Record<string, unknown>) => styles,
   },
-  Dimensions: {
-    get: jest.fn(() => ({ width: 375, height: 667 })),
-  },
+  TouchableOpacity: 'TouchableOpacity',
+  Text: 'Text',
+  View: 'View',
+  TextInput: 'TextInput',
 }));

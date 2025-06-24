@@ -81,7 +81,8 @@ export const sanitizeFileName = (fileName: string): string => {
  * Get file extension
  */
 export const getFileExtension = (fileName: string): string => {
-  return fileName.split('.').pop()?.toLowerCase() || '';
+  const parts = fileName.split('.');
+  return parts.length > 1 ? parts.pop()?.toLowerCase() || '' : '';
 };
 
 /**

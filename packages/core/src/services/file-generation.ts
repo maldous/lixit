@@ -127,3 +127,5 @@ export class FileGenerationServiceImpl implements FileGenerationService {
     return files;
   }
 }
+
+export const fileGenerationService = new FileGenerationServiceImpl();
