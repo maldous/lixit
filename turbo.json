@@ -6,6 +6,14 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"]
     },
+    "build:prod": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"]
+    },
+    "build:android": {
+      "dependsOn": ["^build"],
+      "outputs": ["build/**", "*.apk", "*.aab"]
+    },
     "dev": {
       "cache": false,
       "persistent": true

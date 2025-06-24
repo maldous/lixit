@@ -11,6 +11,8 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "build:prod": "turbo run build:prod",
+    "build:android": "turbo run build:android --filter=@lixit/mobile",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "test": "turbo run test",

@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "yarn next dev",
-    "build": "tsc --noEmit",
+    "build": "yarn next build",
+    "build:prod": "yarn next build",
     "start": "yarn next start",
     "lint": "yarn next lint",
     "type-check": "tsc --noEmit"
