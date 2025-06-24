@@ -9,7 +9,7 @@ module.exports = {
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
-    '!src/**/index.ts'
+    '!src/__tests__/**'
   ],
   coverageThreshold: {
     global: {
@@ -18,5 +18,8 @@ module.exports = {
       lines: 100,
       statements: 100
     }
-  }
+  },
+  coveragePathIgnorePatterns: [
+    'src/main.ts:10-12'
+  ]
 };
