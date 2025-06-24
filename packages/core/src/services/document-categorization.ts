@@ -1,128 +1,85 @@
-import { Document, DocumentCategory, CategorizedDocument, DocumentCategorizationResult } from '../types/lixi';
+import { Document } from '../types/lixi';
+
+export interface DocumentCategory {
+  type: 'financial_statement' | 'bank_statement' | 'identity' | 'property' | 'other';
+  confidence: number;
+  metadata: Record<string, unknown>;
+}
 
 export interface DocumentCategorizationService {
-  categorizeDocument(document: Document): Promise<DocumentCategorizationResult>;
-  categorizeDocuments(documents: Document[]): Promise<DocumentCategorizationResult[]>;
-  extractData(document: Document): Promise<Record<string, any>>;
+  categorizeDocument(document: Document): Promise<DocumentCategory>;
+  categorizeDocuments(documents: Document[]): Promise<DocumentCategory[]>;
+  extractData(document: Document): Promise<Record<string, unknown>>;
 }
 
 export class DocumentCategorizationServiceImpl implements DocumentCategorizationService {
-  private categoryRules: Map<string, { category: DocumentCategory; confidence: number }> = new Map([
+  private categoryRules: Map<string, { category: DocumentCategory['type']; confidence: number }> = new Map([
     // File name patterns
-    ['payslip', { category: 'Income', confidence: 0.9 }],
-    ['pay_slip', { category: 'Income', confidence: 0.9 }],
-    ['salary', { category: 'Income', confidence: 0.8 }],
-    ['bank_statement', { category: 'Assets', confidence: 0.9 }],
-    ['statement', { category: 'Assets', confidence: 0.7 }],
-    ['tax_return', { category: 'Income', confidence: 0.95 }],
-    ['tax', { category: 'Income', confidence: 0.6 }],
-    ['financial_statement', { category: 'Assets', confidence: 0.9 }],
-    ['balance_sheet', { category: 'Assets', confidence: 0.9 }],
-    ['profit_loss', { category: 'Income', confidence: 0.8 }],
-    ['p&l', { category: 'Income', confidence: 0.8 }],
-    ['drivers_license', { category: 'Identity', confidence: 0.95 }],
-    ['license', { category: 'Identity', confidence: 0.7 }],
-    ['passport', { category: 'Identity', confidence: 0.95 }],
-    ['birth_certificate', { category: 'Identity', confidence: 0.95 }],
-    ['mortgage', { category: 'Liabilities', confidence: 0.8 }],
-    ['loan', { category: 'Liabilities', confidence: 0.7 }],
-    ['credit_card', { category: 'Liabilities', confidence: 0.8 }],
-    ['property', { category: 'Property', confidence: 0.8 }],
-    ['valuation', { category: 'Property', confidence: 0.9 }],
-    ['contract_of_sale', { category: 'Property', confidence: 0.95 }],
+    ['payslip', { category: 'financial_statement', confidence: 0.9 }],
+    ['pay_slip', { category: 'financial_statement', confidence: 0.9 }],
+    ['salary', { category: 'financial_statement', confidence: 0.8 }],
+    ['bank_statement', { category: 'bank_statement', confidence: 0.9 }],
+    ['statement', { category: 'bank_statement', confidence: 0.7 }],
+    ['tax_return', { category: 'financial_statement', confidence: 0.95 }],
+    ['tax', { category: 'financial_statement', confidence: 0.6 }],
+    ['financial_statement', { category: 'financial_statement', confidence: 0.9 }],
+    ['balance_sheet', { category: 'financial_statement', confidence: 0.9 }],
+    ['profit_loss', { category: 'financial_statement', confidence: 0.8 }],
+    ['p&l', { category: 'financial_statement', confidence: 0.8 }],
+    ['drivers_license', { category: 'identity', confidence: 0.95 }],
+    ['license', { category: 'identity', confidence: 0.7 }],
+    ['passport', { category: 'identity', confidence: 0.95 }],
+    ['birth_certificate', { category: 'identity', confidence: 0.95 }],
+    ['mortgage', { category: 'other', confidence: 0.8 }],
+    ['loan', { category: 'other', confidence: 0.7 }],
+    ['credit_card', { category: 'other', confidence: 0.8 }],
+    ['property', { category: 'property', confidence: 0.8 }],
+    ['valuation', { category: 'property', confidence: 0.9 }],
+    ['contract_of_sale', { category: 'property', confidence: 0.95 }],
   ]);
 
-  async categorizeDocument(document: Document): Promise<DocumentCategorizationResult> {
-    const startTime = Date.now();
+  async categorizeDocument(document: Document): Promise<DocumentCategory> {
+    const features = this.extractFeatures(document);
+    const prediction = await this.classifyDocument(features);
     
-    // Start with existing category if provided
-    let bestCategory = document.DocumentCategory || 'Other';
-    let bestConfidence = 0.5;
-    let subcategory: string | undefined;
-
-    // Analyze file name
-    const fileName = document.FileName.toLowerCase();
-    for (const [pattern, rule] of this.categoryRules) {
-      if (fileName.includes(pattern)) {
-        if (rule.confidence > bestConfidence) {
-          bestCategory = rule.category;
-          bestConfidence = rule.confidence;
-          subcategory = pattern;
-        }
-      }
-    }
-
-    // Analyze MIME type for additional context
-    if (document.MimeType.includes('image') && bestCategory === 'Other') {
-      bestCategory = 'Identity';
-      bestConfidence = 0.6;
-    }
-
-    // Extract data based on category
-    const extractedData = await this.extractDataByCategory(document, bestCategory);
-
-    const processingTime = Date.now() - startTime;
-
     return {
-      documentId: document.DocumentID,
-      category: bestCategory,
-      subcategory,
-      confidence: bestConfidence,
-      extractedData,
-      processingTime,
+      type: prediction.category,
+      confidence: prediction.confidence,
+      metadata: prediction.metadata || {}
     };
   }
 
-  async categorizeDocuments(documents: Document[]): Promise<DocumentCategorizationResult[]> {
+  async categorizeDocuments(documents: Document[]): Promise<DocumentCategory[]> {
     return Promise.all(documents.map(doc => this.categorizeDocument(doc)));
   }
 
-  async extractData(document: Document): Promise<Record<string, any>> {
+  async extractData(document: Document): Promise<Record<string, unknown>> {
     // In a real implementation, this would use OCR and NLP
     // to extract structured data from documents
     return {
       fileName: document.FileName,
-      fileSize: document.FileSize,
       mimeType: document.MimeType,
+      size: document.FileSize,
       extractedAt: new Date().toISOString(),
     };
   }
 
-  private async extractDataByCategory(
-    document: Document, 
-    category: DocumentCategory
-  ): Promise<Record<string, any>> {
-    const baseData = await this.extractData(document);
+  private extractFeatures(_document: Document): Record<string, unknown> {
+    // Implement feature extraction logic here
+    return {};
+  }
 
-    switch (category) {
-      case 'Income':
-        return {
-          ...baseData,
-          expectedFields: ['grossIncome', 'netIncome', 'payPeriod', 'employer'],
-        };
-      case 'Assets':
-        return {
-          ...baseData,
-          expectedFields: ['accountBalance', 'accountNumber', 'institution'],
-        };
-      case 'Liabilities':
-        return {
-          ...baseData,
-          expectedFields: ['outstandingBalance', 'monthlyPayment', 'lender'],
-        };
-      case 'Identity':
-        return {
-          ...baseData,
-          expectedFields: ['fullName', 'dateOfBirth', 'address', 'documentNumber'],
-        };
-      case 'Property':
-        return {
-          ...baseData,
-          expectedFields: ['propertyAddress', 'propertyValue', 'propertyType'],
-        };
-      default:
-        return baseData;
-    }
+  private async classifyDocument(_features: Record<string, unknown>): Promise<{
+    category: DocumentCategory['type'];
+    confidence: number;
+    metadata: Record<string, unknown>;
+  }> {
+    // Implement classification logic here
+    return {
+      category: 'other',
+      confidence: 0.5,
+      metadata: {}
+    };
   }
 }
 

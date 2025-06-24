@@ -1,51 +1,75 @@
-import { LIXIPackage, LIXIApplication, Submission } from '../types/lixi';
+import { LIXIPackage } from '../types/lixi';
+
+export interface Submission {
+  id: string;
+  status: string;
+  data: Record<string, unknown>;
+}
 
 export abstract class BaseLIXITransformer {
-  abstract lenderCode: string;
-  
+  protected lenderCode: string;
+  protected version: string;
+
+  constructor(lenderCode: string, version: string = '2.6.86') {
+    this.lenderCode = lenderCode;
+    this.version = version;
+  }
+
+  abstract transform(data: Record<string, unknown>): Promise<Record<string, unknown>>;
+
+  protected validateInput(_data: Record<string, unknown>): boolean {
+    // Basic validation - can be overridden
+    return true;
+  }
+
+  protected mapBorrowerData(borrower: Record<string, unknown>): Record<string, unknown> {
+    // Default implementation - can be overridden
+    return borrower;
+  }
+
+  protected mapLoanData(loan: Record<string, unknown>): Record<string, unknown> {
+    // Default implementation - can be overridden
+    return loan;
+  }
+
+  protected generateLIXIStructure(data: Record<string, unknown>): Record<string, unknown> {
+    // Default implementation - can be overridden
+    return data;
+  }
+
   /**
    * Transform internal data to LIXI format
    */
-  abstract transformToLIXI(internalData: any): LIXIPackage;
+  abstract transformToLIXI(_internalData: Record<string, unknown>): LIXIPackage;
   
   /**
-   * Transform LIXI data to lender-specific format
+   * Transform LIXI data back to internal format
    */
-  abstract transformFromLIXI(lixiData: LIXIPackage): any;
+  abstract transformFromLIXI(_lixiData: LIXIPackage): Record<string, unknown>;
   
   /**
-   * Validate lender-specific requirements
+   * Validate LIXI data against schema
    */
-  abstract validateLenderRequirements(lixiData: LIXIPackage): boolean;
+  abstract validateLIXI(_lixiData: LIXIPackage): boolean;
   
   /**
-   * Generate unique submission ID
+   * Submit to lender
    */
-  protected generateSubmissionId(): string {
-    return `${this.lenderCode}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  }
-  
+  abstract submitToLender(_lixiData: LIXIPackage, _submissionType: 'prospect' | 'application'): Promise<Submission>;
+
   /**
    * Create submission package
    */
   createSubmission(lixiData: LIXIPackage, type: 'Prospect' | 'Application'): Submission {
-    const baseSubmission = {
-      package: lixiData,
-      lenderCode: this.lenderCode,
+    return {
+      id: `${this.lenderCode}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      status: 'created',
+      data: {
+        package: lixiData,
+        lenderCode: this.lenderCode,
+        type
+      }
     };
-    
-    if (type === 'Prospect') {
-      return {
-        type: 'Prospect',
-        ...baseSubmission,
-      };
-    } else {
-      return {
-        type: 'Application',
-        ...baseSubmission,
-        documents: lixiData.Application[0]?.Documents || [],
-      };
-    }
   }
 }
 
@@ -54,26 +78,35 @@ export abstract class BaseLIXITransformer {
  */
 export class GenericLIXITransformer extends BaseLIXITransformer {
   constructor(public lenderCode: string) {
-    super();
+    super(lenderCode);
   }
   
-  transformToLIXI(internalData: any): LIXIPackage {
+  transformToLIXI(_internalData: Record<string, unknown>): LIXIPackage {
+    // Default implementation - can be overridden
+    return {} as LIXIPackage;
+  }
+  
+  transformFromLIXI(_lixiData: LIXIPackage): Record<string, unknown> {
+    // Default implementation - can be overridden
+    return {};
+  }
+  
+  validateLIXI(_lixiData: LIXIPackage): boolean {
+    // Default implementation - can be overridden
+    return true;
+  }
+  
+  async submitToLender(_lixiData: LIXIPackage, _submissionType: 'prospect' | 'application'): Promise<Submission> {
     // Default implementation - can be overridden
     return {
-      Application: [internalData],
-      SchemaVersion: '2.6.86',
-      UniqueID: this.generateSubmissionId(),
+      id: 'default',
+      status: 'submitted',
+      data: {}
     };
   }
-  
-  transformFromLIXI(lixiData: LIXIPackage): any {
-    // Default implementation - return as-is
-    return lixiData;
-  }
-  
-  validateLenderRequirements(lixiData: LIXIPackage): boolean {
-    // Basic validation - can be overridden
-    return lixiData.Application.length > 0;
+
+  async transform(data: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return data;
   }
 }
 
@@ -95,7 +128,7 @@ export class TransformerRegistry {
     return new Map(this.transformers);
   }
   
-  createSubmission(lenderCode: string, internalData: any, type: 'Prospect' | 'Application'): Submission | null {
+  createSubmission(lenderCode: string, internalData: Record<string, unknown>, type: 'Prospect' | 'Application'): Submission | null {
     const transformer = this.get(lenderCode);
     if (!transformer) {
       return null;
@@ -103,6 +136,10 @@ export class TransformerRegistry {
     
     const lixiData = transformer.transformToLIXI(internalData);
     return transformer.createSubmission(lixiData, type);
+  }
+  
+  getTransformer(lenderCode: string): BaseLIXITransformer | undefined {
+    return this.transformers.get(lenderCode);
   }
 }
 

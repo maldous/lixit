@@ -16,6 +16,11 @@ export interface LIXIApplication {
   Documents?: Document[];
   SecurityAgreements?: SecurityAgreement[];
   Declarations?: Declaration[];
+  
+  customFields?: Record<string, unknown>; // Changed from any
+  additionalData?: Record<string, unknown>; // Changed from any
+  metadata?: Record<string, unknown>; // Changed from any
+  extensions?: Record<string, unknown>; // Changed from any
 }
 
 export interface ApplicationDetails {
@@ -180,7 +185,7 @@ export interface CategorizedDocument extends Document {
   category: DocumentCategory;
   subcategory?: string;
   confidence: number;
-  extractedData?: Record<string, any>;
+  extractedData?: Record<string, unknown>;
 }
 
 export interface DocumentCategorizationResult {
@@ -188,7 +193,7 @@ export interface DocumentCategorizationResult {
   category: DocumentCategory;
   subcategory?: string;
   confidence: number;
-  extractedData?: Record<string, any>;
+  extractedData?: Record<string, unknown>;
   processingTime: number;
 }
 
@@ -201,7 +206,7 @@ export interface LenderIntegration {
   isAsync: boolean;
   requiresAuth: boolean;
   supportedSubmissionTypes: ('Prospect' | 'Application')[];
-  customFields?: Record<string, any>;
+  customFields?: Record<string, unknown>;
 }
 
 export interface LenderSubmissionRequest {
@@ -209,7 +214,7 @@ export interface LenderSubmissionRequest {
   lenderCode: string;
   submissionType: 'Prospect' | 'Application';
   lixiData: LIXIPackage;
-  transformedData: any;
+  transformedData: Record<string, unknown>;
   files?: GeneratedFile[];
 }
 
