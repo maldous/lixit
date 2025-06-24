@@ -11,5 +11,13 @@ module.exports = {
     '!src/**/*.d.ts',
     '!src/**/index.ts'
   ],
+  coverageThreshold: {
+    global: {
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100
+    }
+  },
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts']
 };
