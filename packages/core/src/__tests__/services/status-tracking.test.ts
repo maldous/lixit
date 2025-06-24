@@ -372,6 +372,18 @@ describe('StatusTrackingServiceImpl', () => {
       Date.now = originalDateNow;
     }
   });
+
+  test('should use default parameter when no hours specified', async () => {
+    const service = new StatusTrackingServiceImpl();
+    
+    // Create a submission
+    await service.createSubmissionStatus('test-submission', 'test-app', 'TEST_LENDER');
+    
+    // Call getRecentActivity with no parameters to test default parameter branch
+    const activity = await service.getRecentActivity();
+    expect(activity).toHaveLength(1);
+    expect(activity[0].submissionId).toBe('test-submission');
+  });
 });
 
 describe('statusTrackingService singleton', () => {
