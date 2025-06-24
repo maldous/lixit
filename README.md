@@ -10,10 +10,12 @@ The system should handle **two main submission types**:
 All digital submissions use the **LIXI (Lending and Investment eXchange Initiative)** format, which is the Australian banking industry standard for loan data exchange.
 
 ### LIXI Structure
+
 - **Package** containing **Application** elements
 - Includes comprehensive borrower, loan, and financial data
 
 ### Key LIXI Components
+
 - **Application Overview** - Basic application details
 - **Loan Details** - Product information, amounts, terms
 - **Borrower Information** - Personal/company details, financials

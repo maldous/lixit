@@ -1,4 +1,4 @@
-console.log('Document Renderer Service');
+console.log("Document Renderer Service");
 
 export class DocumentRendererService {
   async renderPDF(data: Record<string, unknown>): Promise<Buffer> {

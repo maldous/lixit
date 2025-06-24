@@ -1,7 +1,9 @@
-console.log('LIXI Transform Service');
+console.log("LIXI Transform Service");
 
 export class LIXITransformService {
-  async transform(data: Record<string, unknown>): Promise<Record<string, unknown>> {
+  async transform(
+    data: Record<string, unknown>,
+  ): Promise<Record<string, unknown>> {
     return data;
   }
 }

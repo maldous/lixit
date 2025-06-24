@@ -1,11 +1,11 @@
-import { format, parseISO } from 'date-fns';
+import { format, parseISO } from "date-fns";
 
 /**
  * Format currency values
  */
-export const formatCurrency = (amount: number, currency = 'AUD'): string => {
-  return new Intl.NumberFormat('en-AU', {
-    style: 'currency',
+export const formatCurrency = (amount: number, currency = "AUD"): string => {
+  return new Intl.NumberFormat("en-AU", {
+    style: "currency",
     currency,
   }).format(amount);
 };
@@ -21,16 +21,16 @@ export const formatPercentage = (value: number, decimals = 2): string => {
  * Format dates for LIXI
  */
 export const formatLIXIDate = (date: Date | string): string => {
-  const dateObj = typeof date === 'string' ? parseISO(date) : date;
-  return format(dateObj, 'yyyy-MM-dd');
+  const dateObj = typeof date === "string" ? parseISO(date) : date;
+  return format(dateObj, "yyyy-MM-dd");
 };
 
 /**
  * Format dates for display
  */
 export const formatDisplayDate = (date: Date | string): string => {
-  const dateObj = typeof date === 'string' ? parseISO(date) : date;
-  return format(dateObj, 'dd/MM/yyyy');
+  const dateObj = typeof date === "string" ? parseISO(date) : date;
+  return format(dateObj, "dd/MM/yyyy");
 };
 
 /**
@@ -38,13 +38,13 @@ export const formatDisplayDate = (date: Date | string): string => {
  */
 export const getAnnualMultiplier = (frequency: string): number => {
   switch (frequency.toLowerCase()) {
-    case 'weekly':
+    case "weekly":
       return 52;
-    case 'fortnightly':
+    case "fortnightly":
       return 26;
-    case 'monthly':
+    case "monthly":
       return 12;
-    case 'annually':
+    case "annually":
       return 1;
     default:
       return 1;
@@ -61,7 +61,7 @@ export const convertToAnnual = (amount: number, frequency: string): number => {
 /**
  * Generate unique ID
  */
-export const generateUniqueId = (prefix = ''): string => {
+export const generateUniqueId = (prefix = ""): string => {
   const timestamp = Date.now().toString(36);
   const random = Math.random().toString(36).substr(2, 5);
   return prefix ? `${prefix}-${timestamp}-${random}` : `${timestamp}-${random}`;
@@ -72,17 +72,17 @@ export const generateUniqueId = (prefix = ''): string => {
  */
 export const sanitizeFileName = (fileName: string): string => {
   return fileName
-    .replace(/[^a-z0-9.-]/gi, '_')
-    .replace(/_{2,}/g, '_')
-    .replace(/^_|_$/g, '');
+    .replace(/[^a-z0-9.-]/gi, "_")
+    .replace(/_{2,}/g, "_")
+    .replace(/^_|_$/g, "");
 };
 
 /**
  * Get file extension
  */
 export const getFileExtension = (fileName: string): string => {
-  const parts = fileName.split('.');
-  return parts.length > 1 ? parts.pop()?.toLowerCase() || '' : '';
+  const parts = fileName.split(".");
+  return parts.length > 1 ? parts.pop()?.toLowerCase() || "" : "";
 };
 
 /**
@@ -91,34 +91,38 @@ export const getFileExtension = (fileName: string): string => {
 export const getMimeType = (fileName: string): string => {
   const ext = getFileExtension(fileName);
   const mimeTypes: Record<string, string> = {
-    pdf: 'application/pdf',
-    doc: 'application/msword',
-    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    xls: 'application/vnd.ms-excel',
-    xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    jpg: 'image/jpeg',
-    jpeg: 'image/jpeg',
-    png: 'image/png',
-    gif: 'image/gif',
-    txt: 'text/plain',
-    csv: 'text/csv',
+    pdf: "application/pdf",
+    doc: "application/msword",
+    docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    xls: "application/vnd.ms-excel",
+    xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    png: "image/png",
+    gif: "image/gif",
+    txt: "text/plain",
+    csv: "text/csv",
   };
-  
-  return mimeTypes[ext] || 'application/octet-stream';
+
+  return mimeTypes[ext] || "application/octet-stream";
 };
 
 /**
  * Format file size
  */
 export const formatFileSize = (bytes: number): string => {
-  if (bytes <= 0) return '0 Bytes';
-  
+  if (bytes <= 0) return "0 Bytes";
+
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   // Ensure we don't exceed array bounds
   const sizeIndex = Math.min(i, sizes.length - 1);
-  
-  return parseFloat((bytes / Math.pow(k, sizeIndex)).toFixed(2)) + ' ' + sizes[sizeIndex];
+
+  return (
+    parseFloat((bytes / Math.pow(k, sizeIndex)).toFixed(2)) +
+    " " +
+    sizes[sizeIndex]
+  );
 };

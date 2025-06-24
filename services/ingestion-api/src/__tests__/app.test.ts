@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppService } from '../app.service';
-import { AppController } from '../app.controller';
-import { AppModule } from '../app.module';
+import { Test, TestingModule } from "@nestjs/testing";
+import { AppService } from "../app.service";
+import { AppController } from "../app.controller";
+import { AppModule } from "../app.module";
 
-describe('AppService', () => {
+describe("AppService", () => {
   let service: AppService;
 
   beforeEach(async () => {
@@ -14,16 +14,16 @@ describe('AppService', () => {
     service = module.get<AppService>(AppService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
   it('should return "Hello World!"', () => {
-    expect(service.getHello()).toBe('Hello World!');
+    expect(service.getHello()).toBe("Hello World!");
   });
 });
 
-describe('AppController', () => {
+describe("AppController", () => {
   let controller: AppController;
   let service: AppService;
 
@@ -37,22 +37,22 @@ describe('AppController', () => {
     service = module.get<AppService>(AppService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 
   it('should return "Hello World!"', () => {
-    expect(controller.getHello()).toBe('Hello World!');
+    expect(controller.getHello()).toBe("Hello World!");
   });
 
-  it('should call service.getHello', () => {
-    const spy = jest.spyOn(service, 'getHello');
+  it("should call service.getHello", () => {
+    const spy = jest.spyOn(service, "getHello");
     controller.getHello();
     expect(spy).toHaveBeenCalled();
   });
 });
 
-describe('AppModule', () => {
+describe("AppModule", () => {
   let module: TestingModule;
 
   beforeEach(async () => {
@@ -61,16 +61,16 @@ describe('AppModule', () => {
     }).compile();
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(module).toBeDefined();
   });
 
-  it('should have AppController', () => {
+  it("should have AppController", () => {
     const controller = module.get<AppController>(AppController);
     expect(controller).toBeDefined();
   });
 
-  it('should have AppService', () => {
+  it("should have AppService", () => {
     const service = module.get<AppService>(AppService);
     expect(service).toBeDefined();
   });

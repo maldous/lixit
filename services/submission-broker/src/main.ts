@@ -1,10 +1,13 @@
-console.log('Submission Broker Service');
+console.log("Submission Broker Service");
 
 export class SubmissionBrokerService {
-  async submitToLender(data: Record<string, unknown>, lenderCode: string): Promise<{ success: boolean; id: string }> {
+  async submitToLender(
+    data: Record<string, unknown>,
+    lenderCode: string,
+  ): Promise<{ success: boolean; id: string }> {
     return {
       success: true,
-      id: `${lenderCode}-${Date.now()}`
+      id: `${lenderCode}-${Date.now()}`,
     };
   }
 }

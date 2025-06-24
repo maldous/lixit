@@ -16,7 +16,7 @@ export interface LIXIApplication {
   Documents?: Document[];
   SecurityAgreements?: SecurityAgreement[];
   Declarations?: Declaration[];
-  
+
   customFields?: Record<string, unknown>; // Changed from any
   additionalData?: Record<string, unknown>; // Changed from any
   metadata?: Record<string, unknown>; // Changed from any
@@ -25,7 +25,7 @@ export interface LIXIApplication {
 
 export interface ApplicationDetails {
   ApplicationID: string;
-  ApplicationType: 'Prospect' | 'Application';
+  ApplicationType: "Prospect" | "Application";
   LenderCode: string;
   SubmissionDate: string;
   Status?: ApplicationStatus;
@@ -42,7 +42,7 @@ export interface LoanDetails {
 
 export interface Borrower {
   PersonID: string;
-  PersonType: 'Individual' | 'Company';
+  PersonType: "Individual" | "Company";
   FirstName?: string;
   LastName?: string;
   CompanyName?: string;
@@ -75,13 +75,13 @@ export interface FinancialPosition {
 export interface IncomeDetails {
   IncomeType: string;
   Amount: number;
-  Frequency: 'Weekly' | 'Fortnightly' | 'Monthly' | 'Annually';
+  Frequency: "Weekly" | "Fortnightly" | "Monthly" | "Annually";
 }
 
 export interface ExpenseDetails {
   ExpenseType: string;
   Amount: number;
-  Frequency: 'Weekly' | 'Fortnightly' | 'Monthly' | 'Annually';
+  Frequency: "Weekly" | "Fortnightly" | "Monthly" | "Annually";
 }
 
 export interface Asset {
@@ -120,21 +120,42 @@ export interface Declaration {
 }
 
 // Enums and Union Types
-export type ApplicationStatus = 'Submitted' | 'InProgress' | 'Approved' | 'Declined' | 'Withdrawn';
-export type LoanPurpose = 'Purchase' | 'Refinance' | 'Investment' | 'Construction' | 'Other';
-export type RepaymentType = 'PrincipalAndInterest' | 'InterestOnly';
-export type DocumentType = 'PaySlip' | 'BankStatement' | 'TaxReturn' | 'FinancialStatement' | 'Other';
-export type DocumentCategory = 'Income' | 'Assets' | 'Liabilities' | 'Identity' | 'Property' | 'Other';
+export type ApplicationStatus =
+  | "Submitted"
+  | "InProgress"
+  | "Approved"
+  | "Declined"
+  | "Withdrawn";
+export type LoanPurpose =
+  | "Purchase"
+  | "Refinance"
+  | "Investment"
+  | "Construction"
+  | "Other";
+export type RepaymentType = "PrincipalAndInterest" | "InterestOnly";
+export type DocumentType =
+  | "PaySlip"
+  | "BankStatement"
+  | "TaxReturn"
+  | "FinancialStatement"
+  | "Other";
+export type DocumentCategory =
+  | "Income"
+  | "Assets"
+  | "Liabilities"
+  | "Identity"
+  | "Property"
+  | "Other";
 
 // Submission Types
 export interface ProspectSubmission {
-  type: 'Prospect';
+  type: "Prospect";
   package: LIXIPackage;
   lenderCode: string;
 }
 
 export interface ApplicationSubmission {
-  type: 'Application';
+  type: "Application";
   package: LIXIPackage;
   lenderCode: string;
   documents: Document[];
@@ -145,7 +166,7 @@ export type Submission = ProspectSubmission | ApplicationSubmission;
 // File Generation Types (from README requirements)
 export interface GeneratedFile {
   id: string;
-  type: 'JSON' | 'Excel' | 'PDF';
+  type: "JSON" | "Excel" | "PDF";
   fileName: string;
   filePath: string;
   fileSize: number;
@@ -157,7 +178,7 @@ export interface GeneratedFile {
 export interface FileGenerationRequest {
   submissionId: string;
   lixiData: LIXIPackage;
-  formats: ('JSON' | 'Excel' | 'PDF')[];
+  formats: ("JSON" | "Excel" | "PDF")[];
   lenderCode: string;
 }
 
@@ -177,7 +198,7 @@ export interface StatusHistoryEntry {
   status: ApplicationStatus;
   timestamp: string;
   notes?: string;
-  source: 'System' | 'Lender' | 'User';
+  source: "System" | "Lender" | "User";
 }
 
 // Document Categorization Types (from README requirements)
@@ -201,18 +222,18 @@ export interface DocumentCategorizationResult {
 export interface LenderIntegration {
   lenderCode: string;
   name: string;
-  integrationMethod: 'REST' | 'SOAP' | 'SFTP' | 'GraphQL';
+  integrationMethod: "REST" | "SOAP" | "SFTP" | "GraphQL";
   endpoint?: string;
   isAsync: boolean;
   requiresAuth: boolean;
-  supportedSubmissionTypes: ('Prospect' | 'Application')[];
+  supportedSubmissionTypes: ("Prospect" | "Application")[];
   customFields?: Record<string, unknown>;
 }
 
 export interface LenderSubmissionRequest {
   submissionId: string;
   lenderCode: string;
-  submissionType: 'Prospect' | 'Application';
+  submissionType: "Prospect" | "Application";
   lixiData: LIXIPackage;
   transformedData: Record<string, unknown>;
   files?: GeneratedFile[];

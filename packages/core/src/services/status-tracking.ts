@@ -1,17 +1,31 @@
-import { 
-  SubmissionStatus, 
-  StatusHistoryEntry, 
-  ApplicationStatus, 
-  GeneratedFile 
-} from '../types/lixi';
+import {
+  SubmissionStatus,
+  StatusHistoryEntry,
+  ApplicationStatus,
+  GeneratedFile,
+} from "../types/lixi";
 
 export interface StatusTrackingService {
-  createSubmissionStatus(submissionId: string, applicationId: string, lenderCode: string): Promise<SubmissionStatus>;
-  updateStatus(submissionId: string, status: ApplicationStatus, notes?: string, source?: 'System' | 'Lender' | 'User'): Promise<SubmissionStatus>;
+  createSubmissionStatus(
+    submissionId: string,
+    applicationId: string,
+    lenderCode: string,
+  ): Promise<SubmissionStatus>;
+  updateStatus(
+    submissionId: string,
+    status: ApplicationStatus,
+    notes?: string,
+    source?: "System" | "Lender" | "User",
+  ): Promise<SubmissionStatus>;
   getStatus(submissionId: string): Promise<SubmissionStatus | null>;
-  addGeneratedFile(submissionId: string, file: GeneratedFile): Promise<SubmissionStatus>;
+  addGeneratedFile(
+    submissionId: string,
+    file: GeneratedFile,
+  ): Promise<SubmissionStatus>;
   getStatusHistory(submissionId: string): Promise<StatusHistoryEntry[]>;
-  getSubmissionsByStatus(status: ApplicationStatus): Promise<SubmissionStatus[]>;
+  getSubmissionsByStatus(
+    status: ApplicationStatus,
+  ): Promise<SubmissionStatus[]>;
   getSubmissionsByLender(lenderCode: string): Promise<SubmissionStatus[]>;
 }
 
@@ -19,23 +33,25 @@ export class StatusTrackingServiceImpl implements StatusTrackingService {
   private statusStore = new Map<string, SubmissionStatus>();
 
   async createSubmissionStatus(
-    submissionId: string, 
-    applicationId: string, 
-    lenderCode: string
+    submissionId: string,
+    applicationId: string,
+    lenderCode: string,
   ): Promise<SubmissionStatus> {
     const now = new Date().toISOString();
-    
+
     const status: SubmissionStatus = {
       submissionId,
       applicationId,
       lenderCode,
-      status: 'Submitted',
-      statusHistory: [{
-        status: 'Submitted',
-        timestamp: now,
-        notes: 'Initial submission created',
-        source: 'System',
-      }],
+      status: "Submitted",
+      statusHistory: [
+        {
+          status: "Submitted",
+          timestamp: now,
+          notes: "Initial submission created",
+          source: "System",
+        },
+      ],
       createdAt: now,
       updatedAt: now,
       files: [],
@@ -46,10 +62,10 @@ export class StatusTrackingServiceImpl implements StatusTrackingService {
   }
 
   async updateStatus(
-    submissionId: string, 
-    status: ApplicationStatus, 
-    notes?: string, 
-    source: 'System' | 'Lender' | 'User' = 'System'
+    submissionId: string,
+    status: ApplicationStatus,
+    notes?: string,
+    source: "System" | "Lender" | "User" = "System",
   ): Promise<SubmissionStatus> {
     const existingStatus = this.statusStore.get(submissionId);
     if (!existingStatus) {
@@ -79,7 +95,10 @@ export class StatusTrackingServiceImpl implements StatusTrackingService {
     return this.statusStore.get(submissionId) || null;
   }
 
-  async addGeneratedFile(submissionId: string, file: GeneratedFile): Promise<SubmissionStatus> {
+  async addGeneratedFile(
+    submissionId: string,
+    file: GeneratedFile,
+  ): Promise<SubmissionStatus> {
     const existingStatus = this.statusStore.get(submissionId);
     if (!existingStatus) {
       throw new Error(`Submission ${submissionId} not found`);
@@ -100,12 +119,20 @@ export class StatusTrackingServiceImpl implements StatusTrackingService {
     return status?.statusHistory || [];
   }
 
-  async getSubmissionsByStatus(status: ApplicationStatus): Promise<SubmissionStatus[]> {
-    return Array.from(this.statusStore.values()).filter(s => s.status === status);
+  async getSubmissionsByStatus(
+    status: ApplicationStatus,
+  ): Promise<SubmissionStatus[]> {
+    return Array.from(this.statusStore.values()).filter(
+      (s) => s.status === status,
+    );
   }
 
-  async getSubmissionsByLender(lenderCode: string): Promise<SubmissionStatus[]> {
-    return Array.from(this.statusStore.values()).filter(s => s.lenderCode === lenderCode);
+  async getSubmissionsByLender(
+    lenderCode: string,
+  ): Promise<SubmissionStatus[]> {
+    return Array.from(this.statusStore.values()).filter(
+      (s) => s.lenderCode === lenderCode,
+    );
   }
 
   // Utility methods for monitoring and reporting
@@ -115,16 +142,22 @@ export class StatusTrackingServiceImpl implements StatusTrackingService {
     byLender: Record<string, number>;
   }> {
     const allSubmissions = Array.from(this.statusStore.values());
-    
-    const byStatus = allSubmissions.reduce((acc, submission) => {
-      acc[submission.status] = (acc[submission.status] || 0) + 1;
-      return acc;
-    }, {} as Record<ApplicationStatus, number>);
 
-    const byLender = allSubmissions.reduce((acc, submission) => {
-      acc[submission.lenderCode] = (acc[submission.lenderCode] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const byStatus = allSubmissions.reduce(
+      (acc, submission) => {
+        acc[submission.status] = (acc[submission.status] || 0) + 1;
+        return acc;
+      },
+      {} as Record<ApplicationStatus, number>,
+    );
+
+    const byLender = allSubmissions.reduce(
+      (acc, submission) => {
+        acc[submission.lenderCode] = (acc[submission.lenderCode] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     return {
       total: allSubmissions.length,
@@ -136,7 +169,7 @@ export class StatusTrackingServiceImpl implements StatusTrackingService {
   async getRecentActivity(hours = 24): Promise<SubmissionStatus[]> {
     const cutoff = new Date(Date.now() - hours * 60 * 60 * 1000).toISOString();
     return Array.from(this.statusStore.values())
-      .filter(s => s.updatedAt > cutoff)
+      .filter((s) => s.updatedAt > cutoff)
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   }
 }

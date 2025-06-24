@@ -1,5 +1,5 @@
-import React from 'react';
-import { TextInput, View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { TextInput, View, Text, StyleSheet } from "react-native";
 
 interface InputProps {
   label?: string;
@@ -16,7 +16,7 @@ export const Input: React.FC<InputProps> = ({
   onChangeText,
   placeholder,
   secureTextEntry = false,
-  error
+  error,
 }) => {
   return (
     <View style={styles.container}>
@@ -39,25 +39,25 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
+    fontWeight: "600",
+    color: "#374151",
     marginBottom: 4,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderColor: "#D1D5DB",
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
   },
   inputError: {
-    borderColor: '#EF4444',
+    borderColor: "#EF4444",
   },
   error: {
     fontSize: 12,
-    color: '#EF4444',
+    color: "#EF4444",
     marginTop: 4,
   },
 });
