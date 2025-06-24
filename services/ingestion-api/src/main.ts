@@ -6,7 +6,11 @@ export async function bootstrap() {
   await app.listen(3000);
 }
 
+export function isMainModule(mainModule: NodeModule | undefined): boolean {
+  return mainModule === module;
+}
+
 // Only run bootstrap if this file is executed directly
-if (require.main === module) {
+if (isMainModule(require.main)) {
   bootstrap();
 }

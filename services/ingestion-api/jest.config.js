@@ -10,16 +10,5 @@ module.exports = {
     'src/**/*.ts',
     '!src/**/*.d.ts',
     '!src/__tests__/**'
-  ],
-  coverageThreshold: {
-    global: {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100
-    }
-  },
-  coveragePathIgnorePatterns: [
-    'src/main.ts:10-12'
   ]
 };

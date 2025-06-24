@@ -10,7 +10,7 @@ jest.mock('@nestjs/core', () => ({
 }));
 
 import { NestFactory } from '@nestjs/core';
-import { bootstrap } from '../main';
+import { bootstrap, isMainModule } from '../main';
 
 describe('Main Bootstrap', () => {
   beforeEach(() => {
@@ -20,5 +20,14 @@ describe('Main Bootstrap', () => {
   it('should bootstrap the application', async () => {
     await bootstrap();
     expect(NestFactory.create).toHaveBeenCalledWith(AppModule);
+  });
+
+  it('should return false when module is not main', () => {
+    const mockModule = {} as NodeModule;
+    expect(isMainModule(mockModule)).toBe(false);
+  });
+
+  it('should return false when main module is undefined', () => {
+    expect(isMainModule(undefined)).toBe(false);
   });
 });

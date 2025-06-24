@@ -21,3 +21,8 @@ This project handles digital loan submissions using the LIXI (Lending and Invest
 
 ## File Processing
 - Data Collection → LIXI Transformation → File Generation → Document Categorization → Submission → Status Tracking
+
+## Monorepo Structure
+- **Apps**: `apps/web`, `apps/mobile`
+- **Packages**: `packages/core`, `packages/ui-kit`
+- **Services**: `services/ingestion-api` 
