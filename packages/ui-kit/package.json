@@ -12,12 +12,13 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@testing-library/dom": "^10.0.0",
     "nativewind": "^4.1.23",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-native": "^0.80.0",
     "react-native-web": "^0.20.0",
-    "tailwindcss": "^4.1.10"
+    "tailwindcss": "<4.0.0-0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
