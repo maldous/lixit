@@ -29,6 +29,12 @@ module.exports = {
       },
     },
     {
+      files: ['**/__tests__/**/*.{ts,tsx}', '**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}', '**/setupTests.{ts,tsx}'],
+      env: {
+        jest: true,
+      },
+    },
+    {
       files: ['apps/mobile/**/*.{ts,tsx,js,jsx}', 'packages/ui-kit/**/*.{ts,tsx}'],
       plugins: ['@typescript-eslint', 'react', 'react-native'],
       extends: ['eslint:recommended'],
