@@ -1,0 +1,70 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    "docker:enableMajor",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    ":separatePatchReleases"
+  ],
+  "timezone": "Australia/Sydney",
+  "schedule": ["before 6am on monday"],
+  "labels": ["dependencies"],
+  "assignees": ["@lixit-team"],
+  "reviewers": ["@lixit-team"],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["^@types/"],
+      "groupName": "TypeScript definitions",
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^@typescript-eslint/"],
+      "groupName": "TypeScript ESLint",
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^eslint"],
+      "groupName": "ESLint packages",
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^jest", "^@testing-library/"],
+      "groupName": "Testing packages",
+      "automerge": true
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "postgres",
+        "redis",
+        "minio/minio",
+        "registry",
+        "mailhog/mailhog"
+      ],
+      "groupName": "Infrastructure Docker images",
+      "automerge": true
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "prom/prometheus",
+        "grafana/grafana",
+        "grafana/loki",
+        "grafana/promtail",
+        "jaegertracing/all-in-one",
+        "prom/alertmanager"
+      ],
+      "groupName": "Observability Docker images",
+      "automerge": true
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security"]
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on monday"]
+  }
+}
