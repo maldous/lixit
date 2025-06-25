@@ -19,7 +19,7 @@ const meta: Meta<typeof Input> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const InputWithState = (args: any) => {
+const InputWithState = (args: Partial<React.ComponentProps<typeof Input>> & { [key: string]: unknown }) => {
   const [value, setValue] = useState(args.value || '');
   return <Input {...args} value={value} onChangeText={setValue} />;
 };
