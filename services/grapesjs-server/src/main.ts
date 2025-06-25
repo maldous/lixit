@@ -79,17 +79,19 @@ app.get('/health', (req, res) => {
 });
 
 // Simple OIDC middleware for production
-const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction): void => {
   if (env.NODE_ENV === 'development') {
-    return next(); // Skip auth in development
+    next(); // Skip auth in development
+    return;
   }
   
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ 
+    res.status(401).json({ 
       error: 'Authentication required',
       keycloak_url: `${env.KEYCLOAK_URL}/realms/${env.KEYCLOAK_REALM}/protocol/openid-connect/auth?client_id=${env.KEYCLOAK_CLIENT_ID}&response_type=code&redirect_uri=${req.protocol}://${req.get('host')}/editor`
     });
+    return;
   }
   
   // TODO: Validate JWT token with Keycloak
@@ -164,10 +166,11 @@ app.post('/api/templates', requireAuth, async (req, res) => {
 });
 
 // Asset upload API - uploads to MinIO, also protected
-app.post('/api/assets/upload', requireAuth, upload.array('files'), async (req, res) => {
+app.post('/api/assets/upload', requireAuth, upload.array('files'), async (req, res): Promise<void> => {
   try {
     if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ error: 'No files uploaded' });
+      res.status(400).json({ error: 'No files uploaded' });
+      return;
     }
 
     const uploadPromises = (req.files as Express.Multer.File[]).map(async (file) => {
