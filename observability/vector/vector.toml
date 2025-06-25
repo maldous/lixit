@@ -1,0 +1,39 @@
+# Vector configuration for log shipping to Loki
+# Alternative to Promtail with lower resource usage
+
+[sources.docker_logs]
+type = "docker_logs"
+include_containers = ["lixit_*"]
+
+[transforms.parse_logs]
+type = "remap"
+inputs = ["docker_logs"]
+source = '''
+  .timestamp = now()
+  .service = .container_name
+  .level = "info"
+  
+  # Parse JSON logs if possible
+  if is_string(.message) {
+    parsed = parse_json(.message) ?? {}
+    if is_object(parsed) {
+      .level = parsed.level ?? "info"
+      .message = parsed.message ?? .message
+    }
+  }
+'''
+
+[sinks.loki]
+type = "loki"
+inputs = ["parse_logs"]
+endpoint = "http://loki:3100"
+encoding.codec = "json"
+
+[sinks.loki.labels]
+service = "{{ service }}"
+level = "{{ level }}"
+
+# Health check endpoint
+[api]
+enabled = true
+address = "0.0.0.0:8686"

@@ -1,0 +1,134 @@
+name: License Scan
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run weekly on Mondays at 6 AM UTC
+    - cron: '0 6 * * 1'
+
+jobs:
+  license-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'yarn'
+
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+
+    - name: Run dependency audit
+      run: |
+        # Check for high-severity vulnerabilities
+        pnpm audit --recursive --json > audit-results.json || true
+        
+        # Parse results and fail on high/critical vulnerabilities
+        if grep -q '"severity":"high"\|"severity":"critical"' audit-results.json; then
+          echo "❌ High or critical severity vulnerabilities found!"
+          echo "Please review and fix the following vulnerabilities:"
+          pnpm audit --recursive
+          exit 1
+        else
+          echo "✅ No high or critical severity vulnerabilities found"
+        fi
+
+    - name: Run Licensee
+      uses: licensee/action@v1
+      with:
+        # Fail if non-OSS licenses are found
+        confidence: 90
+        # Allow common OSS licenses
+        allow: |
+          MIT
+          Apache-2.0
+          BSD-2-Clause
+          BSD-3-Clause
+          ISC
+          GPL-3.0
+          LGPL-3.0
+          MPL-2.0
+
+    - name: Generate SBOM
+      run: |
+        # Install CycloneDX CLI
+        npm install -g @cyclonedx/cdxgen
+        
+        # Generate SBOM for the entire monorepo
+        cdxgen -t js -o sbom.json --profile research . -p
+        
+        # Generate SBOM for each package
+        for package in packages/*/; do
+          if [ -f "$package/package.json" ]; then
+            package_name=$(basename "$package")
+            cdxgen -t js -o "sbom-$package_name.json" "$package"
+          fi
+        done
+        
+        # Generate SBOM for each service
+        for service in services/*/; do
+          if [ -f "$service/package.json" ]; then
+            service_name=$(basename "$service")
+            cdxgen -t js -o "sbom-$service_name.json" "$service"
+          fi
+        done
+
+    - name: Upload SBOM artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: sbom-files
+        path: sbom*.json
+        retention-days: 30
+
+    - name: Check for license violations
+      run: |
+        # Check if any non-OSS licenses were found
+        if grep -q "GPL-2.0\|AGPL\|SSPL\|Commons Clause" sbom*.json; then
+          echo "❌ Non-OSS or restrictive licenses found!"
+          echo "Please review the SBOM files for license compliance."
+          exit 1
+        else
+          echo "✅ All licenses appear to be OSS-compatible"
+        fi
+
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          
+          // Read SBOM file to get dependency count
+          let sbomContent = '';
+          try {
+            sbomContent = fs.readFileSync('sbom.json', 'utf8');
+            const sbom = JSON.parse(sbomContent);
+            const componentCount = sbom.components ? sbom.components.length : 0;
+            
+            const comment = `## 📋 License Scan Results
+            
+            ✅ License scan completed successfully!
+            
+            - **Dependencies scanned**: ${componentCount}
+            - **SBOM generated**: Available in workflow artifacts
+            - **License compliance**: All dependencies use OSS-compatible licenses
+            
+            The Software Bill of Materials (SBOM) has been generated and is available for download from the workflow artifacts.`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          } catch (error) {
+            console.log('Could not read SBOM file or post comment:', error);
+          }

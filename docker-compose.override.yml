@@ -1,6 +1,47 @@
 version: '3.8'
 
 services:
+  # PgBouncer for connection pooling
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    environment:
+      - DATABASES_HOST=postgres
+      - DATABASES_PORT=5432
+      - DATABASES_USER=lixit
+      - DATABASES_PASSWORD=lixit_dev_password
+      - DATABASES_DBNAME=lixit
+      - POOL_MODE=transaction
+      - MAX_CLIENT_CONN=100
+      - DEFAULT_POOL_SIZE=25
+    ports:
+      - "6432:5432"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    mem_limit: 64m
+    cpus: 0.25
+
+  # GrapesJS Server
+  grapesjs-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.grapesjs
+    ports:
+      - "3005:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://lixit:lixit_dev_password@pgbouncer:5432/lixit
+      - S3_ENDPOINT=http://minio:9000
+      - S3_ACCESS_KEY=minioadmin
+      - S3_SECRET_KEY=minioadmin123
+      - S3_BUCKET=lixit-uploads
+      - PORT=3000
+    depends_on:
+      - pgbouncer
+      - minio
+    mem_limit: 256m
+    cpus: 0.5
+
   # Local Docker Registry
   registry:
     image: registry:2
@@ -44,7 +85,7 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--web.console.libraries=/etc/prometheus/console_libraries'
       - '--web.console.templates=/etc/prometheus/consoles'
-      - '--storage.tsdb.retention.time=200h'
+      - '--storage.tsdb.retention.time=7d'
       - '--web.enable-lifecycle'
     mem_limit: 512m
     cpus: 0.5
@@ -121,15 +162,17 @@ services:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
       - KC_DB=postgres
-      - KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak
+      - KC_DB_URL=jdbc:postgresql://pgbouncer:5432/keycloak
       - KC_DB_USERNAME=lixit
       - KC_DB_PASSWORD=lixit_dev_password
       - KC_HOSTNAME_STRICT=false
       - KC_HOSTNAME_STRICT_HTTPS=false
     ports:
       - "8080:8080"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
     depends_on:
-      - postgres
+      - pgbouncer
       - mailhog
     command: start-dev
     mem_limit: 512m
@@ -141,6 +184,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      - CADDY_MKCERT=true
     volumes:
       - ./observability/caddy/Caddyfile:/etc/caddy/Caddyfile
       - ./keys:/etc/ssl/certs:ro  # mkcert certificates
@@ -155,3 +200,4 @@ volumes:
   grafana_data:
   caddy_data:
   caddy_config:
+  keycloak_data:

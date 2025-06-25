@@ -5,62 +5,6 @@ The system should handle **two main submission types**:
 1. **Prospect Submissions** - Initial inquiries to gauge lender interest
 2. **Application Submissions** - Complete formal loan applications with full documentation
 
-## Package Scripts
-
-This monorepo uses standardized npm/yarn scripts across all packages. Scripts are orchestrated by Turbo for efficient parallel execution and caching.
-
-### Common Scripts (Available in all packages)
-
-- **`build`** - Compile TypeScript to JavaScript in `dist/` directory
-- **`build:prod`** - Production build (same as build for most packages)
-- **`dev`** - Development mode with file watching and auto-rebuild
-- **`lint`** - Run ESLint to check code quality and style
-- **`test`** - Run Jest unit tests
-- **`type-check`** - TypeScript type checking without emitting files (`tsc --noEmit`)
-- **`clean`** - Remove build artifacts (`rm -rf dist`)
-- **`format`** - Format code using Prettier
-
-### Root Package Scripts
-
-Run from project root to execute across all workspaces:
-
-- **`yarn build`** - Build all packages (via Turbo)
-- **`yarn dev`** - Start all development servers in parallel
-- **`yarn lint`** - Lint all packages
-- **`yarn test`** - Run all tests
-- **`yarn type-check`** - Type check all packages
-- **`yarn clean`** - Clean all packages and remove node_modules
-- **`yarn format`** - Format all files in the monorepo
-
-### App-Specific Scripts
-
-- **`yarn web`** - Start Next.js web app on port 8000
-- **`yarn mobile`** - Start Expo mobile app
-- **`yarn api`** - Start NestJS ingestion API in development mode
-- **`yarn storybook`** - Start Storybook component library on port 6006
-- **`yarn build-storybook`** - Build static Storybook
-- **`yarn build:android`** - Build Android APK for mobile app
-
-### Service-Specific Scripts
-
-**NestJS API (`services/ingestion-api`):**
-- **`start`** - Start production server
-- **`start:debug`** - Start with debugging enabled
-- **`start:prod`** - Start production build
-- **`test:watch`** - Run tests in watch mode
-- **`test:cov`** - Run tests with coverage report
-- **`test:debug`** - Run tests with Node.js debugger
-
-**Mobile App (`apps/mobile`):**
-- **`start`** - Start Expo development server
-- **`android`** - Run on Android device/emulator
-- **`web`** - Run Expo app in web browser
-
-**Web App (`apps/web`):**
-- **`start`** - Start Next.js production server
-- **`storybook`** - Start Storybook development server
-- **`build-storybook`** - Build static Storybook files
-
 ## Submission Format: LIXI Standard
 
 All digital submissions use the **LIXI (Lending and Investment eXchange Initiative)** format, which is the Australian banking industry standard for loan data exchange.
