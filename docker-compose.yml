@@ -181,6 +181,23 @@ services:
     mem_limit: 256m
     cpus: 0.5
 
+  # PII Redaction Service
+  pii-redaction:
+    build:
+      context: services/pii-redaction
+      dockerfile: Dockerfile
+    ports:
+      - "3006:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    mem_limit: 512m
+    cpus: 1.0
+
   # Database backup service
   backup:
     image: postgres:15-alpine

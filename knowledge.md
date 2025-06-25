@@ -22,7 +22,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 - **Monitoring**: Prometheus + Grafana + Loki + Jaeger
 - **Deployment**: Docker + Fly.io
 - **Security**: Trivy, SOPS, Keycloak, rate limiting
-- **PII Redaction**: pii-extract-base or custom implementation
+- **PII Redaction**: Microsoft Presidio (MIT license)
 - **Component Testing**: Storybook + Loki (replacing Chromatic)
 
 ## Development Status
@@ -95,7 +95,8 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 **Current State**: Not implemented
 
 **Required Work**:
-- Integrate `pii-extract-base` or build custom PII detection
+- Integrate Microsoft Presidio for PII detection and anonymization
+- Python service with FastAPI for HTTP endpoints
 - Redact sensitive data from documents and forms
 - Consent management for data processing
 - GDPR/privacy compliance features
@@ -242,7 +243,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 4. Handle eventual consistency patterns
 
 ## PII and Privacy Compliance
-1. Integrate PII detection library
+1. Integrate Microsoft Presidio for PII detection and anonymization
 2. Implement consent management
 3. Add data retention policies
 4. Create privacy-compliant logging

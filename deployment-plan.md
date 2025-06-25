@@ -86,7 +86,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 - **IaC Note**: Record Fly app/vol commands in `scripts/provision.sh` so new envs are reproducible without Terraform
 
 ### 1.13 Data Privacy & Compliance
-- **Consent/PII Redaction Service**: Use OSS lib (e.g. `pii-extract-base` or custom implementation)
+- **Consent/PII Redaction Service**: Use Microsoft Presidio (MIT license) for PII detection and anonymization
 - **LIXI Spec Upgrade**: Upgrade to latest LIXI specification (still free, docs are public)
 
 ### 1.14 API Management
@@ -221,7 +221,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 - **Event Bus**: NATS JetStream or RabbitMQ (Apache-2)
 - **Migrations**: node-pg-migrate (MIT) or Sqitch (GPL)
 - **Config**: convict or envalid (MIT)
-- **PII Redaction**: pii-extract-base (OSS)
+- **PII Redaction**: Microsoft Presidio (MIT license)
 - **Component Testing**: Storybook + Loki or reg-suite (OSS)
 - **Deployment**: Fly.io (free tier)
 - **CI/CD**: GitHub Actions (free minutes)

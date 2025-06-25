@@ -60,6 +60,7 @@ case "${ENVIRONMENT}" in
       cd services/doc-renderer && fly deploy --strategy rolling && cd ../..
       cd services/lixi-transform && fly deploy --strategy rolling && cd ../..
       cd services/submission-broker && fly deploy --strategy rolling && cd ../..
+      cd services/pii-redaction && fly deploy --strategy rolling && cd ../..
     fi
     
     echo "✅ Fly.io deployment complete!"
