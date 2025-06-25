@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 const config: StorybookConfig = {
   stories: [
     '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-    '../../packages/ui-kit/src/**/*.stories.@(js|jsx|mjs|ts|tsx)'
+    '../../../packages/ui-kit/src/**/*.stories.@(js|jsx|mjs|ts|tsx)'
   ],
   addons: [
     '@storybook/addon-links',
@@ -28,15 +28,15 @@ const config: StorybookConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       'react-native$': 'react-native-web',
-      '@lixit/ui-kit': path.resolve(__dirname, '../../packages/ui-kit/src'),
-      '@lixit/core': path.resolve(__dirname, '../../packages/core/src'),
+      '@lixit/ui-kit': path.resolve(__dirname, '../../../packages/ui-kit/src'),
+      '@lixit/core': path.resolve(__dirname, '../../../packages/core/src'),
     };
     
     // Add workspace packages to module resolution
     config.resolve.modules = [
       ...(config.resolve.modules || []),
-      path.resolve(__dirname, '../../packages'),
-      path.resolve(__dirname, '../../node_modules'),
+      path.resolve(__dirname, '../../../packages'),
+      path.resolve(__dirname, '../../../node_modules'),
     ];
     
     return config;
