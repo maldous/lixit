@@ -1,16 +1,43 @@
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { VersioningType } from '@nestjs/common';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 
-export async function bootstrap() {
+async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  
+  // Security middleware
+  app.use(helmet());
+  
+  // Rate limiting
+  app.use(rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+  }));
+  
+  // API Versioning
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+    prefix: 'v',
+  });
+  
+  // CORS
+  app.enableCors({
+    origin: process.env.NODE_ENV === 'development' ? true : ['https://lixit.local'],
+    credentials: true,
+  });
+  
+  await app.listen(process.env.PORT || 3000);
 }
 
-export function isMainModule(mainModule: typeof module | undefined): boolean {
-  return mainModule === module;
-}
+bootstrap();
 
-// Only run bootstrap if this file is executed directly
-if (isMainModule(require.main)) {
+export const isMainModule = require.main === module;
+if (isMainModule) {
   bootstrap();
 }

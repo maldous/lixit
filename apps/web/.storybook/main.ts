@@ -14,6 +14,7 @@ const config: StorybookConfig = {
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
+    '@loki/addon-storybook', // Visual regression testing
   ],
   framework: {
     name: '@storybook/nextjs',

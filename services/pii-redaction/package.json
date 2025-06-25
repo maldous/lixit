@@ -1,0 +1,41 @@
+{
+  "name": "@lixit/pii-redaction",
+  "version": "1.0.0",
+  "description": "PII redaction and consent management service",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "build:prod": "tsc",
+    "dev": "ts-node src/main.ts",
+    "start": "node dist/main.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write src",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@lixit/core": "workspace:^",
+    "express": "^5.1.0",
+    "helmet": "^8.0.0",
+    "cors": "^2.8.5",
+    "envalid": "^8.0.0",
+    "pii-extract-base": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/cors": "^2.8.17",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
+    "eslint": "^9.29.0",
+    "jest": "^30.0.2",
+    "prettier": "^3.6.0",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}

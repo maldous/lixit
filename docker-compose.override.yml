@@ -194,6 +194,25 @@ services:
     mem_limit: 128m
     cpus: 0.25
 
+  # RabbitMQ for event bus
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+    environment:
+      - RABBITMQ_DEFAULT_USER=lixit
+      - RABBITMQ_DEFAULT_PASS=lixit_dev_password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    mem_limit: 256m
+    cpus: 0.5
+
 volumes:
   registry_data:
   prometheus_data:
@@ -201,3 +220,4 @@ volumes:
   caddy_data:
   caddy_config:
   keycloak_data:
+  rabbitmq_data:

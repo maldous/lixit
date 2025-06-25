@@ -15,28 +15,36 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 
 ### 1.2 Database Setup
 - PostgreSQL container with initialization scripts
+- **Online DB Migrations**: Use `node-pg-migrate` (MIT) or `Sqitch` (GPL) for zero-downtime migrations
 - Database migrations and seeding
 - Environment variable configuration
 - **Data Durability**: Nightly `pg_dumpall` via cron container → bind-mount `./backups/`
+- **Backup Rotation**: Add `find ./backups -mtime +14 -delete` to `backup.sh` to prune old dumps
 - Optional WAL archiving to **MinIO** (self-hosted S3, free)
 - **Migration Automation**: Add `db/migrate.sh` to run on container start (`ENTRYPOINT`) so deploys are zero-touch
 - **Disaster Recovery Test**: Schedule `pg_restore --list` dry run weekly in CI to verify backups
+- **Game-Day Restore Drill**: Run in GitHub Actions free minutes or self-hosted runner
 - **PgBouncer**: Add side-car (`edoburu/pgbouncer`) for low-memory Fly VMs
 - **Keycloak Data**: Add `keycloak-db` Docker/Fly volume to persist realm + users
 
 ### 1.3 Service Configuration
 - Redis for Bull queues and caching
+- **Event Bus**: NATS JetStream or RabbitMQ (both Apache-2 licensed, zero cost)
 - **Redis Persistence**: Enable AOF (`appendonly yes`) so Bull queue resumes after restart
 - Environment variable templates
+- **Config Governance**: Use `convict` or `envalid` (MIT) to load a `config/default.yaml`
 - Health check endpoints
 - **Env Schema Validation**: Run `envalid` (or `zod`) at app start to fail fast on bad env vars
 
 ### 1.4 Security & Secrets
 - **Image Security**: Use **Trivy** (`docker run aquasec/trivy`) inside CI to scan images
 - Sign images with **cosign**; keys stored in git-ignored `./keys/`
+- **Plugin Signing**: Simple SHA-256 checksum file for plugin verification
 - **Secrets Management**: Encrypt all `.env` files with **SOPS + age** (no server required)
+- **Credentials Hygiene**: Store DB superuser and Keycloak admin PW in SOPS-encrypted `secrets.yaml` instead of `.env`
 - Decrypt in CI via `AGE_KEY_FILE`
 - **Rate Limiting**: Enable Caddy `rate_limit` directive or express `helmet` for basic DoS guard
+- **API Rate Limiting**: Add `express-rate-limit` to API for extra hardening
 - **Dependency CVEs**: Run `pnpm audit --recursive --json` in CI to fail builds on high-sev vulns
 
 ### 1.5 Observability Stack
@@ -72,9 +80,24 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 ### 1.11 Supply Chain Security
 - **SBOM Generation**: Generate CycloneDX via `pnpm dlx @cyclonedx/bom` in CI
 - **License Scan**: Add `licensee` GitHub Action to flag non-OSS deps
+- **Artifact Retention**: `gh-actions` step: `upload-artifact` Docker SBOM & Trivy report for 30 d
 
 ### 1.12 Infrastructure as Code
 - **IaC Note**: Record Fly app/vol commands in `scripts/provision.sh` so new envs are reproducible without Terraform
+
+### 1.13 Data Privacy & Compliance
+- **Consent/PII Redaction Service**: Use OSS lib (e.g. `pii-extract-base` or custom implementation)
+- **LIXI Spec Upgrade**: Upgrade to latest LIXI specification (still free, docs are public)
+
+### 1.14 API Management
+- **API Versioning**: Pure routing change, no cost
+- **Per-Service Runbook**: Markdown files for operational procedures
+
+### 1.15 Component Testing
+- **Component Snapshots**: Remove Chromatic (SaaS), use Storybook + Loki or reg-suite for visual diff (both OSS, self-hosted)
+
+### 1.16 ML & Analytics
+- **ML Model Training**: Local GPU or laptop is free, optional Kaggle or Google Colab Free (free cloud GPU)
 
 ## Phase 2: Production Deployment
 
@@ -94,6 +117,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 
 ### 2.3 Domain & TLS
 - **Caddy** container for automatic Let's Encrypt on your own domain
+- **HTTPS Redirect**: In Caddy prod conf: `redir / https://{host}{uri} 308` to force TLS
 - Or use Fly's free `*.fly.dev` certs
 
 ### 2.4 Deployment & Rollback
@@ -119,6 +143,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 - Document template system
 - WYSIWYG editor for forms
 - **GrapesJS Service**: Add a tiny `node` service (`grapesjs-server`) so CMS users hit a stable URL
+- **GrapesJS Auth**: Protect `/editor` with Keycloak (OIDC) to avoid open CMS in prod
 
 ### 3.3 Documentation Site
 - **MkDocs Material**: `docs/` → serve via `docker run mkdocs/mkdocs`, completely offline
@@ -193,6 +218,11 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 - **Containers**: Docker & Docker Compose
 - **Database**: PostgreSQL + PgBouncer
 - **Cache/Queue**: Redis (with AOF persistence)
+- **Event Bus**: NATS JetStream or RabbitMQ (Apache-2)
+- **Migrations**: node-pg-migrate (MIT) or Sqitch (GPL)
+- **Config**: convict or envalid (MIT)
+- **PII Redaction**: pii-extract-base (OSS)
+- **Component Testing**: Storybook + Loki or reg-suite (OSS)
 - **Deployment**: Fly.io (free tier)
 - **CI/CD**: GitHub Actions (free minutes)
 - **Design**: Penpot (open-source Figma alternative)

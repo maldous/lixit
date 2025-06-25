@@ -45,6 +45,12 @@ localhost {
 
 # Production configuration (when not using mkcert)
 {$DOMAIN:lixit.local} {
+    # Force HTTPS redirect
+    @http {
+        protocol http
+    }
+    redir @http https://{host}{uri} 308
+
     rate_limit {
         zone static_ip {
             key {remote_host}

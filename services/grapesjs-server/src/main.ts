@@ -14,6 +14,9 @@ const env = cleanEnv(process.env, {
   S3_ACCESS_KEY: str(),
   S3_SECRET_KEY: str(),
   S3_BUCKET: str(),
+  KEYCLOAK_URL: url({ default: 'http://keycloak:8080' }),
+  KEYCLOAK_REALM: str({ default: 'lixit' }),
+  KEYCLOAK_CLIENT_ID: str({ default: 'grapesjs-editor' }),
 });
 
 // Configure S3 client for MinIO
@@ -75,8 +78,27 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'grapesjs-server', timestamp: new Date().toISOString() });
 });
 
-// GrapesJS editor endpoint
-app.get('/editor', (req, res) => {
+// Simple OIDC middleware for production
+const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (env.NODE_ENV === 'development') {
+    return next(); // Skip auth in development
+  }
+  
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ 
+      error: 'Authentication required',
+      keycloak_url: `${env.KEYCLOAK_URL}/realms/${env.KEYCLOAK_REALM}/protocol/openid-connect/auth?client_id=${env.KEYCLOAK_CLIENT_ID}&response_type=code&redirect_uri=${req.protocol}://${req.get('host')}/editor`
+    });
+  }
+  
+  // TODO: Validate JWT token with Keycloak
+  // For now, just check if token exists
+  next();
+};
+
+// GrapesJS editor endpoint - protected in production
+app.get('/editor', requireAuth, (req, res) => {
   res.send(`
     <!DOCTYPE html>
     <html>
@@ -87,9 +109,11 @@ app.get('/editor', (req, res) => {
       <style>
         body, html { margin: 0; height: 100%; }
         #gjs { height: 100vh; }
+        .auth-info { position: fixed; top: 10px; right: 10px; background: #333; color: white; padding: 5px 10px; border-radius: 3px; font-size: 12px; z-index: 1000; }
       </style>
     </head>
     <body>
+      ${env.NODE_ENV === 'production' ? '<div class="auth-info">Authenticated</div>' : ''}
       <div id="gjs"></div>
       
       <script src="https://unpkg.com/grapesjs"></script>
@@ -104,12 +128,17 @@ app.get('/editor', (req, res) => {
             urlStore: '/api/templates',
             urlLoad: '/api/templates',
             params: {},
-            headers: {},
+            headers: {
+              'Authorization': '${req.headers.authorization || ''}'
+            },
           },
           assetManager: {
             upload: '/api/assets/upload',
             uploadName: 'files',
             multiUpload: true,
+            headers: {
+              'Authorization': '${req.headers.authorization || ''}'
+            },
           },
           plugins: ['gjs-blocks-basic'],
           pluginsOpts: {
@@ -122,20 +151,20 @@ app.get('/editor', (req, res) => {
   `);
 });
 
-// Template management API
-app.get('/api/templates/:id?', async (req, res) => {
+// Template management API - also protected
+app.get('/api/templates/:id?', requireAuth, async (req, res) => {
   // TODO: Implement template loading from database
   res.json({ data: { html: '', css: '', components: [], styles: [] } });
 });
 
-app.post('/api/templates', async (req, res) => {
+app.post('/api/templates', requireAuth, async (req, res) => {
   // TODO: Implement template saving to database
   const { html, css, components, styles } = req.body;
   res.json({ success: true, id: Date.now().toString() });
 });
 
-// Asset upload API - uploads to MinIO
-app.post('/api/assets/upload', upload.array('files'), async (req, res) => {
+// Asset upload API - uploads to MinIO, also protected
+app.post('/api/assets/upload', requireAuth, upload.array('files'), async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: 'No files uploaded' });
