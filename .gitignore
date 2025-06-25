@@ -140,3 +140,6 @@ dist
 
 # Expo
 .expo/
+
+# Storybook
+apps/web/storybook-static/

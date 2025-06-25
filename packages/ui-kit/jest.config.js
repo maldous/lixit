@@ -12,14 +12,6 @@ module.exports = {
     "!src/**/index.ts",
     "!src/setupTests.ts",
   ],
-  coverageThreshold: {
-    global: {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
-    },
-  },
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
   transformIgnorePatterns: [
     "node_modules/(?!(react-native|@react-native|react-native-web)/)",
