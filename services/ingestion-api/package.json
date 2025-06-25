@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "build": "yarn nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "build:prod": "yarn nest build",
+    "format": "prettier --write \"src/**/*.ts\"",
     "start": "yarn nest start",
     "dev": "yarn nest start --watch",
     "start:debug": "yarn nest start --debug --watch",
@@ -14,8 +15,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@apollo/server": "^4.12.2",

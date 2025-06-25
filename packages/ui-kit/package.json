@@ -5,11 +5,13 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "build:prod": "tsc",
     "dev": "tsc --watch",
     "lint": "eslint src",
     "test": "jest",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
@@ -29,6 +31,7 @@
     "jest": "^30.0.2",
     "jest-environment-jsdom": "^30.0.2",
     "jest-util": "^30.0.2",
+    "prettier": "^3.6.0",
     "ts-jest": "^29.4.0",
     "typescript": "^5.8.3"
   },

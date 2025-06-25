@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "build": "tsc",
+    "build:prod": "tsc",
     "start": "node dist/main.js",
     "dev": "ts-node src/main.ts",
     "lint": "eslint src",
     "test": "jest",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
     "@lixit/core": "workspace:^",
@@ -25,6 +28,7 @@
     "@typescript-eslint/parser": "^8.35.0",
     "eslint": "^9.29.0",
     "jest": "^30.0.2",
+    "prettier": "^3.6.0",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"

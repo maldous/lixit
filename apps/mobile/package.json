@@ -11,7 +11,8 @@
     "build:prod": "yarn eas build --platform android --profile production --non-interactive",
     "build:android": "yarn eas build --platform android --profile production --non-interactive",
     "lint": "eslint .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@lixit/core": "workspace:^",
