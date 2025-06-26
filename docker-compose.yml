@@ -87,7 +87,7 @@ services:
       retries: 3
 
   api:
-    build: {context: ., dockerfile: Dockerfile.api}
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.api}
     environment:
       NODE_ENV: development
       DATABASE_URL: postgres://lixit:lixit_dev_password@postgres:5432/lixit
@@ -107,7 +107,7 @@ services:
     ports: ["3001:3000"]
 
   web:
-    build: {context: ., dockerfile: Dockerfile.web}
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.web}
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_URL: http://localhost:3001
@@ -119,7 +119,7 @@ services:
     ports: ["8000:3000"]
 
   doc-renderer:
-    build: {context: ., dockerfile: Dockerfile.services}
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.services}
     command: ["node","services/doc-renderer/dist/main.js"]
     environment:
       NODE_ENV: development
@@ -140,7 +140,7 @@ services:
     ports: ["3002:3000"]
 
   lixi-transform:
-    build: {context: ., dockerfile: Dockerfile.services}
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.services}
     command: ["node","services/lixi-transform/dist/main.js"]
     environment:
       NODE_ENV: development
@@ -157,7 +157,7 @@ services:
     ports: ["3003:3000"]
 
   submission-broker:
-    build: {context: ., dockerfile: Dockerfile.services}
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.services}
     command: ["node","services/submission-broker/dist/main.js"]
     environment:
       NODE_ENV: development
@@ -174,7 +174,7 @@ services:
     ports: ["3004:3000"]
 
   grapesjs-server:
-    build: {context: ., dockerfile: Dockerfile.grapesjs}
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.grapesjs}
     environment:
       NODE_ENV: development
       DATABASE_URL: postgres://lixit:lixit_dev_password@pgbouncer:5432/lixit
@@ -194,7 +194,7 @@ services:
     ports: ["3005:3000"]
 
   pii-redaction:
-    build: {context: services/pii-redaction, dockerfile: Dockerfile}
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.pii-redaction}
     environment:
       NODE_ENV: development
       PORT: 3000
@@ -307,7 +307,7 @@ services:
   caddy:
     build: 
       context: .
-      dockerfile: Dockerfile.caddy
+      dockerfile: dockerfiles/Dockerfile.caddy
     environment: [CADDY_MKCERT=true]
     volumes:
       - ./observability/caddy/Caddyfile:/etc/caddy/Caddyfile

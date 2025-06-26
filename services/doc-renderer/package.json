@@ -19,7 +19,7 @@
     "cors": "^2.8.5",
     "exceljs": "^4.4.0",
     "express": "^5.1.0",
-    "helmet": "^8.0.0",
+    "helmet": "^7.0.0",
     "pdf-lib": "^1.17.1",
     "puppeteer": "^24.10.2",
     "redis": "^5.5.6"
