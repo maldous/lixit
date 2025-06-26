@@ -32,7 +32,7 @@ build:
 dev:
 	@echo "Starting development environment..."
 	@docker buildx build --load -f Dockerfile.base -t lixit/base-deps:18 .
-	@docker compose up -d
+	@COMPOSE_BAKE=true docker compose up -d
 	@echo "Services available at:"
 	@echo "  Web App:     http://localhost:8000"
 	@echo "  API:         http://localhost:3001"
@@ -47,7 +47,7 @@ dev:
 prod:
 	@echo "Starting production environment..."
 	@docker buildx build --load -f Dockerfile.base -t lixit/base-deps:18 .
-	@docker compose --profile prod up -d
+	@COMPOSE_BAKE=true docker compose --profile prod up -d
 
 # Run tests
 test:
