@@ -1,53 +1,19 @@
-# Multi-stage build for microservices
-FROM node:18-alpine AS base
+# syntax=docker/dockerfile:1.6
+FROM lixit/base-deps:18 AS deps
 
-# Install dependencies only when needed
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
-
-# Install dependencies based on the preferred package manager
-COPY package.json package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
-
-# Build the source code
-FROM base AS builder
-WORKDIR /app
-
-COPY --from=deps /app/node_modules ./node_modules
+FROM node:18-alpine AS build
+WORKDIR /repo
 COPY . .
-
-# Build all services
+COPY --from=deps /repo/node_modules ./node_modules
 RUN npm run build
 
-# Production image
-FROM base AS runner
+FROM node:18-alpine
 WORKDIR /app
-
-ENV NODE_ENV production
-
-# Create non-root user for security
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 serviceuser
-
-# Copy built applications
-COPY --from=builder --chown=serviceuser:nodejs /app/services ./services
-COPY --from=builder --chown=serviceuser:nodejs /app/packages ./packages
-COPY --from=deps --chown=serviceuser:nodejs /app/node_modules ./node_modules
-
-USER serviceuser
-
+ENV NODE_ENV=production
+RUN addgroup -S nodejs && adduser -S svc -G nodejs -u 1001
+COPY --from=build /repo/services ./services
+COPY --from=build /repo/packages ./packages
+COPY --from=deps  /repo/node_modules ./node_modules
+USER svc
 EXPOSE 3000
-
-ENV PORT 3000
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3000/health || exit 1
-
-# Default to doc-renderer service, can be overridden
-CMD ["node", "services/doc-renderer/dist/main.js"]
+CMD ["node","services/doc-renderer/dist/main.js"]

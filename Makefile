@@ -31,6 +31,7 @@ build:
 # Development environment
 dev:
 	@echo "Starting development environment..."
+	@docker buildx build --load -f Dockerfile.base -t lixit/base-deps:18 .
 	@docker compose up -d
 	@echo "Services available at:"
 	@echo "  Web App:     http://localhost:8000"
@@ -45,6 +46,7 @@ dev:
 # Production-like environment
 prod:
 	@echo "Starting production environment..."
+	@docker buildx build --load -f Dockerfile.base -t lixit/base-deps:18 .
 	@docker compose --profile prod up -d
 
 # Run tests

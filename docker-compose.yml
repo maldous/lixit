@@ -1,5 +1,4 @@
 services:
-  # Database
   postgres:
     image: postgres:15-alpine
     environment:
@@ -9,216 +8,328 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init:/docker-entrypoint-initdb.d
-    ports:
-      - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U lixit"]
+      test: ["CMD-SHELL","pg_isready -U lixit"]
       interval: 10s
       timeout: 5s
       retries: 5
     mem_limit: 512m
     cpus: 1.0
+    ports: ["5432:5432"]
 
-  # Redis for queues and caching
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    environment:
+      - DATABASES_HOST=postgres
+      - DATABASES_PORT=5432
+      - DATABASES_USER=lixit
+      - DATABASES_PASSWORD=lixit_dev_password
+      - DATABASES_DBNAME=lixit
+      - POOL_MODE=transaction
+      - MAX_CLIENT_CONN=100
+      - DEFAULT_POOL_SIZE=25
+    depends_on: {postgres: {condition: service_healthy}}
+    mem_limit: 64m
+    cpus: 0.25
+    ports: ["6432:5432"]
+
   redis:
     image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
     command: redis-server --appendonly yes
+    volumes: [redis_data:/data]
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD","redis-cli","ping"]
       interval: 10s
       timeout: 5s
       retries: 5
     mem_limit: 256m
     cpus: 0.5
+    ports: ["6379:6379"]
 
-  # MinIO for S3-compatible storage
   minio:
     image: minio/minio:latest
     command: server /data --console-address ":9001"
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin123
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    volumes:
-      - minio_data:/data
+    volumes: [minio_data:/data]
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD","curl","-f","http://localhost:9000/minio/health/live"]
       interval: 30s
       timeout: 20s
       retries: 3
     mem_limit: 256m
     cpus: 0.5
+    ports: ["9000:9000","9001:9001"]
 
-  # Web Application
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile.web
-    ports:
-      - "8000:3000"
-    environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://localhost:3001
-    depends_on:
-      - api
-    read_only: true
-    tmpfs:
-      - /tmp
-      - /app/.next/cache
-    mem_limit: 512m
-    cpus: 1.0
+  registry:
+    image: registry:2
+    volumes: [registry_data:/var/lib/registry]
+    mem_limit: 256m
+    cpus: 0.5
+    ports: ["5000:5000"]
 
-  # API Service
+  mailhog:
+    image: mailhog/mailhog:latest
+    mem_limit: 128m
+    cpus: 0.25
+    ports: ["1025:1025","8025:8025"]
+
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile.api
-    ports:
-      - "3001:3000"
+    build: {context: ., dockerfile: Dockerfile.api}
     environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://lixit:lixit_dev_password@postgres:5432/lixit
-      - REDIS_URL=redis://redis:6379
-      - S3_ENDPOINT=http://minio:9000
-      - S3_ACCESS_KEY=minioadmin
-      - S3_SECRET_KEY=minioadmin123
-      - S3_BUCKET=lixit-uploads
-      - PORT=3000
+      NODE_ENV: development
+      DATABASE_URL: postgres://lixit:lixit_dev_password@postgres:5432/lixit
+      REDIS_URL: redis://redis:6379
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin123
+      S3_BUCKET: lixit-uploads
+      PORT: 3000
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
     read_only: true
-    tmpfs:
-      - /tmp
+    tmpfs: ["/tmp"]
     mem_limit: 512m
     cpus: 1.0
+    ports: ["3001:3000"]
 
-  # Document Renderer Service
+  web:
+    build: {context: ., dockerfile: Dockerfile.web}
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+    depends_on: [api]
+    read_only: true
+    tmpfs: ["/tmp","/app/.next/cache"]
+    mem_limit: 512m
+    cpus: 1.0
+    ports: ["8000:3000"]
+
   doc-renderer:
-    build:
-      context: .
-      dockerfile: Dockerfile.services
-    command: ["node", "services/doc-renderer/dist/main.js"]
-    ports:
-      - "3002:3000"
+    build: {context: ., dockerfile: Dockerfile.services}
+    command: ["node","services/doc-renderer/dist/main.js"]
     environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://lixit:lixit_dev_password@postgres:5432/lixit
-      - REDIS_URL=redis://redis:6379
-      - S3_ENDPOINT=http://minio:9000
-      - S3_ACCESS_KEY=minioadmin
-      - S3_SECRET_KEY=minioadmin123
-      - S3_BUCKET=lixit-uploads
-      - PORT=3000
+      NODE_ENV: development
+      DATABASE_URL: postgres://lixit:lixit_dev_password@postgres:5432/lixit
+      REDIS_URL: redis://redis:6379
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin123
+      S3_BUCKET: lixit-uploads
+      PORT: 3000
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      minio:   {condition: service_healthy}
     read_only: true
-    tmpfs:
-      - /tmp
+    tmpfs: ["/tmp"]
     mem_limit: 512m
     cpus: 1.0
+    ports: ["3002:3000"]
 
-  # LIXI Transform Service
   lixi-transform:
-    build:
-      context: .
-      dockerfile: Dockerfile.services
-    command: ["node", "services/lixi-transform/dist/main.js"]
-    ports:
-      - "3003:3000"
+    build: {context: ., dockerfile: Dockerfile.services}
+    command: ["node","services/lixi-transform/dist/main.js"]
     environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://lixit:lixit_dev_password@postgres:5432/lixit
-      - REDIS_URL=redis://redis:6379
-      - PORT=3000
+      NODE_ENV: development
+      DATABASE_URL: postgres://lixit:lixit_dev_password@postgres:5432/lixit
+      REDIS_URL: redis://redis:6379
+      PORT: 3000
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
     read_only: true
-    tmpfs:
-      - /tmp
+    tmpfs: ["/tmp"]
     mem_limit: 256m
     cpus: 0.5
+    ports: ["3003:3000"]
 
-  # Submission Broker Service
   submission-broker:
-    build:
-      context: .
-      dockerfile: Dockerfile.services
-    command: ["node", "services/submission-broker/dist/main.js"]
-    ports:
-      - "3004:3000"
+    build: {context: ., dockerfile: Dockerfile.services}
+    command: ["node","services/submission-broker/dist/main.js"]
     environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://lixit:lixit_dev_password@postgres:5432/lixit
-      - REDIS_URL=redis://redis:6379
-      - PORT=3000
+      NODE_ENV: development
+      DATABASE_URL: postgres://lixit:lixit_dev_password@postgres:5432/lixit
+      REDIS_URL: redis://redis:6379
+      PORT: 3000
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
     read_only: true
-    tmpfs:
-      - /tmp
+    tmpfs: ["/tmp"]
     mem_limit: 256m
     cpus: 0.5
+    ports: ["3004:3000"]
 
-  # PII Redaction Service
-  pii-redaction:
-    build:
-      context: services/pii-redaction
-      dockerfile: Dockerfile
-    ports:
-      - "3006:3000"
+  grapesjs-server:
+    build: {context: ., dockerfile: Dockerfile.grapesjs}
     environment:
-      - NODE_ENV=development
-      - PORT=3000
-      - REDIS_URL=redis://redis:6379
+      NODE_ENV: development
+      DATABASE_URL: postgres://lixit:lixit_dev_password@pgbouncer:5432/lixit
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin123
+      S3_BUCKET: lixit-uploads
+      PORT: 3000
     depends_on:
-      redis:
-        condition: service_healthy
+      pgbouncer: {condition: service_healthy}
+      minio:     {condition: service_healthy}
+    mem_limit: 256m
+    cpus: 0.5
+    ports: ["3005:3000"]
+
+  pii-redaction:
+    build: {context: services/pii-redaction, dockerfile: Dockerfile}
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      redis: {condition: service_healthy}
     mem_limit: 512m
     cpus: 1.0
+    ports: ["3006:3000"]
 
-  # Database backup service
+  mkdocs:
+    image: squidfunk/mkdocs-material:latest
+    command: serve --dev-addr=0.0.0.0:8000
+    volumes: ["./docs:/docs"]
+    mem_limit: 128m
+    cpus: 0.25
+    ports: ["8001:8000"]
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/etc/prometheus/console_libraries
+      - --web.console.templates=/etc/prometheus/consoles
+      - --storage.tsdb.retention.time=7d
+      - --web.enable-lifecycle
+    mem_limit: 512m
+    cpus: 0.5
+    ports: ["9090:9090"]
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SMTP_ENABLED: "true"
+      GF_SMTP_HOST: mailhog:1025
+      GF_SMTP_FROM_ADDRESS: grafana@lixit.local
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on: [mailhog]
+    mem_limit: 256m
+    cpus: 0.5
+    ports: ["3000:3000"]
+
+  loki:
+    image: grafana/loki:latest
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./observability/loki/loki-config.yml:/etc/loki/local-config.yaml
+    mem_limit: 256m
+    cpus: 0.5
+    ports: ["3100:3100"]
+
+  promtail:
+    image: grafana/promtail:latest
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./observability/promtail/promtail-config.yml:/etc/promtail/config.yml
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    mem_limit: 128m
+    cpus: 0.25
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    mem_limit: 256m
+    cpus: 0.5
+    ports: ["16686:16686","14268:14268"]
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    volumes:
+      - ./observability/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    mem_limit: 128m
+    cpus: 0.25
+    ports: ["9093:9093"]
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://pgbouncer:5432/keycloak
+      KC_DB_USERNAME: lixit
+      KC_DB_PASSWORD: lixit_dev_password
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+    volumes: [keycloak_data:/opt/keycloak/data]
+    depends_on:
+      pgbouncer: {condition: service_healthy}
+      mailhog:   {condition: service_healthy}
+    command: start-dev
+    mem_limit: 512m
+    cpus: 0.5
+    ports: ["8080:8080"]
+
+  caddy:
+    image: caddy:alpine
+    environment: [CADDY_MKCERT=true]
+    volumes:
+      - ./observability/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./keys:/etc/ssl/certs:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    mem_limit: 128m
+    cpus: 0.25
+    ports: ["80:80","443:443"]
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: lixit
+      RABBITMQ_DEFAULT_PASS: lixit_dev_password
+    volumes: [rabbitmq_data:/var/lib/rabbitmq]
+    healthcheck:
+      test: ["CMD","rabbitmq-diagnostics","ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    mem_limit: 256m
+    cpus: 0.5
+    ports: ["5672:5672","15672:15672"]
+
   backup:
     image: postgres:15-alpine
-    environment:
-      PGPASSWORD: lixit_dev_password
+    environment: {PGPASSWORD: lixit_dev_password}
     volumes:
       - ./backups:/backups
       - ./scripts/backup.sh:/backup.sh
     command: >
-      sh -c "
-        while true; do
-          sleep 86400
-          pg_dumpall -h postgres -U lixit > /backups/backup_$$(date +%Y%m%d_%H%M%S).sql
-          find /backups -name '*.sql' -mtime +7 -delete
-          # Test backup integrity weekly
-          if [ $$(date +%u) -eq 1 ]; then
-            pg_restore --list /backups/backup_$$(date +%Y%m%d_%H%M%S).sql > /dev/null 2>&1 || echo 'Backup integrity check failed'
-          fi
-        done
-      "
-    depends_on:
-      postgres:
-        condition: service_healthy
+      sh -c "while true; do
+               sleep 86400 &&
+               pg_dumpall -h postgres -U lixit > /backups/backup_$(date +%Y%m%d_%H%M%S).sql &&
+               find /backups -name '*.sql' -mtime +7 -delete;
+             done"
+    depends_on: {postgres: {condition: service_healthy}}
     mem_limit: 128m
     cpus: 0.25
 
@@ -226,4 +337,11 @@ volumes:
   postgres_data:
   redis_data:
   minio_data:
+  registry_data:
+  prometheus_data:
+  grafana_data:
+  caddy_data:
+  caddy_config:
   keycloak_data:
+  rabbitmq_data:
+
