@@ -6,34 +6,45 @@ set -e
 
 echo "🚀 Setting up LIXIT development environment..."
 
-# Check prerequisites
-echo "🔍 Checking prerequisites..."
+#!/bin/bash
+set -e
 
-# Check Docker
+echo "🚀 Setting up LIXIT development environment with Volta…"
+
+# Install Volta if missing
+if ! command -v volta &> /dev/null; then
+  echo "📥 Installing Volta (node/tool manager)…"
+  curl https://get.volta.sh | bash
+  export VOLTA_HOME="$HOME/.volta"
+  export PATH="$VOLTA_HOME/bin:$PATH"
+fi
+
+# Ensure Volta is on PATH
+export VOLTA_HOME="${VOLTA_HOME:-$HOME/.volta}"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+# Use Volta to install or pin latest Node (and npm)
+echo "🔧 Pinning Node@latest via Volta…"
+volta install node@latest
+
+# Use Volta to install package managers & tools
+echo "🔧 Installing tooling via Volta…"
+volta install npm@latest
+volta install yarn@latest
+volta install pnpm@latest
+volta install turbo
+
+# Check Docker & Docker Compose (leave to host package manager)
 if ! command -v docker &> /dev/null; then
-    echo "❌ Docker is not installed. Please install Docker first."
-    exit 1
+  echo "❌ Docker not found; please install Docker manually."
+  exit 1
+fi
+if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
+  echo "❌ Docker Compose not found; please install Docker Compose manually."
+  exit 1
 fi
 
-# Check Docker Compose
-if ! command -v docker compose &> /dev/null; then
-    echo "❌ Docker Compose is not installed. Please install Docker Compose first."
-    exit 1
-fi
-
-# Check Node.js
-if ! command -v node &> /dev/null; then
-    echo "❌ Node.js is not installed. Please install Node.js 18+ first."
-    exit 1
-fi
-
-# Check npm
-if ! command -v npm &> /dev/null; then
-    echo "❌ npm is not installed. Please install npm first."
-    exit 1
-fi
-
-echo "✅ Prerequisites check passed"
+echo "✅ Prerequisites are met (Volta, Node, npm, yarn, pnpm, turbo, Docker)."
 
 # Install dependencies
 echo "📦 Installing dependencies..."

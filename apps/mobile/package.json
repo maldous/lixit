@@ -49,5 +49,6 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-native": "^5.0.0",
     "typescript": "^5.8.3"
-  }
+  },
+  "packageManager": "npm@11.4.2"
 }

@@ -52,5 +52,6 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3",
     "webpack": "^5.99.9"
-  }
+  },
+  "packageManager": "npm@11.4.2"
 }

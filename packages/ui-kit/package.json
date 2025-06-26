@@ -52,5 +52,6 @@
     "react-native": {
       "optional": true
     }
-  }
+  },
+  "packageManager": "npm@11.4.2"
 }

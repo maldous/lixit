@@ -21,12 +21,12 @@ setup:
 # Install dependencies
 install:
 	@echo "Installing dependencies..."
-	@npm install
+	@npm install --verbose
 
 # Build all packages
 build:
 	@echo "Building all packages..."
-	@npm build
+	@npm run build
 
 # Development environment
 dev:
@@ -50,26 +50,26 @@ prod:
 # Run tests
 test:
 	@echo "Running tests..."
-	@npm test
+	@npm run test
 
 # Run linting
 lint:
 	@echo "Running linting..."
-	@npm lint
+	@npm run lint
 
 # Clean up
 clean:
 	@echo "Cleaning up containers and volumes..."
 	@docker compose down -v
 	@docker system prune -f
-	@npm clean
+	@npm run clean
 
 # Format code
 format:
 	@echo "Formatting code..."
-	@npm format
+	@npm run format
 
 # Type check
 type-check:
 	@echo "Type checking..."
-	@npm type-check
+	@npm run type-check
