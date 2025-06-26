@@ -1,5 +1,7 @@
 .PHONY: help dev prod test clean lint setup install build
 
+NODE_MAJOR ?= $(shell cut -d. -f1 .node-version)
+
 help:
 	@echo "make setup      - Initial project setup (install deps, generate certs)"
 	@echo "make install    - Install dependencies"
@@ -22,12 +24,24 @@ build:
 	@npm run build
 
 dev:
-	@docker buildx build --load -f dockerfiles/Dockerfile.base -t lixit/base-deps:18 .
-	@COMPOSE_BAKE=true docker compose up -d
+	docker buildx build --load \
+		--build-arg NODE_MAJOR=$(NODE_MAJOR) \
+		-f dockerfiles/Dockerfile.base \
+		-t lixit/base-deps:$(NODE_MAJOR) .
+	COMPOSE_BAKE=true docker compose \
+		--profile dev \
+		--build-arg NODE_MAJOR=$(NODE_MAJOR) \
+		up -d
 
 prod:
-	@docker buildx build --load -f dockerfiles/Dockerfile.base -t lixit/base-deps:18 .
-	@COMPOSE_BAKE=true docker compose --profile prod up -d
+	docker buildx build --load \
+		--build-arg NODE_MAJOR=$(NODE_MAJOR) \
+		-f dockerfiles/Dockerfile.base \
+		-t lixit/base-deps:$(NODE_MAJOR) .
+	COMPOSE_BAKE=true docker compose \
+		--profile prod \
+		--build-arg NODE_MAJOR=$(NODE_MAJOR) \
+		up -d
 
 test:
 	@npm run test

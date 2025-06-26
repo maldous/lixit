@@ -1,20 +1,14 @@
-# syntax=docker/dockerfile:1.6
-FROM node:18-alpine AS deps
+ARG NODE_MAJOR=24
+
+FROM node:${NODE_MAJOR}-alpine AS deps
 WORKDIR /repo
 
-# tiny build tools for native addons
 RUN apk add --no-cache --virtual .build-deps python3 make g++
 
-# copy workspace sources
 COPY package.json package-lock.json* ./
-COPY apps      ./apps
-COPY packages  ./packages
-COPY services  ./services
+COPY apps ./apps
+COPY packages ./packages
+COPY services ./services
 
-# fresh install every build so deps are never stale
 RUN npm ci --workspaces --include-workspace-root
-
-# prune dev-only deps (they’ll be restored again in the build stage
-# where TypeScript is needed)
 RUN npm prune --omit=dev
-
