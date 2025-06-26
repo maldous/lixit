@@ -1,6 +1,6 @@
 x-node-build: &node-build
   args:
-    NODE_MAJOR: "24"
+    NODE_MAJOR: "${NODE_MAJOR:-24}"
 
 services:
   postgres:
@@ -117,7 +117,7 @@ services:
       context: .
       dockerfile: dockerfiles/Dockerfile.services
       args:
-        SERVICE: lixit-transform
+        SERVICE: lixi-transform
     command: [ "node", "services/lixi-transform/dist/main.js" ]
     environment:
       NODE_ENV: development

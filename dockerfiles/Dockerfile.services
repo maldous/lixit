@@ -1,27 +1,30 @@
 ARG NODE_MAJOR=24
-ARG SERVICE
-
 FROM node:${NODE_MAJOR}-alpine AS build
 WORKDIR /repo
+
+ARG SERVICE
 ENV SERVICE=${SERVICE:-doc-renderer}
 
 COPY package.json package-lock.json* ./
-COPY apps ./apps
-COPY packages ./packages
-COPY services ./services
+COPY apps      ./apps
+COPY packages  ./packages
+COPY services  ./services
 
 RUN npm ci --workspaces --include-workspace-root
 RUN npm run build --workspace=@lixit/${SERVICE}
 
-ARG NODE_MAJOR
 FROM node:${NODE_MAJOR}-alpine
 WORKDIR /app
 ENV NODE_ENV=production
+
 RUN addgroup -S nodejs && adduser -S svc -G nodejs -u 1001
+
 COPY --from=build /repo/services/${SERVICE}/dist ./dist
 COPY --from=build /repo/services/${SERVICE}/package.json ./
 COPY --from=build /repo/node_modules ./node_modules
+
+RUN npm prune --omit=dev && npm cache clean --force
+
 USER svc
 EXPOSE 3000
 CMD ["node","dist/main.js"]
-

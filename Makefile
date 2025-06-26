@@ -28,21 +28,25 @@ dev:
 		--build-arg NODE_MAJOR=$(NODE_MAJOR) \
 		-f dockerfiles/Dockerfile.base \
 		-t lixit/base-deps:$(NODE_MAJOR) .
+	@export NODE_MAJOR=$(NODE_MAJOR) ; \
 	COMPOSE_BAKE=true docker compose \
 		--profile dev \
-		--build-arg NODE_MAJOR=$(NODE_MAJOR) \
+		build && \
+	COMPOSE_BAKE=true docker compose \
+		--profile dev \
 		up -d
-
 prod:
 	docker buildx build --load \
 		--build-arg NODE_MAJOR=$(NODE_MAJOR) \
 		-f dockerfiles/Dockerfile.base \
 		-t lixit/base-deps:$(NODE_MAJOR) .
+	@export NODE_MAJOR=$(NODE_MAJOR) ; \
+	COMPOSE_BAKE=true docker compose \
+		--profile dev \
+		build && \
 	COMPOSE_BAKE=true docker compose \
 		--profile prod \
-		--build-arg NODE_MAJOR=$(NODE_MAJOR) \
 		up -d
-
 test:
 	@npm run test
 
