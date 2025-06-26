@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:15-alpine
+    command: ["postgres", "-c", "password_encryption=md5"]
     environment:
       POSTGRES_DB: lixit
       POSTGRES_USER: lixit
