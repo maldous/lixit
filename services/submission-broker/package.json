@@ -14,7 +14,7 @@
     "format": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
-    "@lixit/core": "workspace:^",
+    "@lixit/core": "file:../../packages/core",
     "amqplib": "^0.10.8",
     "axios": "^1.10.0",
     "bull": "^4.16.5",

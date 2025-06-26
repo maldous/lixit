@@ -14,7 +14,7 @@
     "format": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
-    "@lixit/core": "workspace:^",
+    "@lixit/core": "file:../../packages/core",
     "ajv": "^8.17.1",
     "bull": "^4.16.5",
     "redis": "^5.5.6"

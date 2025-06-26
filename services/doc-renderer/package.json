@@ -14,7 +14,7 @@
     "format": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
-    "@lixit/core": "workspace:^",
+    "@lixit/core": "file:../../packages/core",
     "bull": "^4.16.5",
     "exceljs": "^4.4.0",
     "pdf-lib": "^1.17.1",

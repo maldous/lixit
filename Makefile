@@ -21,12 +21,12 @@ setup:
 # Install dependencies
 install:
 	@echo "Installing dependencies..."
-	@yarn install
+	@npm install
 
 # Build all packages
 build:
 	@echo "Building all packages..."
-	@yarn build
+	@npm build
 
 # Development environment
 dev:
@@ -50,26 +50,26 @@ prod:
 # Run tests
 test:
 	@echo "Running tests..."
-	@yarn test
+	@npm test
 
 # Run linting
 lint:
 	@echo "Running linting..."
-	@yarn lint
+	@npm lint
 
 # Clean up
 clean:
 	@echo "Cleaning up containers and volumes..."
 	@docker compose down -v
 	@docker system prune -f
-	@yarn clean
+	@npm clean
 
 # Format code
 format:
 	@echo "Formatting code..."
-	@yarn format
+	@npm format
 
 # Type check
 type-check:
 	@echo "Type checking..."
-	@yarn type-check
+	@npm type-check

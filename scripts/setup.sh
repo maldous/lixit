@@ -27,9 +27,9 @@ if ! command -v node &> /dev/null; then
     exit 1
 fi
 
-# Check Yarn
-if ! command -v yarn &> /dev/null; then
-    echo "❌ Yarn is not installed. Please install Yarn first."
+# Check npm
+if ! command -v npm &> /dev/null; then
+    echo "❌ npm is not installed. Please install npm first."
     exit 1
 fi
 
@@ -37,7 +37,7 @@ echo "✅ Prerequisites check passed"
 
 # Install dependencies
 echo "📦 Installing dependencies..."
-yarn install
+npm install
 
 # Create necessary directories
 echo "📁 Creating directories..."
@@ -108,7 +108,7 @@ fi
 
 # Build packages
 echo "🔨 Building packages..."
-yarn build
+npm run build
 
 # Create Docker volumes
 echo "🐳 Creating Docker volumes..."
