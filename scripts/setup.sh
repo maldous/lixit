@@ -30,8 +30,6 @@ volta install node@latest
 # Use Volta to install package managers & tools
 echo "🔧 Installing tooling via Volta…"
 volta install npm@latest
-volta install yarn@latest
-volta install pnpm@latest
 volta install turbo
 
 # Check Docker & Docker Compose (leave to host package manager)
@@ -44,7 +42,7 @@ if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/
   exit 1
 fi
 
-echo "✅ Prerequisites are met (Volta, Node, npm, yarn, pnpm, turbo, Docker)."
+echo "✅ Prerequisites are met (Volta, Node, npm, turbo, Docker)."
 
 # Install dependencies
 echo "📦 Installing dependencies..."
