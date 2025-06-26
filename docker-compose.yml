@@ -93,7 +93,7 @@ services:
       args:
         <<: *node-args
         SERVICE: doc-renderer
-    command: [ "node", "services/doc-renderer/dist/main.js" ]
+    command: [ "node", "dist/main.js" ]
     environment:
       NODE_ENV: development
       DATABASE_URL: postgres://lixit:lixit_dev_password@postgres:5432/lixit
@@ -119,7 +119,7 @@ services:
       args:
         <<: *node-args
         SERVICE: lixi-transform
-    command: [ "node", "services/lixi-transform/dist/main.js" ]
+    command: [ "node", "dist/main.js" ]
     environment:
       NODE_ENV: development
       DATABASE_URL: postgres://lixit:lixit_dev_password@postgres:5432/lixit
@@ -141,7 +141,7 @@ services:
       args:
         <<: *node-args
         SERVICE: submission-broker
-    command: [ "node", "services/submission-broker/dist/main.js" ]
+    command: [ "node", "dist/main.js" ]
     environment:
       NODE_ENV: development
       DATABASE_URL: postgres://lixit:lixit_dev_password@postgres:5432/lixit
