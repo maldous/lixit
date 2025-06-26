@@ -1,5 +1,5 @@
 ARG NODE_MAJOR=24
-ARG SERVICE=""
+ARG SERVICE
 FROM node:${NODE_MAJOR}-alpine AS build
 WORKDIR /repo
 
