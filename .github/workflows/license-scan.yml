@@ -42,7 +42,7 @@ jobs:
         fi
 
     - name: Run Licensee
-      uses: licensee/action@v1
+      uses: licensee/licensee-action@v1
       with:
         # Fail if non-OSS licenses are found
         confidence: 90
