@@ -13,8 +13,8 @@ receivers:
   - name: 'web.hook'
     email_configs:
       - to: 'admin@lixit.local'
-        subject: 'LIXIT Alert: {{ .GroupLabels.alertname }}'
-        body: |
+        html: |
+          LIXIT Alert: {{ .GroupLabels.alertname }}
           {{ range .Alerts }}
           Alert: {{ .Annotations.summary }}
           Description: {{ .Annotations.description }}

@@ -3,6 +3,8 @@ site_description: Modern LIXI loan submission system
 site_author: LIXIT Team
 site_url: https://lixit.local
 
+docs_dir: content
+
 theme:
   name: material
   palette:
@@ -51,4 +53,3 @@ markdown_extensions:
 
 plugins:
   - search
-  - mermaid2
