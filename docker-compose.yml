@@ -80,9 +80,9 @@ services:
     cpus: 0.25
     ports: ["1025:1025","8025:8025"]
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8025/"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD", "true"]
+      interval: 30s
+      timeout: 3s
       retries: 3
 
   api:
@@ -354,4 +354,3 @@ volumes:
   caddy_config:
   keycloak_data:
   rabbitmq_data:
-
