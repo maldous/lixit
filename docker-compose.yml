@@ -119,7 +119,7 @@ services:
     ports: ["8000:3000"]
 
   doc-renderer:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.services}
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.services, args: { SERVICE: doc-renderer }}
     command: ["node","services/doc-renderer/dist/main.js"]
     environment:
       NODE_ENV: development
@@ -140,7 +140,7 @@ services:
     ports: ["3002:3000"]
 
   lixi-transform:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.services}
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.services, args: { SERVICE: lixit-transform }}
     command: ["node","services/lixi-transform/dist/main.js"]
     environment:
       NODE_ENV: development
@@ -157,7 +157,7 @@ services:
     ports: ["3003:3000"]
 
   submission-broker:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.services}
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.services, args: { SERVICE: submission-broker }}
     command: ["node","services/submission-broker/dist/main.js"]
     environment:
       NODE_ENV: development
@@ -174,7 +174,7 @@ services:
     ports: ["3004:3000"]
 
   grapesjs-server:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.grapesjs}
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.grapesjs }
     environment:
       NODE_ENV: development
       DATABASE_URL: postgres://lixit:lixit_dev_password@pgbouncer:5432/lixit
