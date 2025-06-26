@@ -1,6 +1,5 @@
-x-node-build: &node-build
-  args:
-    NODE_MAJOR: "${NODE_MAJOR:-24}"
+x-node-build-args: &node-build-args
+  NODE_MAJOR: "${NODE_MAJOR:-24}"
 
 services:
   postgres:
@@ -46,9 +45,10 @@ services:
 
   api:
     build:
-      <<: *node-build
       context: .
       dockerfile: dockerfiles/Dockerfile.api
+      args:
+        <<: *node-build-args
     environment:
       NODE_ENV: development
       DATABASE_URL: postgres://lixit:lixit_dev_password@postgres:5432/lixit
@@ -70,9 +70,10 @@ services:
 
   web:
     build:
-      <<: *node-build
       context: .
       dockerfile: dockerfiles/Dockerfile.web
+      args:
+        <<: *node-build-args
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_URL: http://localhost:3001
@@ -87,10 +88,10 @@ services:
 
   doc-renderer:
     build:
-      <<: *node-build
       context: .
       dockerfile: dockerfiles/Dockerfile.services
       args:
+        <<: *node-build-args
         SERVICE: doc-renderer
     command: [ "node", "services/doc-renderer/dist/main.js" ]
     environment:
@@ -113,10 +114,10 @@ services:
 
   lixi-transform:
     build:
-      <<: *node-build
       context: .
       dockerfile: dockerfiles/Dockerfile.services
       args:
+        <<: *node-build-args
         SERVICE: lixi-transform
     command: [ "node", "services/lixi-transform/dist/main.js" ]
     environment:
@@ -135,10 +136,10 @@ services:
 
   submission-broker:
     build:
-      <<: *node-build
       context: .
       dockerfile: dockerfiles/Dockerfile.services
       args:
+        <<: *node-build-args
         SERVICE: submission-broker
     command: [ "node", "services/submission-broker/dist/main.js" ]
     environment:
@@ -157,9 +158,10 @@ services:
 
   grapesjs-server:
     build:
-      <<: *node-build
       context: .
       dockerfile: dockerfiles/Dockerfile.grapesjs
+      args:
+        <<: *node-build-args
     environment:
       NODE_ENV: development
       DATABASE_URL: postgres://lixit:lixit_dev_password@pgbouncer:5432/lixit
