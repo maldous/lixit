@@ -1,11 +1,6 @@
-import type { StorybookConfig } from '@storybook/nextjs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const path = require('path');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const config: StorybookConfig = {
+const config = {
   stories: [
     '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
     '../../../packages/ui-kit/src/**/*.stories.@(js|jsx|mjs|ts|tsx)'
@@ -14,7 +9,6 @@ const config: StorybookConfig = {
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
-    '@loki/addon-storybook', // Visual regression testing
   ],
   framework: {
     name: '@storybook/nextjs',
@@ -43,4 +37,5 @@ const config: StorybookConfig = {
     return config;
   },
 };
-export default config;
+
+module.exports = config;

@@ -21,7 +21,7 @@ processors:
 exporters:
   prometheus:
     endpoint: "0.0.0.0:8889"
-  jaeger:
+  otlp:
     endpoint: jaeger:14250
     tls:
       insecure: true
@@ -37,7 +37,7 @@ service:
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [jaeger]
+      exporters: [otlp]
     metrics:
       receivers: [otlp, prometheus]
       processors: [memory_limiter, batch]
@@ -51,4 +51,3 @@ service:
   telemetry:
     metrics:
       level: basic
-      address: 0.0.0.0:8888

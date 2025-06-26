@@ -11,9 +11,7 @@
     "test": "jest",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "format": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
@@ -22,11 +20,6 @@
     "tailwindcss": "^3.4.0"
   },
   "devDependencies": {
-    "@storybook/react": "^9.0.13",
-    "@storybook/react-vite": "^9.0.13",
-    "@storybook/addon-links": "^9.0.13",
-    "@storybook/addon-essentials": "^9.0.13",
-    "@storybook/addon-interactions": "^9.0.13",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@types/jest": "^30.0.0",
@@ -39,7 +32,6 @@
     "jest-environment-jsdom": "^30.0.2",
     "jest-util": "^30.0.2",
     "prettier": "^3.6.0",
-    "storybook": "^9.0.13",
     "ts-jest": "^29.4.0",
     "typescript": "^5.8.3",
     "vite": "^6.0.0"

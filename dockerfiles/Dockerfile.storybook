@@ -13,4 +13,4 @@ COPY --from=deps /repo/apps ./apps
 RUN npm install -g @storybook/cli
 
 EXPOSE 6006
-CMD ["npm", "run", "storybook", "--workspace=@lixit/ui-kit"]
+CMD ["npm", "run", "storybook", "--workspace=@lixit/web"]
