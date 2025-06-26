@@ -159,6 +159,11 @@ app.get('/api/templates/:id?', requireAuth, async (req, res) => {
   res.json({ data: { html: '', css: '', components: [], styles: [] } });
 });
 
+app.get('/api/templates', requireAuth, async (req, res) => {
+  // TODO: Implement template loading from database
+  res.json({ data: { html: '', css: '', components: [], styles: [] } });
+});
+
 app.post('/api/templates', requireAuth, async (req, res) => {
   // TODO: Implement template saving to database
   const { html, css, components, styles } = req.body;
