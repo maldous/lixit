@@ -1,17 +1,10 @@
 #!/bin/bash
 set -e
 
-# LIXIT Setup Script
-# Initial project setup for development environment
+NODE_VERSION=$(cat .node-version)
+NPM_VERSION=$(cat .npm-version)
+TURBO_VERISON=$(cat .turbo-version)
 
-echo "🚀 Setting up LIXIT development environment..."
-
-#!/bin/bash
-set -e
-
-echo "🚀 Setting up LIXIT development environment with Volta…"
-
-# Install Volta if missing
 if ! command -v volta &> /dev/null; then
   echo "📥 Installing Volta (node/tool manager)…"
   curl https://get.volta.sh | bash
@@ -19,37 +12,24 @@ if ! command -v volta &> /dev/null; then
   export PATH="$VOLTA_HOME/bin:$PATH"
 fi
 
-# Ensure Volta is on PATH
 export VOLTA_HOME="${VOLTA_HOME:-$HOME/.volta}"
 export PATH="$VOLTA_HOME/bin:$PATH"
 
-# Use Volta to install or pin latest Node (and npm)
-echo "🔧 Pinning Node@latest via Volta…"
-volta install node@latest
+volta install "node@$NODE_VERSION"
+volta install "npm@$NPM_VERSION"
+volta install "turbo@$TURBO_VERISON"
 
-# Use Volta to install package managers & tools
-echo "🔧 Installing tooling via Volta…"
-volta install npm@latest
-volta install turbo
-
-# Check Docker & Docker Compose (leave to host package manager)
 if ! command -v docker &> /dev/null; then
-  echo "❌ Docker not found; please install Docker manually."
+  echo "Docker not found; please install Docker manually."
   exit 1
 fi
 if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
-  echo "❌ Docker Compose not found; please install Docker Compose manually."
+  echo "Docker Compose not found; please install Docker Compose manually."
   exit 1
 fi
 
-echo "✅ Prerequisites are met (Volta, Node, npm, turbo, Docker)."
-
-# Install dependencies
-echo "📦 Installing dependencies..."
 npm install
 
-# Create necessary directories
-echo "📁 Creating directories..."
 mkdir -p backups
 mkdir -p keys
 mkdir -p database/migrations
@@ -64,17 +44,12 @@ mkdir -p docs
 mkdir -p LICENSES
 mkdir -p plugins
 
-# Generate mkcert certificates for local HTTPS
-echo "🔐 Generating local HTTPS certificates..."
 if command -v mkcert &> /dev/null; then
     cd keys
     mkcert -install
     mkcert localhost 127.0.0.1 ::1
     cd ..
-    echo "✅ HTTPS certificates generated"
 else
-    echo "⚠️  mkcert not found. Installing..."
-    # Install mkcert based on OS
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
         chmod +x mkcert-v*-linux-amd64
@@ -82,21 +57,17 @@ else
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         brew install mkcert
     else
-        echo "⚠️  Please install mkcert manually for your OS"
+        echo "Please install mkcert manually for your OS"
     fi
     
-    # Try again
     if command -v mkcert &> /dev/null; then
         cd keys
         mkcert -install
         mkcert localhost 127.0.0.1 ::1
         cd ..
-        echo "✅ HTTPS certificates generated"
     fi
 fi
 
-# Create environment files
-echo "⚙️  Creating environment configuration..."
 if [ ! -f .env.local ]; then
     cat > .env.local << EOF
 # LIXIT Local Development Environment
@@ -112,19 +83,6 @@ KEYCLOAK_URL=http://localhost:8080
 KEYCLOAK_REALM=lixit
 KEYCLOAK_CLIENT_ID=lixit-web
 EOF
-    echo "✅ Environment file created"
 fi
 
-# Build packages
-echo "🔨 Building packages..."
 npm run build
-
-echo "✅ LIXIT setup completed successfully!"
-echo ""
-echo "🎯 Next steps:"
-echo "  1. Run 'make dev' to start the development environment"
-echo "  2. Visit http://localhost:8000 to access the web app"
-echo "  3. Visit http://localhost:3000 to access Grafana (admin/admin)"
-echo "  4. Visit http://localhost:8001 to access documentation"
-echo ""
-echo "📚 For more information, see INSTALL.md"
