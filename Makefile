@@ -55,6 +55,7 @@ lint:
 
 clean:
 	@docker compose down -v
+	@docker image prune -a -f
 	@docker system prune -f
 	@npm run clean
 
