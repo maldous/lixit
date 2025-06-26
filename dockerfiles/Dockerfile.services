@@ -3,7 +3,7 @@ FROM node:${NODE_MAJOR}-alpine AS build
 WORKDIR /repo
 
 ARG SERVICE
-ENV SERVICE=${SERVICE:-doc-renderer}
+ENV SERVICE=${SERVICE}
 
 COPY package.json package-lock.json* ./
 COPY apps      ./apps
