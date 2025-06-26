@@ -1,9 +1,12 @@
 import express from 'express';
-import helmet from 'helmet';
-import cors from 'cors';
+import helmet  from 'helmet';
+import cors    from 'cors';
 
-console.log("Submission Broker Service");
+console.log('Submission Broker Service');
 
+/* ────────────────────────────────────────────────────────── */
+/*  Thin service object – plug real lender integration here  */
+/* ────────────────────────────────────────────────────────── */
 export class SubmissionBrokerService {
   async submitToLender(
     data: Record<string, unknown>,
@@ -19,52 +22,76 @@ export class SubmissionBrokerService {
 
 export const submissionBrokerService = new SubmissionBrokerService();
 
-// Create Express app
+/* ────────────────────────────────────────────────────────── */
+/*  Express app setup                                         */
+/* ────────────────────────────────────────────────────────── */
 const app = express();
 
-// Security middleware
+/* Security middleware */
 app.use(helmet());
-app.use(cors({
-  origin: process.env.NODE_ENV === 'development' ? true : ['https://lixit.local'],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === 'development' ? true : ['https://lixit.local'],
+    credentials: true,
+  }),
+);
 
 app.use(express.json({ limit: '10mb' }));
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'submission-broker', timestamp: new Date().toISOString() });
+/* Health check */
+app.get('/health', (_req, res) => {
+  res.json({
+    status: 'ok',
+    service: 'submission-broker',
+    timestamp: new Date().toISOString(),
+  });
 });
 
-// Submit endpoint
+/* Submit endpoint */
 app.post('/submit', async (req, res) => {
   try {
-    const { data, lenderCode } = req.body;
-    
+    const { data, lenderCode } = req.body as {
+      data: Record<string, unknown>;
+      lenderCode?: string;
+    };
+
     if (!lenderCode) {
-      return res.status(400).json({ error: 'lenderCode is required' });
+      res.status(400).json({ error: 'lenderCode is required' });
+      return;                                   // ← nothing is returned
     }
-    
-    const result = await submissionBrokerService.submitToLender(data, lenderCode);
-    res.json(result);
+
+    const result = await submissionBrokerService.submitToLender(
+      data,
+      lenderCode,
+    );
+    res.json(result);                           // ← no “return” statement
   } catch (error) {
     console.error('Submission error:', error);
     res.status(500).json({ error: 'Submission failed' });
   }
 });
 
-// Error handling middleware
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('Unhandled error:', err);
-  res.status(500).json({ error: 'Internal server error' });
-});
+/* Error-handling middleware */
+app.use(
+  (
+    err: Error,
+    _req: express.Request,
+    res: express.Response,
+    _next: express.NextFunction,
+  ) => {
+    console.error('Unhandled error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  },
+);
 
-const port = process.env.PORT || 3000;
+/* Start server */
+const port = Number(process.env.PORT) || 3000;
 const server = app.listen(port, () => {
-  console.log(`🚀 Submission Broker Service running on port ${port}`);
+  console.log(`🚀  Submission Broker Service running on port ${port}`);
 });
 
-// Graceful shutdown
+/* Graceful shutdown */
 process.on('SIGTERM', () => {
   console.log('SIGTERM received, shutting down gracefully');
   server.close(() => {
@@ -73,3 +100,4 @@ process.on('SIGTERM', () => {
 });
 
 export default app;
+
