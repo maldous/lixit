@@ -57,7 +57,7 @@ After running `make dev`, the following services will be available:
 
 ## Package Scripts
 
-This monorepo uses standardized npm/yarn scripts across all packages. Scripts are orchestrated by Turbo for efficient parallel execution and caching.
+This monorepo uses standardized npm/npm scripts across all packages. Scripts are orchestrated by Turbo for efficient parallel execution and caching.
 
 ### Common Scripts (Available in all packages)
 
@@ -74,13 +74,13 @@ This monorepo uses standardized npm/yarn scripts across all packages. Scripts ar
 
 Run from project root to execute across all workspaces:
 
-- **`yarn build`** - Build all packages (via Turbo)
-- **`yarn dev`** - Start all development servers in parallel
-- **`yarn lint`** - Lint all packages
-- **`yarn test`** - Run all tests
-- **`yarn type-check`** - Type check all packages
-- **`yarn clean`** - Clean all packages and remove node_modules
-- **`yarn format`** - Format all files in the monorepo
+- **`npm build`** - Build all packages (via Turbo)
+- **`npm dev`** - Start all development servers in parallel
+- **`npm lint`** - Lint all packages
+- **`npm test`** - Run all tests
+- **`npm type-check`** - Type check all packages
+- **`npm clean`** - Clean all packages and remove node_modules
+- **`npm format`** - Format all files in the monorepo
 
 ### Makefile Commands
 
@@ -98,12 +98,12 @@ Run from project root to execute across all workspaces:
 
 ### App-Specific Scripts
 
-- **`yarn web`** - Start Next.js web app on port 8000
-- **`yarn mobile`** - Start Expo mobile app
-- **`yarn api`** - Start NestJS ingestion API in development mode
-- **`yarn storybook`** - Start Storybook component library on port 6006
-- **`yarn build-storybook`** - Build static Storybook
-- **`yarn build:android`** - Build Android APK for mobile app
+- **`npm web`** - Start Next.js web app on port 8000
+- **`npm mobile`** - Start Expo mobile app
+- **`npm api`** - Start NestJS ingestion API in development mode
+- **`npm storybook`** - Start Storybook component library on port 6006
+- **`npm build-storybook`** - Build static Storybook
+- **`npm build:android`** - Build Android APK for mobile app
 
 ## Development Workflow
 
@@ -132,13 +132,13 @@ make type-check
 make test
 
 # Run tests for specific package
-cd packages/core && yarn test
+cd packages/core && npm test
 
 # Run tests with coverage
-cd packages/core && yarn test --coverage
+cd packages/core && npm test --coverage
 
 # Run tests in watch mode
-cd packages/core && yarn test --watch
+cd packages/core && npm test --watch
 ```
 
 ### 3. Building
@@ -147,10 +147,10 @@ cd packages/core && yarn test --watch
 make build
 
 # Build specific package
-cd packages/core && yarn build
+cd packages/core && npm build
 
 # Build for production
-yarn build:prod
+npm build:prod
 ```
 
 ## Mobile Development
@@ -161,10 +161,10 @@ yarn build:prod
 npm install -g @expo/cli
 
 # Start mobile development
-yarn mobile
+npm mobile
 
 # Build Android APK
-yarn build:android
+npm build:android
 ```
 
 ### OTA Updates
@@ -254,9 +254,9 @@ docker compose build --no-cache
 **Node/Yarn issues:**
 ```bash
 # Clear caches
-yarn cache clean
+npm cache clean
 rm -rf node_modules
-yarn install
+npm install
 ```
 
 **Database connection issues:**
@@ -283,10 +283,10 @@ All services have memory limits configured. If you experience OOM issues:
 **Build performance:**
 ```bash
 # Use Turbo cache
-yarn build  # Subsequent builds will be faster
+npm build  # Subsequent builds will be faster
 
 # Parallel builds
-yarn build --parallel
+npm build --parallel
 ```
 
 ## Architecture Overview
