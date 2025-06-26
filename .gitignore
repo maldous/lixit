@@ -143,3 +143,6 @@ dist
 
 # Storybook
 apps/web/storybook-static/
+
+# Keys
+keys/
