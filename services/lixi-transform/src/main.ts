@@ -1,4 +1,6 @@
 import express from 'express';
+import helmet from 'helmet';
+import cors from 'cors';
 
 console.log("LIXI Transform Service");
 
@@ -6,26 +8,58 @@ export class LIXITransformService {
   async transform(
     data: Record<string, unknown>,
   ): Promise<Record<string, unknown>> {
+    // TODO: Implement actual LIXI transformation logic
     return data;
   }
 }
 
 export const lixiTransformService = new LIXITransformService();
 
-// Add HTTP server
+// Create Express app
 const app = express();
-app.use(express.json());
 
+// Security middleware
+app.use(helmet());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'development' ? true : ['https://lixit.local'],
+  credentials: true,
+}));
+
+app.use(express.json({ limit: '10mb' }));
+
+// Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'lixi-transform' });
+  res.json({ status: 'ok', service: 'lixi-transform', timestamp: new Date().toISOString() });
 });
 
+// Transform endpoint
 app.post('/transform', async (req, res) => {
-  const result = await lixiTransformService.transform(req.body);
-  res.json(result);
+  try {
+    const result = await lixiTransformService.transform(req.body);
+    res.json(result);
+  } catch (error) {
+    console.error('Transform error:', error);
+    res.status(500).json({ error: 'Transformation failed' });
+  }
+});
+
+// Error handling middleware
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal server error' });
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`LIXI Transform Service running on port ${port}`);
+const server = app.listen(port, () => {
+  console.log(`🔄 LIXI Transform Service running on port ${port}`);
 });
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  server.close(() => {
+    console.log('LIXI Transform Service terminated');
+  });
+});
+
+export default app;

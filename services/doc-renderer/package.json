@@ -16,12 +16,17 @@
   "dependencies": {
     "@lixit/core": "file:../../packages/core",
     "bull": "^4.16.5",
+    "cors": "^2.8.5",
     "exceljs": "^4.4.0",
+    "express": "^5.1.0",
+    "helmet": "^8.0.0",
     "pdf-lib": "^1.17.1",
     "puppeteer": "^24.10.2",
     "redis": "^5.5.6"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.3",
     "@typescript-eslint/eslint-plugin": "^8.35.0",

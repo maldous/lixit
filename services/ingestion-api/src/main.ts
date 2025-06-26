@@ -38,6 +38,3 @@ async function bootstrap() {
 bootstrap();
 
 export const isMainModule = require.main === module;
-if (isMainModule) {
-  bootstrap();
-}
