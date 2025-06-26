@@ -121,14 +121,6 @@ fi
 echo "🔨 Building packages..."
 npm run build
 
-# Create Docker volumes
-echo "🐳 Creating Docker volumes..."
-docker volume create lixit_postgres_data || true
-docker volume create lixit_redis_data || true
-docker volume create lixit_minio_data || true
-docker volume create lixit_keycloak_data || true
-docker volume create lixit_rabbitmq_data || true
-
 echo "✅ LIXIT setup completed successfully!"
 echo ""
 echo "🎯 Next steps:"

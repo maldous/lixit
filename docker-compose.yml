@@ -20,15 +20,20 @@ services:
   pgbouncer:
     image: edoburu/pgbouncer:latest
     environment:
-      - DATABASES_HOST=postgres
-      - DATABASES_PORT=5432
-      - DATABASES_USER=lixit
-      - DATABASES_PASSWORD=lixit_dev_password
-      - DATABASES_DBNAME=lixit
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=lixit
+      - DB_PASSWORD=lixit_dev_password
+      - DB_DBNAME=lixit
       - POOL_MODE=transaction
       - MAX_CLIENT_CONN=100
       - DEFAULT_POOL_SIZE=25
     depends_on: {postgres: {condition: service_healthy}}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "localhost", "-p", "5432"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     mem_limit: 64m
     cpus: 0.25
     ports: ["6432:5432"]
@@ -74,6 +79,11 @@ services:
     mem_limit: 128m
     cpus: 0.25
     ports: ["1025:1025","8025:8025"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8025/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   api:
     build: {context: ., dockerfile: Dockerfile.api}
