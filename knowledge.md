@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submission system built as a TypeScript monorepo with microservices architecture.
+LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submission system built as a comprehensive TypeScript monorepo with microservices architecture and extensive development tooling.
 
 ### Core Design Principles
 - **100% Free & Self-Hosted**: Uses only open-source tools and free tiers
@@ -10,38 +10,129 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 - **Lender Agnostic**: Pluggable transformer system for different lenders
 - **Multi-Platform**: Web, mobile, and API interfaces
 - **Production Ready**: Complete observability, security, and deployment pipeline
+- **Developer Experience First**: Comprehensive tooling for development velocity
 
-### Technology Stack
-- **Frontend**: Next.js (web), React Native/Expo (mobile)
-- **Backend**: NestJS API + Express microservices
-- **Database**: PostgreSQL + PgBouncer + Redis
-- **Event Bus**: NATS JetStream or RabbitMQ (Apache-2)
-- **Migrations**: node-pg-migrate (MIT) or Sqitch (GPL)
-- **Config**: convict or envalid for YAML config governance
-- **Storage**: MinIO (S3-compatible)
-- **Monitoring**: Prometheus + Grafana + Loki + Jaeger
-- **Deployment**: Docker + Fly.io
-- **Security**: Trivy, SOPS, Keycloak, rate limiting
-- **PII Redaction**: Microsoft Presidio (MIT license)
-- **Component Testing**: Storybook + Loki (replacing Chromatic)
+### Complete Service Catalog (40+ Services)
+
+### Core Application Services (8 services)
+- **Web App** (Next.js, port 8000) - Primary user interface
+- **Mobile App** (React Native/Expo) - Cross-platform mobile application
+- **Ingestion API** (NestJS, port 3001) - Main backend API with authentication
+- **Document Renderer** (Express, port 3002) - PDF/Excel generation service
+- **LIXI Transform** (Express, port 3003) - LIXI format transformation
+- **Submission Broker** (Express, port 3004) - Lender integration service
+- **GrapesJS Server** (Express, port 3005) - Template editor service
+- **PII Redaction** (Python/FastAPI, port 3006) - Privacy compliance service
+
+### Database & Storage Layer (6 services)
+- **PostgreSQL** (port 5432) - Primary transactional database
+- **PgBouncer** (port 6432) - Database connection pooling
+- **Redis** (port 6379) - Caching, sessions, and message queues
+- **MinIO** (ports 9000-9001) - S3-compatible object storage with web console
+- **OpenSearch** (port 9200) - Search and analytics engine for logs
+- **RabbitMQ** (ports 5672, 15672) - Message broker with management UI
+
+### API Layer (4 services)
+- **PostgREST** (port 3008) - Auto-generated REST API from PostgreSQL schemas
+- **Hasura GraphQL** (port 3009) - Real-time GraphQL with admin console and subscriptions
+- **PostGraphile** (port 3010) - High-performance GraphQL with fine-grained RBAC
+- **Kong Gateway** (ports 8002-8003) - API gateway with rate limiting and authentication
+
+### Database Management Tools (2 services)
+- **pgAdmin** (port 3011) - Web-based PostgreSQL administration
+- **Prisma Studio** (port 3012) - Modern database GUI for data browsing
+
+### API Documentation (2 services)
+- **Swagger UI** (port 3013) - Interactive REST API documentation
+- **Redoc** (port 3014) - Alternative API documentation with better design
+
+### Development Tools (4 services)
+- **Storybook** (port 3015) - Component playground and design system
+- **SonarQube** (port 3016) - Code quality, security analysis, and tech debt tracking
+- **Gitea** (port 3017, SSH 2222) - Self-hosted Git service with webhooks
+- **MkDocs** (port 8001) - Documentation site generation
+
+### Observability Stack (8 services)
+- **Prometheus** (port 9090) - Metrics collection and alerting rules
+- **Grafana** (port 3007) - Dashboards, visualization, and alert management
+- **Loki** (port 3100) - Log aggregation and analysis
+- **Promtail** - Log shipping from containers to Loki
+- **Jaeger** (port 16686) - Distributed tracing and request flow analysis
+- **AlertManager** (port 9093) - Alert routing, grouping, and notifications
+- **OpenTelemetry Collector** (ports 4317-4318) - Unified observability pipeline
+- **OpenSearch Dashboards** (port 5601) - Data exploration and log visualization
+
+### Monitoring & Health (3 services)
+- **Node Exporter** (port 9100) - Host-level metrics (CPU, memory, disk)
+- **Blackbox Exporter** (port 9115) - Synthetic monitoring and endpoint health
+- **Uptime Kuma** (port 3018) - Status page and uptime monitoring
+
+### Security & Compliance (3 services)
+- **Sentry** (port 9002) - Error tracking and performance monitoring
+- **Trivy** (port 8004) - Vulnerability scanner for containers and dependencies
+- **Step-CA** (port 9443) - Internal certificate authority for TLS
+
+### Infrastructure Services (4 services)
+- **Caddy** (ports 80, 443) - Reverse proxy with automatic HTTPS
+- **Keycloak** (port 8080) - Identity and access management (SSO, OAuth2)
+- **Docker Registry** (port 5000) - Private container registry
+- **MailHog** (ports 1025, 8025) - Email testing and debugging
+
+### Support Services (2 services)
+- **Backup Service** - Automated PostgreSQL backups with retention
+- **Vector** - Alternative log shipper (configured but not active by default)
+
+## Technology Stack
+
+### Frontend Technologies
+- **Next.js 15** - React framework with SSR/SSG and App Router
+- **React Native/Expo** - Cross-platform mobile development
+- **TailwindCSS** - Utility-first CSS framework
+- **TypeScript** - Type-safe JavaScript development
+- **Storybook** - Component development and documentation
+
+### Backend Technologies
+- **NestJS** - Node.js framework with decorators and dependency injection
+- **Express** - Lightweight Node.js web framework for microservices
+- **FastAPI** - Modern Python framework for ML/AI services
+- **TypeScript** - Primary language for all Node.js services
+- **Python** - For PII redaction and ML services
+
+### Database Technologies
+- **PostgreSQL 15** - Primary relational database with JSON support
+- **Redis 7** - In-memory data store for caching and sessions
+- **OpenSearch** - Elasticsearch-compatible search and analytics
+- **MinIO** - S3-compatible object storage
+
+### Infrastructure Technologies
+- **Docker & Docker Compose** - Containerization and orchestration
+- **Kong** - API gateway and service mesh
+- **Caddy** - Modern web server with automatic HTTPS
+- **RabbitMQ** - Message broker for event-driven architecture
+
+### Observability Technologies
+- **Prometheus** - Metrics collection and alerting
+- **Grafana** - Visualization and dashboards
+- **Loki** - Log aggregation and analysis
+- **Jaeger** - Distributed tracing
+- **OpenTelemetry** - Unified observability framework
 
 ## Development Status
 
 ### ✅ Complete Infrastructure
-- Docker containerization with multi-stage builds
-- Full observability stack with retention policies
-- Security hardening (rate limiting, auth, secrets)
-- CI/CD pipeline with vulnerability scanning
-- Database setup with backup rotation
-- Fly.io deployment configuration
+- Full containerized development environment with 40+ services
+- Comprehensive observability stack with metrics, logs, and traces
+- Complete security stack with vulnerability scanning and certificate management
+- Multiple API interfaces (REST, GraphQL) with auto-generation
+- Database management tools and admin interfaces
+- Code quality and development tools
+- CI/CD foundation with Git service and registry
 
 ### 🔧 Business Logic Implementation Needed
 
 #### 1. File Generation Services
 **Location**: `packages/core/src/services/file-generation.ts`, `services/doc-renderer/`
-
 **Current State**: Framework exists, implementations are placeholders
-
 **Required Work**:
 - Excel generation using ExcelJS with LIXI data mapping
 - PDF generation using Puppeteer with branded templates
@@ -49,9 +140,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 
 #### 2. Document Categorization
 **Location**: `packages/core/src/services/document-categorization.ts`
-
 **Current State**: Rule-based placeholder implementation
-
 **Required Work**:
 - OCR integration (Tesseract.js or cloud OCR)
 - ML classification model for document types
@@ -59,19 +148,15 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 
 #### 3. Lender Transformers
 **Location**: `packages/core/src/transformers/`
-
 **Current State**: Base transformer class exists, no lender-specific implementations
-
 **Required Work**:
 - CBA, ANZ, Westpac, NAB specific transformers
 - Custom field mappings per lender
 - Integration endpoints and authentication methods
 
-#### 4. Web Application
+#### 4. Web Application Business Logic
 **Location**: `apps/web/`
-
 **Current State**: Basic Next.js setup with placeholder page
-
 **Required Work**:
 - Borrower information forms with validation
 - Document upload interface with drag-and-drop
@@ -80,9 +165,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 
 #### 5. Mobile Application
 **Location**: `apps/mobile/`
-
 **Current State**: Basic Expo setup with placeholder screen
-
 **Required Work**:
 - Document capture via camera with auto-cropping
 - Offline form completion with sync
@@ -91,9 +174,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 
 #### 6. PII Redaction Service
 **Location**: `services/pii-redaction/`
-
 **Current State**: Not implemented
-
 **Required Work**:
 - Integrate Microsoft Presidio for PII detection and anonymization
 - Python service with FastAPI for HTTP endpoints
@@ -103,9 +184,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 
 #### 7. Event Bus Integration
 **Location**: `docker-compose.yml`, service configurations
-
 **Current State**: Not implemented
-
 **Required Work**:
 - Add RabbitMQ or NATS JetStream to docker-compose
 - Implement event-driven architecture for submissions
@@ -113,9 +192,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 
 #### 8. Database Migrations
 **Location**: `database/migrations/`
-
 **Current State**: Basic setup exists
-
 **Required Work**:
 - Implement `node-pg-migrate` for online migrations
 - Create migration scripts for LIXI schema
@@ -123,9 +200,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 
 #### 9. API Versioning
 **Location**: `services/ingestion-api/`
-
 **Current State**: Single version API
-
 **Required Work**:
 - Implement versioned routing (v1, v2, etc.)
 - Maintain backward compatibility
@@ -133,9 +208,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 
 #### 10. Component Visual Testing
 **Location**: `apps/web/.storybook/`
-
 **Current State**: Basic Storybook setup
-
 **Required Work**:
 - Replace Chromatic with Loki for visual regression testing
 - Set up automated screenshot comparison
@@ -143,119 +216,91 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 
 ## Development Workflow
 
-### Adding New Lender Support
-1. Create transformer class extending `BaseLIXITransformer`
-2. Implement lender-specific field mappings
-3. Add integration endpoint configuration
-4. Register transformer in `TransformerRegistry`
-5. Add tests for transformation logic
+### Environment Setup
+- **DevContainer**: VS Code development container with all tools pre-installed
+- **Local Development**: `make setup && make dev` for full stack
+- **Service-Specific**: Individual service development with hot reloading
 
-### File Generation Development
-1. Implement actual generation logic in service classes
-2. Add template support for branded outputs
-3. Integrate with MinIO for file storage
-4. Add progress tracking for large files
+### Code Quality Pipeline
+- **TypeScript**: Strict type checking across all services
+- **ESLint**: Code style and quality enforcement
+- **Prettier**: Automated code formatting
+- **Jest**: Unit testing framework
+- **SonarQube**: Continuous code quality analysis
+- **Trivy**: Security vulnerability scanning
 
-### Document Processing Development
-1. Integrate OCR library for text extraction
-2. Train/configure ML model for classification
-3. Add data extraction rules for each document type
-4. Implement confidence scoring and manual review
+### API Development Workflow
+1. **Schema-First**: Define APIs in OpenAPI/GraphQL schemas
+2. **Auto-Generation**: PostgREST and Hasura provide instant APIs
+3. **Custom Logic**: Implement business logic in NestJS services
+4. **Documentation**: Swagger UI and Redoc for interactive docs
+5. **Testing**: Automated API testing and validation
 
-## Deployment Notes
+### Database Development
+1. **Schema Design**: PostgreSQL with proper indexing and constraints
+2. **Migrations**: Version-controlled database changes
+3. **Admin Tools**: pgAdmin for complex queries, Prisma Studio for data browsing
+4. **Multiple Interfaces**: Direct SQL, REST via PostgREST, GraphQL via Hasura/PostGraphile
+
+### Monitoring & Debugging
+1. **Real-time Metrics**: Prometheus + Grafana dashboards
+2. **Log Analysis**: Loki for centralized logging with search
+3. **Distributed Tracing**: Jaeger for request flow analysis
+4. **Error Tracking**: Sentry for application errors
+5. **Synthetic Monitoring**: Blackbox Exporter for endpoint health
+
+## Deployment Architecture
 
 ### Local Development
-- Use `make dev` to start full stack with observability
-- GrapesJS editor available at http://localhost:3005/editor
-- All services have health checks and proper logging
+- **Full Stack**: All 40+ services running locally via Docker Compose
+- **Resource Management**: Configured memory and CPU limits for each service
+- **Hot Reloading**: File watching and automatic rebuilds
+- **HTTPS**: Automatic certificate generation via mkcert
 
 ### Production Deployment
-- Use `scripts/provision.sh` to create Fly.io infrastructure
-- Secrets managed via SOPS encryption
-- Automatic backup rotation and integrity checking
-- Rate limiting and security headers enabled
+- **Container Registry**: Private Docker registry for custom images
+- **Certificate Management**: Step-CA for internal services, Let's Encrypt for public
+- **Backup Strategy**: Automated database backups with retention policies
+- **Monitoring**: Full observability stack with alerting
 
-### Monitoring
-- Grafana dashboards for system health
-- Loki for centralized logging with 7-day retention
-- Jaeger for distributed tracing
-- Prometheus alerts for critical issues
+### Security Considerations
+- **Vulnerability Scanning**: Trivy scans all containers and dependencies
+- **Certificate Management**: Automated TLS certificate provisioning
+- **PII Compliance**: Automated detection and redaction of sensitive data
+- **Access Control**: Keycloak for centralized identity management
+- **Rate Limiting**: Kong Gateway with configurable rate limits
 
-## Security Considerations
+## Performance Characteristics
 
-### Authentication
-- Keycloak for SSO and user management
-- JWT tokens for API authentication
-- Rate limiting on all endpoints
+### Resource Requirements
+- **Development**: 8GB RAM, 4 CPU cores minimum
+- **Production**: 16GB RAM, 8 CPU cores recommended
+- **Storage**: 20GB for development, scalable for production
 
-### Data Protection
-- All secrets encrypted with SOPS + age
-- Database backups encrypted and rotated
-- File uploads scanned and validated
-- HTTPS enforced in production
+### Scaling Strategy
+- **Horizontal**: Stateless services can be scaled independently
+- **Database**: PostgreSQL with read replicas and connection pooling
+- **Caching**: Redis for application-level caching
+- **Load Balancing**: Kong Gateway and Caddy for traffic distribution
 
-### Compliance
-- SBOM generation for supply chain security
-- License scanning for OSS compliance
-- Vulnerability scanning with Trivy
-- Audit logging for all submissions
+### Monitoring Thresholds
+- **Response Time**: < 2 seconds for API endpoints
+- **Error Rate**: < 5% for all services
+- **Memory Usage**: < 80% of allocated limits
+- **Database Connections**: < 90% of pool size
 
-## Performance Optimization
+## Integration Points
 
-### Caching Strategy
-- Redis for session and API response caching
-- CDN for static assets via MinIO
-- Database query optimization with PgBouncer
+### External Services
+- **Lender APIs**: Configurable integration endpoints
+- **Document Storage**: S3-compatible via MinIO
+- **Email**: SMTP via MailHog (development) or external provider
+- **Authentication**: OAuth2/OIDC via Keycloak
 
-### Scaling Considerations
-- Microservices can be scaled independently
-- File generation can be moved to background jobs
-- Document processing can use worker queues
-- Database read replicas for reporting
+### Internal Communication
+- **Synchronous**: HTTP/REST between services
+- **Asynchronous**: RabbitMQ for event-driven communication
+- **Real-time**: WebSocket connections for live updates
+- **Database**: Shared PostgreSQL with service-specific schemas
 
-## Testing Strategy
-
-### Unit Tests
-- Jest for all TypeScript code
-- Test coverage reporting in CI
-- Mock external dependencies
-
-### Integration Tests
-- API endpoint testing with supertest
-- Database integration tests
-- File generation validation
-
-### E2E Tests
-- Playwright for web application flows
-- Mobile testing with Detox
-- LIXI submission end-to-end validation
-
-## Config Management Development
-1. Replace environment variables with YAML configuration
-2. Use `convict` for schema validation and defaults
-3. Support environment-specific overrides
-4. Document all configuration options
-
-## Event-Driven Architecture
-1. Add RabbitMQ or NATS to infrastructure
-2. Implement event publishers and subscribers
-3. Add event sourcing for audit trails
-4. Handle eventual consistency patterns
-
-## PII and Privacy Compliance
-1. Integrate Microsoft Presidio for PII detection and anonymization
-2. Implement consent management
-3. Add data retention policies
-4. Create privacy-compliant logging
-
-## ML Model Development
-- **Local Training**: Use local GPU or laptop for model development
-- **Free Cloud Options**: Kaggle or Google Colab Free for experimentation
-- **Model Deployment**: Serve models via simple HTTP endpoints
-- **Data Pipeline**: Use event bus for training data collection
-
-## Operational Procedures
-- **Per-Service Runbooks**: Markdown files documenting operational procedures
-- **Game-Day Drills**: Regular restore testing in CI/CD pipeline
-- **Plugin Security**: SHA-256 checksums for plugin verification
-- **Config Governance**: YAML-based configuration with schema validation
+This comprehensive infrastructure provides a production-ready foundation for building the LIXIT loan submission system with extensive development tooling, monitoring, and security features.

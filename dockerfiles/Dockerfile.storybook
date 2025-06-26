@@ -1,0 +1,16 @@
+ARG NODE_MAJOR=24
+
+FROM lixit/base-deps:${NODE_MAJOR} AS deps
+
+FROM node:${NODE_MAJOR}-alpine
+WORKDIR /app
+COPY --from=deps /repo/node_modules ./node_modules
+COPY --from=deps /repo/package*.json ./
+COPY --from=deps /repo/packages ./packages
+COPY --from=deps /repo/apps ./apps
+
+# Install Storybook globally
+RUN npm install -g @storybook/cli
+
+EXPOSE 6006
+CMD ["npm", "run", "storybook", "--workspace=@lixit/ui-kit"]
