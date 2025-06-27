@@ -87,7 +87,7 @@ LIXIT provides a full-stack solution for loan origination and submission, built 
 
 - **Node Exporter** (port 9100) - Host metrics for Prometheus
 - **Blackbox Exporter** (port 9115) - Synthetic monitoring probes
-- **Uptime Kuma** (port 3001) - Status page and uptime monitoring
+- **Uptime Kuma** (port 3018) - Status page and uptime monitoring
 
 ### Security & Compliance
 

@@ -76,7 +76,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 - **Blackbox Exporter** (port 9115) - Synthetic monitoring and endpoint health
 - **Uptime Kuma** (port 3018) - Status page and uptime monitoring
 
-### Security & Compliance (3 services)
+### Security & Compliance (2 services)
 
 - **Trivy** (port 8004) - Vulnerability scanner for containers and dependencies
 - **Step-CA** (port 9443) - Internal certificate authority for TLS
