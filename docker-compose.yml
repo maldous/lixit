@@ -516,7 +516,7 @@ services:
     cpus: 0.5
 
   sentry:
-    image: getsentry/sentry:24.1.0
+    image: getsentry/sentry:latest
     environment:
       SENTRY_SECRET_KEY: "your-secret-key-here-change-in-production"
       SENTRY_POSTGRES_HOST: sentry-postgres
@@ -528,8 +528,6 @@ services:
       SENTRY_REDIS_PORT: 6379
       SENTRY_USE_SSL: "false"
       SENTRY_SINGLE_ORGANIZATION: "true"
-      SENTRY_TSDB: "sentry.tsdb.redissnuba.RedisSnubaTSDB"
-      SENTRY_TSDB_OPTIONS: '{"redis": {}}'
     depends_on:
       sentry-postgres: {condition: service_healthy}
       sentry-redis: {condition: service_started}
@@ -538,7 +536,7 @@ services:
     ports: ["9002:9000"]
 
   sentry-worker:
-    image: getsentry/sentry:24.1.0
+    image: getsentry/sentry:latest
     command: sentry run worker
     environment:
       SENTRY_SECRET_KEY: "your-secret-key-here-change-in-production"
@@ -551,8 +549,6 @@ services:
       SENTRY_REDIS_PORT: 6379
       SENTRY_USE_SSL: "false"
       SENTRY_SINGLE_ORGANIZATION: "true"
-      SENTRY_TSDB: "sentry.tsdb.redissnuba.RedisSnubaTSDB"
-      SENTRY_TSDB_OPTIONS: '{"redis": {}}'
     depends_on:
       sentry-postgres: {condition: service_healthy}
       sentry-redis: {condition: service_started}
@@ -560,7 +556,7 @@ services:
     cpus: 0.5
 
   sentry-cron:
-    image: getsentry/sentry:24.1.0
+    image: getsentry/sentry:latest
     command: sentry run cron
     environment:
       SENTRY_SECRET_KEY: "your-secret-key-here-change-in-production"
@@ -573,8 +569,6 @@ services:
       SENTRY_REDIS_PORT: 6379
       SENTRY_USE_SSL: "false"
       SENTRY_SINGLE_ORGANIZATION: "true"
-      SENTRY_TSDB: "sentry.tsdb.redissnuba.RedisSnubaTSDB"
-      SENTRY_TSDB_OPTIONS: '{"redis": {}}'
     depends_on:
       sentry-postgres: {condition: service_healthy}
       sentry-redis: {condition: service_started}
