@@ -78,7 +78,6 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 
 ### Security & Compliance (3 services)
 
-- **Sentry** (port 9002) - Error tracking and performance monitoring
 - **Trivy** (port 8004) - Vulnerability scanner for containers and dependencies
 - **Step-CA** (port 9443) - Internal certificate authority for TLS
 
@@ -289,7 +288,6 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 1. **Real-time Metrics**: Prometheus + Grafana dashboards
 2. **Log Analysis**: Loki for centralized logging with search
 3. **Distributed Tracing**: Jaeger for request flow analysis
-4. **Error Tracking**: Sentry for application errors
 5. **Synthetic Monitoring**: Blackbox Exporter for endpoint health
 
 ## Deployment Architecture

@@ -91,7 +91,6 @@ LIXIT provides a full-stack solution for loan origination and submission, built 
 
 ### Security & Compliance
 
-- **Sentry** (port 9000) - Error tracking and performance monitoring
 - **Trivy** (port 8004) - Vulnerability scanner for containers and code
 - **Step-CA** (port 9443) - Internal certificate authority
 

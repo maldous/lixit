@@ -130,7 +130,6 @@ After running `make dev`, you'll have access to a comprehensive development and 
 
 | Service     | URL                   | Purpose               | Features                        |
 | ----------- | --------------------- | --------------------- | ------------------------------- |
-| **Sentry**  | http://localhost:9002 | Error tracking        | Performance monitoring          |
 | **Trivy**   | http://localhost:8004 | Vulnerability scanner | Container & dependency scanning |
 | **Step-CA** | http://localhost:9443 | Certificate authority | Internal TLS certificates       |
 
@@ -314,9 +313,6 @@ cd packages/core && npm test
 
 # Distributed tracing
 # Visit http://localhost:16686 (Jaeger)
-
-# Error tracking
-# Visit http://localhost:9000 (Sentry)
 
 # Service health
 # Visit http://localhost:3018 (Uptime Kuma)
@@ -526,7 +522,7 @@ docker compose logs -f postgres
 - **API Layer**: REST, GraphQL (Hasura, PostGraphile), PostgREST
 - **Gateway**: Kong API Gateway, Caddy reverse proxy
 - **Observability**: Prometheus, Grafana, Loki, Jaeger, OpenTelemetry
-- **Security**: Trivy, SonarQube, Step-CA, Sentry
+- **Security**: Trivy, SonarQube, Step-CA
 - **Development**: Storybook, pgAdmin, Prisma Studio, Swagger UI
 - **Infrastructure**: Docker, RabbitMQ, Keycloak
 
@@ -555,6 +551,5 @@ The CI pipeline automatically:
 - **Code Quality**: http://localhost:3016 (SonarQube)
 - **Database Admin**: http://localhost:3011 (pgAdmin)
 - **Log Analysis**: http://localhost:3007 → Explore → Loki
-- **Error Tracking**: http://localhost:9000 (Sentry)
 
 This comprehensive setup provides everything needed for modern full-stack development with production-grade infrastructure, monitoring, and security.

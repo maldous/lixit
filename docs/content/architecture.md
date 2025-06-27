@@ -88,10 +88,6 @@ LIXIT is built as a modern microservices architecture with comprehensive observa
 - **AlertManager** - Alert routing, grouping, and notification management
 - **Uptime Kuma** - Status page and uptime monitoring with notifications
 
-### Error Tracking
-
-- **Sentry** - Application error tracking and performance monitoring
-
 ## Security & Compliance
 
 ### Vulnerability Management

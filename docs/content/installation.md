@@ -123,7 +123,6 @@ Once `make dev` is running, you'll have access to a comprehensive development an
 
 | Service     | URL                   | Purpose               | Credentials |
 | ----------- | --------------------- | --------------------- | ----------- |
-| **Sentry**  | http://localhost:9002 | Error tracking        | -           |
 | **Trivy**   | http://localhost:8004 | Vulnerability scanner | -           |
 | **Step-CA** | http://localhost:9443 | Certificate authority | -           |
 
