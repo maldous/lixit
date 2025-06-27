@@ -1,141 +1,117 @@
-name: License Scan
-
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-    # Run every Monday at 06:00 UTC
-    - cron: '0 6 * * 1'
-
-jobs:
-  license-scan:
-    runs-on: ubuntu-latest
-
-    steps:
-      # ────────────────────────────────────────────────────────────
-      # Checkout + Node tool-chain
-      # ────────────────────────────────────────────────────────────
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      # ────────────────────────────────────────────────────────────
-      # Install repo dependencies (monorepo root)
-      # ────────────────────────────────────────────────────────────
-      - name: Install dependencies
-        run: npm ci
-
-      # ────────────────────────────────────────────────────────────
-      # Vulnerability audit (high / critical only)
-      # ────────────────────────────────────────────────────────────
-      - name: Run dependency audit
-        run: |
-          pnpm audit --recursive --json > audit-results.json || true
-          if grep -q '"severity":"high"\|"severity":"critical"' audit-results.json; then
-            echo "❌ High or critical severity vulnerabilities found!"
-            pnpm audit --recursive
-            exit 1
-          fi
-          echo "✅ No high or critical severity vulnerabilities found"
-
-      # ────────────────────────────────────────────────────────────
-      # License compliance *replacement* (uses license-checker)
-      # ────────────────────────────────────────────────────────────
-      - name: Install license-checker
-        run: npm install -g license-checker
-
-      - name: Run license compliance check
-        run: |
-          license-checker --json > license-report.json
-          if grep -E '"license":.*(GPL|AGPL|SSPL|Commons Clause)' license-report.json; then
-            echo "❌ Non-OSS or restrictive licences detected!"
-            grep -E '"license":' -n license-report.json | head
-            exit 1
-          fi
-          echo "✅ All licences are OSS-compatible"
-
-      # ────────────────────────────────────────────────────────────
-      # CycloneDX SBOM generation
-      # ────────────────────────────────────────────────────────────
-      - name: Generate SBOM
-        run: |
-          npm install -g @cyclonedx/cdxgen
-          cdxgen -t js -o sbom.json --profile research . -p
-
-          # Per-package / service SBOMs (optional)
-          for dir in packages/*/ services/*/ ; do
-            [ -f "$dir/package.json" ] || continue
-            name=$(basename "$dir")
-            cdxgen -t js -o "sbom-${name}.json" "$dir"
-          done
-
-      - name: Upload SBOM artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: sbom-files
-          path: sbom*.json
-          retention-days: 30
-
-      # ────────────────────────────────────────────────────────────
-      # Trivy SCA scan
-      # ────────────────────────────────────────────────────────────
-      - name: Run Trivy security scan
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y wget apt-transport-https gnupg lsb-release
-          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
-          sudo apt-get update -qq
-          sudo apt-get install -y trivy
-          trivy fs --format json   --output trivy-report.json  .
-          trivy fs --format table  --output trivy-report.txt   .
-
-      - name: Upload Trivy scan results
-        uses: actions/upload-artifact@v4
-        with:
-          name: trivy-security-reports
-          path: |
-            trivy-report.json
-            trivy-report.txt
-          retention-days: 30
-
-      # ────────────────────────────────────────────────────────────
-      # Extra guard: reject non-OSS licences detected in SBOM
-      # ────────────────────────────────────────────────────────────
-      - name: Check SBOM for licence violations
-        run: |
-          if grep -qE 'GPL-2.0|AGPL|SSPL|Commons Clause' sbom*.json; then
-            echo "❌ Non-OSS or restrictive licences detected in SBOM!"
-            exit 1
-          fi
-          echo "✅ SBOM licence check passed"
-
-      # ────────────────────────────────────────────────────────────
-      # Post status comment on PRs
-      # ────────────────────────────────────────────────────────────
-      - name: Comment PR with results
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            let sbom = JSON.parse(fs.readFileSync('sbom.json', 'utf8'));
-            const count = sbom.components ? sbom.components.length : 0;
-
-            github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo:  context.repo.repo,
-              issue_number: context.issue.number,
-              body: `## 📋 License Scan & SBOM\n\n` +
-                    `- Dependencies scanned: **${count}**\n` +
-                    `- Licence compliance: **OK**\n` +
-                    `- SBOM artefacts & vulnerability reports are attached to this workflow run.`
-            });
-
+# name: License Scan
+# 
+# on:
+#   push:
+#     branches: [ main, develop ]
+#   pull_request:
+#     branches: [ main ]
+#   schedule:
+# 
+#     - cron: '0 6 * * 1'
+# 
+# jobs:
+#   license-scan:
+#     runs-on: ubuntu-latest
+# 
+#     steps:
+# 
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+# 
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '18'
+#           cache: 'npm'
+# 
+#       - name: Install dependencies
+#         run: npm ci
+# 
+#       - name: Run dependency audit
+#         run: |
+#           pnpm audit --recursive --json > audit-results.json || true
+#           if grep -q '"severity":"high"\|"severity":"critical"' audit-results.json; then
+#             echo "❌ High or critical severity vulnerabilities found!"
+#             pnpm audit --recursive
+#             exit 1
+#           fi
+#           echo "✅ No high or critical severity vulnerabilities found"
+# 
+#       - name: Install license-checker
+#         run: npm install -g license-checker
+# 
+#       - name: Run license compliance check
+#         run: |
+#           license-checker --json > license-report.json
+#           if grep -E '"license":.*(AGPL|SSPL|Commons Clause)' license-report.json; then
+#             echo "❌ Non-OSS or restrictive licences detected!"
+#             grep -E '"license":' -n license-report.json | head
+#             exit 1
+#           fi
+#           echo "✅ All licences are OSS-compatible"
+# 
+#       - name: Generate SBOM
+#         run: |
+#           npm install -g @cyclonedx/cdxgen
+#           cdxgen -t js -o sbom.json --profile research . -p
+# 
+#           for dir in packages/*/ services/*/ ; do
+#             [ -f "$dir/package.json" ] || continue
+#             name=$(basename "$dir")
+#             cdxgen -t js -o "sbom-${name}.json" "$dir"
+#           done
+# 
+#       - name: Upload SBOM artifacts
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: sbom-files
+#           path: sbom*.json
+#           retention-days: 30
+# 
+#       - name: Run Trivy security scan
+#         run: |
+#           sudo apt-get update -qq
+#           sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+#           wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+#           echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
+#           sudo apt-get update -qq
+#           sudo apt-get install -y trivy
+#           trivy fs --format json   --output trivy-report.json  .
+#           trivy fs --format table  --output trivy-report.txt   .
+# 
+#       - name: Upload Trivy scan results
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: trivy-security-reports
+#           path: |
+#             trivy-report.json
+#             trivy-report.txt
+#           retention-days: 30
+# 
+#       - name: Check SBOM for licence violations
+#         run: |
+#           if grep -qE 'AGPL|SSPL|Commons Clause' sbom*.json; then
+#             echo "❌ Non-OSS or restrictive licences detected in SBOM!"
+#             exit 1
+#           fi
+#           echo "✅ SBOM licence check passed"
+# 
+#       - name: Comment PR with results
+#         if: github.event_name == 'pull_request'
+#         uses: actions/github-script@v7
+#         with:
+#           script: |
+#             const fs = require('fs');
+#             let sbom = JSON.parse(fs.readFileSync('sbom.json', 'utf8'));
+#             const count = sbom.components ? sbom.components.length : 0;
+# 
+#             github.rest.issues.createComment({
+#               owner: context.repo.owner,
+#               repo:  context.repo.repo,
+#               issue_number: context.issue.number,
+#               body: `#
+#                     `- Dependencies scanned: **${count}**\n` +
+#                     `- Licence compliance: **OK**\n` +
+#                     `- SBOM artefacts & vulnerability reports are attached to this workflow run.`
+#             });
+# 

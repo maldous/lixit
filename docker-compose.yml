@@ -339,7 +339,7 @@ services:
     ports: ["8080:8080"]
 
   caddy:
-    build: 
+    build:
       context: .
       dockerfile: dockerfiles/Dockerfile.caddy
     environment: [CADDY_MKCERT=true]
@@ -383,7 +383,6 @@ services:
     mem_limit: 128m
     cpus: 0.25
 
-  # Kong API Gateway
   kong-database:
     image: postgres:15-alpine
     environment:
@@ -438,7 +437,6 @@ services:
     cpus: 1.0
     ports: ["8002:8000", "8443:8443", "8003:8001", "8444:8444"]
 
-  # OpenSearch cluster
   opensearch:
     image: opensearchproject/opensearch:latest
     environment:
@@ -467,7 +465,6 @@ services:
     cpus: 0.5
     ports: ["5601:5601"]
 
-  # OpenTelemetry Collector
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
     command: ["--config=/etc/otel-collector-config.yaml"]
@@ -478,7 +475,6 @@ services:
     cpus: 0.5
     ports: ["4317:4317", "4318:4318", "8888:8888", "8889:8889"]
 
-  # Node Exporter for host metrics
   node-exporter:
     image: prom/node-exporter:latest
     command:
@@ -490,7 +486,6 @@ services:
     cpus: 0.25
     ports: ["9100:9100"]
 
-  # Blackbox Exporter for synthetic monitoring
   blackbox-exporter:
     image: prom/blackbox-exporter:latest
     volumes:
@@ -499,7 +494,6 @@ services:
     cpus: 0.25
     ports: ["9115:9115"]
 
-  # Uptime Kuma for status page and alerting
   uptime-kuma:
     image: louislam/uptime-kuma:latest
     volumes: [uptime_kuma_data:/app/data]
@@ -507,7 +501,6 @@ services:
     cpus: 0.5
     ports: ["3018:3001"]
 
-  # Sentry for error tracking
   sentry-redis:
     image: redis:7-alpine
     volumes: [sentry_redis_data:/data]
@@ -530,7 +523,7 @@ services:
     cpus: 0.5
 
   sentry:
-    image: sentry:latest
+    image: getsentry/sentry:24.1.0
     environment:
       SENTRY_SECRET_KEY: "your-secret-key-here-change-in-production"
       SENTRY_POSTGRES_HOST: sentry-postgres
@@ -540,6 +533,10 @@ services:
       SENTRY_DB_PASSWORD: sentry_dev_password
       SENTRY_REDIS_HOST: sentry-redis
       SENTRY_REDIS_PORT: 6379
+      SENTRY_USE_SSL: "false"
+      SENTRY_SINGLE_ORGANIZATION: "true"
+      SENTRY_TSDB: "sentry.tsdb.dummy.DummyTSDB"
+      SENTRY_TSDB_OPTIONS: "{}"
     depends_on:
       sentry-postgres: {condition: service_healthy}
       sentry-redis: {condition: service_started}
@@ -548,7 +545,7 @@ services:
     ports: ["9002:9000"]
 
   sentry-worker:
-    image: sentry:latest
+    image: getsentry/sentry:24.1.0
     command: sentry run worker
     environment:
       SENTRY_SECRET_KEY: "your-secret-key-here-change-in-production"
@@ -559,6 +556,10 @@ services:
       SENTRY_DB_PASSWORD: sentry_dev_password
       SENTRY_REDIS_HOST: sentry-redis
       SENTRY_REDIS_PORT: 6379
+      SENTRY_USE_SSL: "false"
+      SENTRY_SINGLE_ORGANIZATION: "true"
+      SENTRY_TSDB: "sentry.tsdb.dummy.DummyTSDB"
+      SENTRY_TSDB_OPTIONS: "{}"
     depends_on:
       sentry-postgres: {condition: service_healthy}
       sentry-redis: {condition: service_started}
@@ -566,7 +567,7 @@ services:
     cpus: 0.5
 
   sentry-cron:
-    image: sentry:latest
+    image: getsentry/sentry:24.1.0
     command: sentry run cron
     environment:
       SENTRY_SECRET_KEY: "your-secret-key-here-change-in-production"
@@ -577,13 +578,16 @@ services:
       SENTRY_DB_PASSWORD: sentry_dev_password
       SENTRY_REDIS_HOST: sentry-redis
       SENTRY_REDIS_PORT: 6379
+      SENTRY_USE_SSL: "false"
+      SENTRY_SINGLE_ORGANIZATION: "true"
+      SENTRY_TSDB: "sentry.tsdb.dummy.DummyTSDB"
+      SENTRY_TSDB_OPTIONS: "{}"
     depends_on:
       sentry-postgres: {condition: service_healthy}
       sentry-redis: {condition: service_started}
     mem_limit: 256m
     cpus: 0.25
 
-  # Trivy vulnerability scanner
   trivy:
     image: aquasec/trivy:latest
     command: ["server", "--listen", "0.0.0.0:8080"]
@@ -592,7 +596,6 @@ services:
     cpus: 0.5
     ports: ["8004:8080"]
 
-  # Step-CA for internal certificate authority
   step-ca:
     image: smallstep/step-ca:latest
     environment:
@@ -604,7 +607,6 @@ services:
     cpus: 0.25
     ports: ["9443:9443"]
 
-  # PostgREST - Auto-generated REST API from PostgreSQL
   postgrest:
     image: postgrest/postgrest:latest
     environment:
@@ -618,7 +620,6 @@ services:
     cpus: 0.25
     ports: ["3008:3000"]
 
-  # Hasura GraphQL Engine
   hasura:
     image: hasura/graphql-engine:latest
     environment:
@@ -634,7 +635,6 @@ services:
     cpus: 0.5
     ports: ["3009:8080"]
 
-  # PostGraphile - GraphQL API from PostgreSQL
   postgraphile:
     image: graphile/postgraphile:latest
     command: ["--connection", "postgres://lixit:lixit_dev_password@postgres:5432/lixit", "--schema", "public", "--watch", "--enhance-graphiql", "--dynamic-json", "--no-setof-functions-contain-nulls", "--no-ignore-rbac", "--show-error-stack=json", "--extended-errors", "hint,detail,errcode", "--export-schema-graphql", "/tmp/schema.graphql", "--graphiql", "/graphiql", "--port", "5000"]
@@ -644,7 +644,6 @@ services:
     cpus: 0.5
     ports: ["3010:5000"]
 
-  # pgAdmin - PostgreSQL administration
   pgadmin:
     image: dpage/pgadmin4:latest
     environment:
@@ -659,7 +658,6 @@ services:
     cpus: 0.5
     ports: ["3011:80"]
 
-  # Prisma Studio - Database GUI
   prisma-studio:
     image: timothyjmiller/prisma-studio:latest
     environment:
@@ -670,7 +668,6 @@ services:
     cpus: 0.5
     ports: ["3012:5555"]
 
-  # Swagger UI for API documentation
   swagger-ui:
     image: swaggerapi/swagger-ui:latest
     environment:
@@ -680,7 +677,6 @@ services:
     cpus: 0.25
     ports: ["3013:8080"]
 
-  # Redoc for API documentation
   redoc:
     image: redocly/redoc:latest
     environment:
@@ -689,7 +685,6 @@ services:
     cpus: 0.25
     ports: ["3014:80"]
 
-  # Storybook - Component playground
   storybook:
     build:
       context: .
@@ -705,7 +700,6 @@ services:
     cpus: 0.5
     ports: ["3015:6006"]
 
-  # SonarQube Community Edition
   sonarqube-db:
     image: postgres:15-alpine
     environment:
@@ -729,7 +723,7 @@ services:
       SONAR_JDBC_PASSWORD: sonarqube_dev_password
     depends_on:
       sonarqube-db: {condition: service_healthy}
-    volumes: 
+    volumes:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_logs:/opt/sonarqube/logs
       - sonarqube_extensions:/opt/sonarqube/extensions
@@ -737,7 +731,6 @@ services:
     cpus: 1.0
     ports: ["3016:9000"]
 
-  # Gitea - Self-hosted Git service
   gitea-db:
     image: postgres:15-alpine
     environment:
