@@ -28,8 +28,6 @@ if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/
   exit 1
 fi
 
-npm install
-
 mkdir -p backups
 mkdir -p keys
 mkdir -p database/migrations
@@ -84,5 +82,3 @@ KEYCLOAK_REALM=lixit
 KEYCLOAK_CLIENT_ID=lixit-web
 EOF
 fi
-
-npm run build
