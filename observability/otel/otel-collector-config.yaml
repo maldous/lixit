@@ -17,6 +17,7 @@ processors:
   batch:
   memory_limiter:
     limit_mib: 128
+    check_interval: 1s
 
 exporters:
   prometheus:
