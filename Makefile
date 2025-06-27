@@ -25,26 +25,32 @@ build:
 
 dev:
 	docker buildx build --load \
+                --progress=plain \
 		--build-arg NODE_MAJOR=$(NODE_MAJOR) \
 		-f dockerfiles/Dockerfile.base \
 		-t lixit/base-deps:$(NODE_MAJOR) .
 	@export NODE_MAJOR=$(NODE_MAJOR) ; \
 	COMPOSE_BAKE=true docker compose \
+                --progress=plain \
 		--profile dev \
 		build && \
 	COMPOSE_BAKE=true docker compose \
+                --progress=plain \
 		--profile dev \
 		up -d
 prod:
 	docker buildx build --load \
+                --progress=plain \
 		--build-arg NODE_MAJOR=$(NODE_MAJOR) \
 		-f dockerfiles/Dockerfile.base \
 		-t lixit/base-deps:$(NODE_MAJOR) .
 	@export NODE_MAJOR=$(NODE_MAJOR) ; \
 	COMPOSE_BAKE=true docker compose \
+                --progress=plain \
 		--profile dev \
 		build && \
 	COMPOSE_BAKE=true docker compose \
+                --progress=plain \
 		--profile prod \
 		up -d
 test:
@@ -55,7 +61,7 @@ lint:
 
 clean:
 	@docker compose down -v
-	@docker image prune -a -f
+	@docker image prune -f
 	@docker system prune -f
 	@npm run clean
 
