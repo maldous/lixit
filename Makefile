@@ -3,16 +3,15 @@
 NODE_MAJOR ?= $(shell cut -d. -f1 .node-version)
 
 help:
-	@echo "make setup      - Initial project setup (install deps, generate certs)"
-	@echo "make install    - Install dependencies"
-	@echo "make build      - Build all packages"
-	@echo "make dev        - Start development environment"
-	@echo "make prod       - Start production-like environment"
-	@echo "make test       - Run all tests"
-	@echo "make lint       - Run linting across all packages"
-	@echo "make clean      - Clean up containers and volumes"
-	@echo "make format     - Format all code"
-	@echo "make type-check - Type-check all code"
+	@echo "make setup     - Initial project setup (run once)"
+	@echo "make install   - Install dependencies"
+	@echo "make build     - Build all packages"
+	@echo "make dev       - Start development environment"
+	@echo "make prod      - Start production-like environment"
+	@echo "make test      - Run all tests"
+	@echo "make lint      - Run linting across all packages"
+	@echo "make clean     - Clean up containers and volumes"
+	@echo "make format    - Format all code"
 
 setup:
 	@./scripts/setup.sh
@@ -25,32 +24,32 @@ build:
 
 dev:
 	docker buildx build --load \
-                --progress=plain \
+		--progress=plain \
 		--build-arg NODE_MAJOR=$(NODE_MAJOR) \
 		-f dockerfiles/Dockerfile.base \
 		-t lixit/base-deps:$(NODE_MAJOR) .
 	@export NODE_MAJOR=$(NODE_MAJOR) ; \
 	COMPOSE_BAKE=true docker compose \
-                --progress=plain \
+		--progress=plain \
 		--profile dev \
 		build && \
 	COMPOSE_BAKE=true docker compose \
-                --progress=plain \
+		--progress=plain \
 		--profile dev \
 		up -d
 prod:
 	docker buildx build --load \
-                --progress=plain \
+		--progress=plain \
 		--build-arg NODE_MAJOR=$(NODE_MAJOR) \
 		-f dockerfiles/Dockerfile.base \
 		-t lixit/base-deps:$(NODE_MAJOR) .
 	@export NODE_MAJOR=$(NODE_MAJOR) ; \
 	COMPOSE_BAKE=true docker compose \
-                --progress=plain \
+		--progress=plain \
 		--profile dev \
 		build && \
 	COMPOSE_BAKE=true docker compose \
-                --progress=plain \
+		--progress=plain \
 		--profile prod \
 		up -d
 test:

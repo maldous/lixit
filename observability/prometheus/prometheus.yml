@@ -99,13 +99,6 @@ scrape_configs:
       - targets: ['otel-collector:8888']
     scrape_interval: 15s
 
-  # Sentry
-  - job_name: 'sentry'
-    static_configs:
-      - targets: ['sentry:9000']
-    metrics_path: '/_health/'
-    scrape_interval: 30s
-
   # Blackbox Exporter - HTTP probes
   - job_name: 'blackbox-http'
     metrics_path: /probe
