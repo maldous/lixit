@@ -1,11 +1,13 @@
 # LIXIT End-to-End Deployment Plan
 
 ## Overview
+
 Complete containerized deployment solution for the LIXIT monorepo with Docker, PostgreSQL, and Fly.io deployment using **100% free and self-hosted** open-source tools.
 
 ## Phase 1: Local Development Environment
 
 ### 1.1 Docker Configuration
+
 - Create `Dockerfile` for each service (web app, API, services)
 - Create `.dockerignore` for optimized builds
 - Create `docker-compose.yml` for local development stack
@@ -14,6 +16,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 - **Resource Limits**: Add `mem_limit`, `cpus` to compose services so dev boxes don't OOM
 
 ### 1.2 Database Setup
+
 - PostgreSQL container with initialization scripts
 - **Online DB Migrations**: Use `node-pg-migrate` (MIT) or `Sqitch` (GPL) for zero-downtime migrations
 - Database migrations and seeding
@@ -28,6 +31,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 - **Keycloak Data**: Add `keycloak-db` Docker/Fly volume to persist realm + users
 
 ### 1.3 Service Configuration
+
 - Redis for Bull queues and caching
 - **Event Bus**: NATS JetStream or RabbitMQ (both Apache-2 licensed, zero cost)
 - **Redis Persistence**: Enable AOF (`appendonly yes`) so Bull queue resumes after restart
@@ -37,6 +41,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 - **Env Schema Validation**: Run `envalid` (or `zod`) at app start to fail fast on bad env vars
 
 ### 1.4 Security & Secrets
+
 - **Image Security**: Use **Trivy** (`docker run aquasec/trivy`) inside CI to scan images
 - Sign images with **cosign**; keys stored in git-ignored `./keys/`
 - **Plugin Signing**: Simple SHA-256 checksum file for plugin verification
@@ -48,6 +53,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 - **Dependency CVEs**: Run `pnpm audit --recursive --json` in CI to fail builds on high-sev vulns
 
 ### 1.5 Observability Stack
+
 - **Prometheus** + **Grafana** + **Loki** stack (all OSS, run as services)
 - `docker-compose.override.yml` exposes `prometheus:9090`, `grafana:3000`
 - **Jaeger all-in-one** container (`jaegertracing/all-in-one:latest`) for tracing
@@ -56,52 +62,64 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 - **Vector Log Shipper** (optional): Light CPU/RAM, forwards container stdout to Loki → one config file, no extra cost
 
 ### 1.6 Container Hardening
+
 - Non-root UID: add `USER 1001` in each Dockerfile
 - Read-only root FS: `read_only: true` in compose
 
 ### 1.7 Mail & Notifications
+
 - **MailHog**: Lightweight SMTP server for dev + relay-to-Gmail option in prod
 - Needed by Keycloak, alerting, password reset flows
 
 ### 1.8 Object Storage
+
 - **MinIO**: Use same bucket for app uploads (user-files, GrapesJS assets) → configure `S3_ENDPOINT` env
 - **MinIO Volume**: Declare `minio-data` docker volume + 1 GB Fly volume for prod
 - **GrapesJS Uploads**: Ensure `grapesjs-server` writes to MinIO, not local FS
 
 ### 1.9 Local HTTPS
+
 - **mkcert**: For mobile Expo to hit HTTPS in LAN, run in `setup.sh` and mount certs into Caddy
 - **Caddy + mkcert**: Note `CADDY_MKCERT=true` env in dev compose so local TLS "just works"
 
 ### 1.10 Developer Tooling
+
 - **Makefile**: With `make dev / prod / test / clean / lint`
 - **DevContainer**: `.devcontainer/devcontainer.json` so VS Code users get consistent toolchain without local installs (all Docker-based, still free)
 - **Dependency Updates**: Add `renovate.json` (or `dependabot.yml`) to keep OSS libs patched
 
 ### 1.11 Supply Chain Security
+
 - **SBOM Generation**: Generate CycloneDX via `pnpm dlx @cyclonedx/bom` in CI
 - **License Scan**: Add `licensee` GitHub Action to flag non-OSS deps
 - **Artifact Retention**: `gh-actions` step: `upload-artifact` Docker SBOM & Trivy report for 30 d
 
 ### 1.12 Infrastructure as Code
+
 - **IaC Note**: Record Fly app/vol commands in `scripts/provision.sh` so new envs are reproducible without Terraform
 
 ### 1.13 Data Privacy & Compliance
+
 - **Consent/PII Redaction Service**: Use Microsoft Presidio (MIT license) for PII detection and anonymization
 - **LIXI Spec Upgrade**: Upgrade to latest LIXI specification (still free, docs are public)
 
 ### 1.14 API Management
+
 - **API Versioning**: Pure routing change, no cost
 - **Per-Service Runbook**: Markdown files for operational procedures
 
 ### 1.15 Component Testing
+
 - **Component Snapshots**: Remove Chromatic (SaaS), use Storybook + Loki or reg-suite for visual diff (both OSS, self-hosted)
 
 ### 1.16 ML & Analytics
+
 - **ML Model Training**: Local GPU or laptop is free, optional Kaggle or Google Colab Free (free cloud GPU)
 
 ## Phase 2: Production Deployment
 
 ### 2.1 Fly.io Configuration
+
 - `fly.toml` for each deployable service
 - Database provisioning on Fly.io
 - Use **free 3-shared-CPU/256MB** VMs; `fly deploy --strategy rolling`
@@ -109,6 +127,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 - **Persistent Volumes**: `fly volumes create` fits free tier (1GB) for prod
 
 ### 2.2 CI/CD Pipeline (No Paid SaaS)
+
 - **GitHub Actions** free minutes, cache via `actions/cache`
 - Self-hosted runner optional (docker-in-docker) to avoid minute limits
 - Automated testing and building
@@ -116,29 +135,35 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 - **Testing**: **Playwright** OSS for e2e; headless run in CI
 
 ### 2.3 Domain & TLS
+
 - **Caddy** container for automatic Let's Encrypt on your own domain
 - **HTTPS Redirect**: In Caddy prod conf: `redir / https://{host}{uri} 308` to force TLS
 - Or use Fly's free `*.fly.dev` certs
 
 ### 2.4 Deployment & Rollback
+
 - Locally: `docker compose up --scale web=2` for blue/green
 - Fly: Use `fly deploy --strategy rolling` (costs $0 within free allowance)
 - Document recommended `docker compose --profile prod`
 
 ### 2.5 Access Control
+
 - **Keycloak** in docker-compose (free, OSS) or NextAuth "credentials" provider
 
 ### 2.6 Mobile OTA Updates
+
 - **EAS Updates**: `eas.json` with `channel: dev` & `channel: prod` (free EAS update)
 
 ## Phase 3: Design System Integration
 
 ### 3.1 Penpot Integration
+
 - Design system setup
 - Component library integration
 - Design token management
 
 ### 3.2 GrapesJS Integration
+
 - Email template builder
 - Document template system
 - WYSIWYG editor for forms
@@ -146,6 +171,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 - **GrapesJS Auth**: Protect `/editor` with Keycloak (OIDC) to avoid open CMS in prod
 
 ### 3.3 Documentation Site
+
 - **MkDocs Material**: `docs/` → serve via `docker run mkdocs/mkdocs`, completely offline
 
 ## Implementation Steps
@@ -164,6 +190,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 12. **Documentation**: Complete setup and deployment guides
 
 ## File Structure
+
 ```
 /
 ├── docker-compose.yml
@@ -215,6 +242,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 ```
 
 ## Technologies
+
 - **Containers**: Docker & Docker Compose
 - **Database**: PostgreSQL + PgBouncer
 - **Cache/Queue**: Redis (with AOF persistence)
@@ -244,8 +272,10 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 - **Env Validation**: Envalid or Zod (OSS)
 
 ## Persistent Volumes
+
 - Local: `docker volume create lixit_pgdata` (Postgres), `docker volume create minio_data` (MinIO), `docker volume create keycloak_data` (Keycloak)
 - Production: `fly volumes create` fits free tier (1GB)
 
 ## Result
+
 Everything can be run offline on a single workstation **or** deployed to Fly's free tier without third-party paid services. Complete developer bootstrap with consistent toolchain via DevContainer. Full supply chain security with SBOM generation and license scanning. Reproducible infrastructure provisioning without Terraform.

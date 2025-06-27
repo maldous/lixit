@@ -1,17 +1,17 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Text } from 'react-native';
-import { Card } from './Card';
+import type { Meta, StoryObj } from "@storybook/react";
+import { Text } from "react-native";
+import { Card } from "./Card";
 
 const meta: Meta<typeof Card> = {
-  title: 'UI Kit/Card',
+  title: "UI Kit/Card",
   component: Card,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     padding: {
-      control: { type: 'number' },
+      control: { type: "number" },
     },
   },
 };
@@ -35,6 +35,10 @@ export const CustomPadding: Story = {
 export const NoPadding: Story = {
   args: {
     padding: 0,
-    children: <Text style={{ padding: 16 }}>This is a card with no padding (content has its own padding)</Text>,
+    children: (
+      <Text style={{ padding: 16 }}>
+        This is a card with no padding (content has its own padding)
+      </Text>
+    ),
   },
 };

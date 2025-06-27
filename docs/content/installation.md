@@ -3,12 +3,14 @@
 ## Prerequisites
 
 ### Required Software
+
 - **Docker & Docker Compose** - Container orchestration
 - **Node.js 24+** - JavaScript runtime
 - **Git** - Version control
 - **Make** - Build automation (usually pre-installed on Linux/macOS)
 
 ### System Requirements
+
 - **Memory**: 8GB RAM minimum (16GB recommended for full stack)
 - **Storage**: 20GB free disk space
 - **CPU**: 4 cores minimum (8 cores recommended)
@@ -36,100 +38,100 @@ Once `make dev` is running, you'll have access to a comprehensive development an
 
 ### Core Application Services
 
-| Service | URL | Purpose | Credentials |
-|---------|-----|---------|-------------|
-| **Web Application** | http://localhost:8000 | Main user interface | - |
-| **Mobile App** | Expo CLI | React Native mobile app | - |
-| **Main API** | http://localhost:3001 | NestJS backend API | - |
-| **Document Renderer** | http://localhost:3002 | PDF/Excel generation | - |
-| **LIXI Transform** | http://localhost:3003 | LIXI format conversion | - |
-| **Submission Broker** | http://localhost:3004 | Lender integrations | - |
-| **GrapesJS Editor** | http://localhost:3005 | Template editor | - |
-| **PII Redaction** | http://localhost:3006 | Privacy compliance | - |
+| Service               | URL                   | Purpose                 | Credentials |
+| --------------------- | --------------------- | ----------------------- | ----------- |
+| **Web Application**   | http://localhost:8000 | Main user interface     | -           |
+| **Mobile App**        | Expo CLI              | React Native mobile app | -           |
+| **Main API**          | http://localhost:3001 | NestJS backend API      | -           |
+| **Document Renderer** | http://localhost:3002 | PDF/Excel generation    | -           |
+| **LIXI Transform**    | http://localhost:3003 | LIXI format conversion  | -           |
+| **Submission Broker** | http://localhost:3004 | Lender integrations     | -           |
+| **GrapesJS Editor**   | http://localhost:3005 | Template editor         | -           |
+| **PII Redaction**     | http://localhost:3006 | Privacy compliance      | -           |
 
 ### Database & API Layer
 
-| Service | URL | Purpose | Credentials |
-|---------|-----|---------|-------------|
-| **PostgreSQL** | localhost:5432 | Primary database | lixit/lixit_dev_password |
-| **PgBouncer** | localhost:6432 | Connection pooling | lixit/lixit_dev_password |
-| **Redis** | localhost:6379 | Caching & sessions | - |
-| **PostgREST** | http://localhost:3008 | Auto-generated REST API | - |
-| **Hasura GraphQL** | http://localhost:3009 | Real-time GraphQL API | Admin secret: hasura_admin_secret |
-| **PostGraphile** | http://localhost:3010 | GraphQL from Postgres | - |
+| Service            | URL                   | Purpose                 | Credentials                       |
+| ------------------ | --------------------- | ----------------------- | --------------------------------- |
+| **PostgreSQL**     | localhost:5432        | Primary database        | lixit/lixit_dev_password          |
+| **PgBouncer**      | localhost:6432        | Connection pooling      | lixit/lixit_dev_password          |
+| **Redis**          | localhost:6379        | Caching & sessions      | -                                 |
+| **PostgREST**      | http://localhost:3008 | Auto-generated REST API | -                                 |
+| **Hasura GraphQL** | http://localhost:3009 | Real-time GraphQL API   | Admin secret: hasura_admin_secret |
+| **PostGraphile**   | http://localhost:3010 | GraphQL from Postgres   | -                                 |
 
 ### Database Management Tools
 
-| Service | URL | Purpose | Credentials |
-|---------|-----|---------|-------------|
-| **pgAdmin** | http://localhost:3011 | PostgreSQL web admin | admin@example.com/admin |
-| **Prisma Studio** | http://localhost:3012 | Modern database GUI | - |
+| Service           | URL                   | Purpose              | Credentials             |
+| ----------------- | --------------------- | -------------------- | ----------------------- |
+| **pgAdmin**       | http://localhost:3011 | PostgreSQL web admin | admin@example.com/admin |
+| **Prisma Studio** | http://localhost:3012 | Modern database GUI  | -                       |
 
 ### API Documentation
 
-| Service | URL | Purpose | Credentials |
-|---------|-----|---------|-------------|
-| **Swagger UI** | http://localhost:3013 | Interactive REST docs | - |
-| **Redoc** | http://localhost:3014 | Alternative API docs | - |
+| Service        | URL                   | Purpose               | Credentials |
+| -------------- | --------------------- | --------------------- | ----------- |
+| **Swagger UI** | http://localhost:3013 | Interactive REST docs | -           |
+| **Redoc**      | http://localhost:3014 | Alternative API docs  | -           |
 
 ### Development Tools
 
-| Service | URL | Purpose | Credentials |
-|---------|-----|---------|-------------|
-| **Storybook** | http://localhost:3015 | Component playground | - |
-| **SonarQube** | http://localhost:3016 | Code quality analysis | admin/admin |
-| **Gitea** | http://localhost:3017 | Self-hosted Git service | - |
-| **MkDocs** | http://localhost:8001 | Documentation site | - |
+| Service       | URL                   | Purpose                 | Credentials |
+| ------------- | --------------------- | ----------------------- | ----------- |
+| **Storybook** | http://localhost:3015 | Component playground    | -           |
+| **SonarQube** | http://localhost:3016 | Code quality analysis   | admin/admin |
+| **Gitea**     | http://localhost:3017 | Self-hosted Git service | -           |
+| **MkDocs**    | http://localhost:8001 | Documentation site      | -           |
 
 ### Infrastructure Services
 
-| Service | URL | Purpose | Credentials |
-|---------|-----|---------|-------------|
-| **Kong Gateway** | http://localhost:8002 | API gateway | Admin: localhost:8003 |
-| **Caddy** | http://localhost:80 | Reverse proxy | - |
-| **MinIO Console** | http://localhost:9001 | Object storage admin | minioadmin/minioadmin123 |
-| **RabbitMQ Management** | http://localhost:15672 | Message queue admin | lixit/lixit_dev_password |
-| **Keycloak** | http://localhost:8080 | Identity management | admin/admin |
-| **Docker Registry** | http://localhost:5000 | Private container registry | - |
+| Service                 | URL                    | Purpose                    | Credentials              |
+| ----------------------- | ---------------------- | -------------------------- | ------------------------ |
+| **Kong Gateway**        | http://localhost:8002  | API gateway                | Admin: localhost:8003    |
+| **Caddy**               | http://localhost:80    | Reverse proxy              | -                        |
+| **MinIO Console**       | http://localhost:9001  | Object storage admin       | minioadmin/minioadmin123 |
+| **RabbitMQ Management** | http://localhost:15672 | Message queue admin        | lixit/lixit_dev_password |
+| **Keycloak**            | http://localhost:8080  | Identity management        | admin/admin              |
+| **Docker Registry**     | http://localhost:5000  | Private container registry | -                        |
 
 ### Observability Stack
 
-| Service | URL | Purpose | Credentials |
-|---------|-----|---------|-------------|
-| **Grafana** | http://localhost:3007 | Dashboards & visualization | admin/admin |
-| **Prometheus** | http://localhost:9090 | Metrics collection | - |
-| **Jaeger** | http://localhost:16686 | Distributed tracing | - |
-| **AlertManager** | http://localhost:9093 | Alert management | - |
-| **Loki** | http://localhost:3100 | Log aggregation | - |
+| Service          | URL                    | Purpose                    | Credentials |
+| ---------------- | ---------------------- | -------------------------- | ----------- |
+| **Grafana**      | http://localhost:3007  | Dashboards & visualization | admin/admin |
+| **Prometheus**   | http://localhost:9090  | Metrics collection         | -           |
+| **Jaeger**       | http://localhost:16686 | Distributed tracing        | -           |
+| **AlertManager** | http://localhost:9093  | Alert management           | -           |
+| **Loki**         | http://localhost:3100  | Log aggregation            | -           |
 
 ### Search & Analytics
 
-| Service | URL | Purpose | Credentials |
-|---------|-----|---------|-------------|
-| **OpenSearch** | http://localhost:9200 | Search & analytics | - |
-| **OpenSearch Dashboards** | http://localhost:5601 | Data exploration | - |
+| Service                   | URL                   | Purpose            | Credentials |
+| ------------------------- | --------------------- | ------------------ | ----------- |
+| **OpenSearch**            | http://localhost:9200 | Search & analytics | -           |
+| **OpenSearch Dashboards** | http://localhost:5601 | Data exploration   | -           |
 
 ### Monitoring & Health
 
-| Service | URL | Purpose | Credentials |
-|---------|-----|---------|-------------|
-| **Node Exporter** | http://localhost:9100 | Host metrics | - |
-| **Blackbox Exporter** | http://localhost:9115 | Synthetic monitoring | - |
-| **Uptime Kuma** | http://localhost:3018 | Status page | - |
+| Service               | URL                   | Purpose              | Credentials |
+| --------------------- | --------------------- | -------------------- | ----------- |
+| **Node Exporter**     | http://localhost:9100 | Host metrics         | -           |
+| **Blackbox Exporter** | http://localhost:9115 | Synthetic monitoring | -           |
+| **Uptime Kuma**       | http://localhost:3018 | Status page          | -           |
 
 ### Security & Compliance
 
-| Service | URL | Purpose | Credentials |
-|---------|-----|---------|-------------|
-| **Sentry** | http://localhost:9002 | Error tracking | - |
-| **Trivy** | http://localhost:8004 | Vulnerability scanner | - |
-| **Step-CA** | http://localhost:9443 | Certificate authority | - |
+| Service     | URL                   | Purpose               | Credentials |
+| ----------- | --------------------- | --------------------- | ----------- |
+| **Sentry**  | http://localhost:9002 | Error tracking        | -           |
+| **Trivy**   | http://localhost:8004 | Vulnerability scanner | -           |
+| **Step-CA** | http://localhost:9443 | Certificate authority | -           |
 
 ### Development Support
 
-| Service | URL | Purpose | Credentials |
-|---------|-----|---------|-------------|
-| **MailHog** | http://localhost:8025 | Email testing | - |
+| Service     | URL                   | Purpose       | Credentials |
+| ----------- | --------------------- | ------------- | ----------- |
+| **MailHog** | http://localhost:8025 | Email testing | -           |
 
 ## Development Workflow
 
@@ -257,8 +259,8 @@ All services have memory and CPU limits configured. Adjust in `docker-compose.ym
 ```yaml
 services:
   api:
-    mem_limit: 512m  # Increase if needed
-    cpus: 1.0        # Adjust CPU allocation
+    mem_limit: 512m # Increase if needed
+    cpus: 1.0 # Adjust CPU allocation
 ```
 
 ## Troubleshooting
@@ -266,6 +268,7 @@ services:
 ### Common Issues
 
 **Port conflicts:**
+
 ```bash
 # Check what's using a port
 lsof -i :8000
@@ -275,6 +278,7 @@ make clean
 ```
 
 **Memory issues:**
+
 ```bash
 # Check Docker memory usage
 docker stats
@@ -284,6 +288,7 @@ docker stats
 ```
 
 **Database connection issues:**
+
 ```bash
 # Check database status
 docker compose ps postgres
@@ -298,6 +303,7 @@ docker compose up -d postgres
 ```
 
 **Service startup failures:**
+
 ```bash
 # Check service logs
 docker compose logs <service-name>

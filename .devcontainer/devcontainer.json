@@ -1,10 +1,13 @@
 {
   "name": "LIXIT Development",
-  "dockerComposeFile": ["../docker-compose.yml", "../docker-compose.override.yml"],
+  "dockerComposeFile": [
+    "../docker-compose.yml",
+    "../docker-compose.override.yml"
+  ],
   "service": "web",
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
-  
+
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
       "version": "18"
@@ -39,15 +42,15 @@
   },
 
   "forwardPorts": [
-    3000,  // Grafana
-    3001,  // API
-    5000,  // Registry
-    8000,  // Web App
-    8001,  // Docs
-    8025,  // MailHog
-    9000,  // MinIO
-    9001,  // MinIO Console
-    9090   // Prometheus
+    3000, // Grafana
+    3001, // API
+    5000, // Registry
+    8000, // Web App
+    8001, // Docs
+    8025, // MailHog
+    9000, // MinIO
+    9001, // MinIO Console
+    9090 // Prometheus
   ],
 
   "portsAttributes": {

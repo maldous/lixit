@@ -14,8 +14,8 @@ export default [
       "**/.next/**",
       "**/coverage/**",
       "**/.turbo/**",
-      "**/.expo/**"
-    ]
+      "**/.expo/**",
+    ],
   },
 
   // JavaScript/TypeScript base config
@@ -37,7 +37,7 @@ export default [
         require: "readonly",
         exports: "readonly",
         global: "readonly",
-      }
+      },
     },
     plugins: {
       "@typescript-eslint": tseslint,
@@ -45,9 +45,12 @@ export default [
     rules: {
       ...js.configs.recommended.rules,
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_" },
+      ],
       "@typescript-eslint/no-explicit-any": "warn",
-    }
+    },
   },
 
   // Test files
@@ -56,7 +59,7 @@ export default [
       "**/__tests__/**/*.{ts,tsx}",
       "**/*.test.{ts,tsx}",
       "**/*.spec.{ts,tsx}",
-      "**/setupTests.{ts,tsx}"
+      "**/setupTests.{ts,tsx}",
     ],
     languageOptions: {
       globals: {
@@ -73,15 +76,15 @@ export default [
         clearTimeout: "readonly",
         setInterval: "readonly",
         clearInterval: "readonly",
-      }
-    }
+      },
+    },
   },
 
   // React/React Native files
   {
     files: [
       "apps/mobile/**/*.{ts,tsx,js,jsx}",
-      "packages/ui-kit/**/*.{ts,tsx}"
+      "packages/ui-kit/**/*.{ts,tsx}",
     ],
     languageOptions: {
       parser: tsparser,
@@ -92,7 +95,7 @@ export default [
       },
       globals: {
         React: "readonly",
-      }
+      },
     },
     plugins: {
       "@typescript-eslint": tseslint,
@@ -101,7 +104,10 @@ export default [
     },
     rules: {
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_" },
+      ],
       "@typescript-eslint/no-explicit-any": "warn",
       "react/jsx-uses-react": "error",
       "react/jsx-uses-vars": "error",
@@ -110,7 +116,7 @@ export default [
       react: {
         version: "detect",
       },
-    }
+    },
   },
 
   // Next.js web app
@@ -130,7 +136,7 @@ export default [
         navigator: "readonly",
         localStorage: "readonly",
         sessionStorage: "readonly",
-      }
+      },
     },
     plugins: {
       "@typescript-eslint": tseslint,
@@ -138,7 +144,10 @@ export default [
     },
     rules: {
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_" },
+      ],
       "@typescript-eslint/no-explicit-any": "warn",
       "react/jsx-uses-react": "error",
       "react/jsx-uses-vars": "error",
@@ -147,7 +156,7 @@ export default [
       react: {
         version: "detect",
       },
-    }
+    },
   },
 
   // NestJS API service
@@ -158,6 +167,6 @@ export default [
       "@typescript-eslint/explicit-function-return-type": "off",
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "@typescript-eslint/no-explicit-any": "off",
-    }
-  }
+    },
+  },
 ];

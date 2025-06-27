@@ -7,18 +7,21 @@ This directory contains license notices for third-party software used in the LIX
 The following components are licensed under the GNU Affero General Public License (AGPL):
 
 ### Penpot
+
 - **License**: AGPL v3
 - **Usage**: Design system and component library
 - **Source**: https://github.com/penpot/penpot
 - **Notice**: See `penpot-license.txt`
 
 ### GrapesJS
+
 - **License**: BSD 3-Clause (Note: Not AGPL, but included for completeness)
 - **Usage**: Template editor and page builder
 - **Source**: https://github.com/artf/grapesjs
 - **Notice**: See `grapesjs-license.txt`
 
 ### Keycloak
+
 - **License**: Apache 2.0 (Note: Not AGPL, but included for completeness)
 - **Usage**: Authentication and identity management
 - **Source**: https://github.com/keycloak/keycloak

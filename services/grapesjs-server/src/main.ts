@@ -5,47 +5,58 @@
  * uploads assets to an S3-compatible store (eg. MinIO).
  */
 
-import express from 'express';
-import helmet  from 'helmet';
-import cors    from 'cors';
-import multer  from 'multer';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { cleanEnv, port, str, url }   from 'envalid';
+import express from "express";
+import helmet from "helmet";
+import cors from "cors";
+import multer from "multer";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { cleanEnv, port, str, url } from "envalid";
 
 /* ────────────────────────────────────────────────────────── */
 /*  Environment (sensible defaults for dev)                  */
 /* ────────────────────────────────────────────────────────── */
 const env = cleanEnv(process.env, {
-  PORT:               port({ default: 3000 }),
-  NODE_ENV:           str({ choices: ['development', 'test', 'production'], default: 'development' }),
+  PORT: port({ default: 3000 }),
+  NODE_ENV: str({
+    choices: ["development", "test", "production"],
+    default: "development",
+  }),
 
-  DATABASE_URL:       url({ default: 'postgres://user:pass@localhost:5432/lixit' }),
-  S3_ENDPOINT:        url({ default: 'http://minio:9000' }),
-  S3_ACCESS_KEY:      str({ default: 'minioadmin' }),
-  S3_SECRET_KEY:      str({ default: 'minioadmin' }),
-  S3_BUCKET:          str({ default: 'lixit-assets' }),
+  DATABASE_URL: url({ default: "postgres://user:pass@localhost:5432/lixit" }),
+  S3_ENDPOINT: url({ default: "http://minio:9000" }),
+  S3_ACCESS_KEY: str({ default: "minioadmin" }),
+  S3_SECRET_KEY: str({ default: "minioadmin" }),
+  S3_BUCKET: str({ default: "lixit-assets" }),
 
-  KEYCLOAK_URL:       url({ default: 'http://keycloak:8080' }),
-  KEYCLOAK_REALM:     str({ default: 'lixit' }),
-  KEYCLOAK_CLIENT_ID: str({ default: 'grapesjs-editor' }),
+  KEYCLOAK_URL: url({ default: "http://keycloak:8080" }),
+  KEYCLOAK_REALM: str({ default: "lixit" }),
+  KEYCLOAK_CLIENT_ID: str({ default: "grapesjs-editor" }),
 });
 
 /* ────────────────────────────────────────────────────────── */
 /*  S3 client & multer plumbing                              */
 /* ────────────────────────────────────────────────────────── */
 const s3Client = new S3Client({
-  endpoint:        env.S3_ENDPOINT,
-  region:          'us-east-1', // MinIO ignores region
-  credentials:     { accessKeyId: env.S3_ACCESS_KEY, secretAccessKey: env.S3_SECRET_KEY },
-  forcePathStyle:  true,
+  endpoint: env.S3_ENDPOINT,
+  region: "us-east-1", // MinIO ignores region
+  credentials: {
+    accessKeyId: env.S3_ACCESS_KEY,
+    secretAccessKey: env.S3_SECRET_KEY,
+  },
+  forcePathStyle: true,
 });
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits:  { fileSize: 10 * 1024 * 1024 }, // 10 MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
   fileFilter: (_req, file, cb) => {
-    const okExt  = /jpeg|jpg|png|gif|webp|svg|pdf|doc|docx/.test(file.originalname.toLowerCase());
-    const okMime = /jpeg|jpg|png|gif|webp|svg|pdf|msword|vnd\.openxmlformats/.test(file.mimetype);
+    const okExt = /jpeg|jpg|png|gif|webp|svg|pdf|doc|docx/.test(
+      file.originalname.toLowerCase(),
+    );
+    const okMime =
+      /jpeg|jpg|png|gif|webp|svg|pdf|msword|vnd\.openxmlformats/.test(
+        file.mimetype,
+      );
 
     /* Express-5 typings split FileFilterCallback into two signatures:
        → (error: Error)            // when rejecting
@@ -54,7 +65,7 @@ const upload = multer({
     if (okExt && okMime) {
       cb(null, true);
     } else {
-      cb(new Error('Only images and documents are allowed'));
+      cb(new Error("Only images and documents are allowed"));
     }
   },
 });
@@ -69,9 +80,9 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        styleSrc:   ["'self'", "'unsafe-inline'"],
-        scriptSrc:  ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // grapesjs needs eval in dev
-        imgSrc:     ["'self'", 'data:', 'blob:', env.S3_ENDPOINT],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // grapesjs needs eval in dev
+        imgSrc: ["'self'", "data:", "blob:", env.S3_ENDPOINT],
         connectSrc: ["'self'", env.S3_ENDPOINT],
       },
     },
@@ -80,35 +91,39 @@ app.use(
 
 app.use(
   cors({
-    origin: env.NODE_ENV === 'development' ? true : ['https://lixit.local'],
+    origin: env.NODE_ENV === "development" ? true : ["https://lixit.local"],
     credentials: true,
   }),
 );
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 /* ────────────────────────────────────────────────────────── */
 /*  Health                                                   */
 /* ────────────────────────────────────────────────────────── */
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'grapesjs-server', timestamp: new Date().toISOString() });
+app.get("/health", (_req, res) => {
+  res.json({
+    status: "ok",
+    service: "grapesjs-server",
+    timestamp: new Date().toISOString(),
+  });
 });
 
 /* ────────────────────────────────────────────────────────── */
 /*  Very-light OIDC guard (prod only)                        */
 /* ────────────────────────────────────────────────────────── */
 const requireAuth: express.RequestHandler = (req, res, next) => {
-  if (env.NODE_ENV === 'development') return next();
+  if (env.NODE_ENV === "development") return next();
 
   const hdr = req.headers.authorization;
-  if (!hdr?.startsWith('Bearer ')) {
+  if (!hdr?.startsWith("Bearer ")) {
     res.status(401).json({
-      error: 'Authentication required',
+      error: "Authentication required",
       keycloak_url:
         `${env.KEYCLOAK_URL}/realms/${env.KEYCLOAK_REALM}/protocol/openid-connect/auth` +
         `?client_id=${env.KEYCLOAK_CLIENT_ID}&response_type=code` +
-        `&redirect_uri=${req.protocol}://${req.get('host')}/editor`,
+        `&redirect_uri=${req.protocol}://${req.get("host")}/editor`,
     });
     return;
   }
@@ -120,7 +135,7 @@ const requireAuth: express.RequestHandler = (req, res, next) => {
 /* ────────────────────────────────────────────────────────── */
 /*  Editor UI (static HTML)                                  */
 /* ────────────────────────────────────────────────────────── */
-app.get('/editor', requireAuth, (req, res) => {
+app.get("/editor", requireAuth, (req, res) => {
   res.send(/* html */ `
     <!DOCTYPE html>
     <html>
@@ -139,7 +154,7 @@ app.get('/editor', requireAuth, (req, res) => {
         </style>
       </head>
       <body>
-        ${env.NODE_ENV === 'production' ? '<div class="auth-info">Authenticated</div>' : ''}
+        ${env.NODE_ENV === "production" ? '<div class="auth-info">Authenticated</div>' : ""}
         <div id="gjs"></div>
 
         <script src="https://unpkg.com/grapesjs"></script>
@@ -152,13 +167,13 @@ app.get('/editor', requireAuth, (req, res) => {
               stepsBeforeSave: 1,
               urlStore: '/api/templates',
               urlLoad:  '/api/templates',
-              headers: { Authorization: '${req.headers.authorization || ''}' },
+              headers: { Authorization: '${req.headers.authorization || ""}' },
             },
             assetManager: {
               upload:      '/api/assets/upload',
               uploadName:  'files',
               multiUpload: true,
-              headers:     { Authorization: '${req.headers.authorization || ''}' },
+              headers:     { Authorization: '${req.headers.authorization || ""}' },
             },
             plugins:     ['gjs-blocks-basic'],
             pluginsOpts: { 'gjs-blocks-basic': {} },
@@ -172,18 +187,18 @@ app.get('/editor', requireAuth, (req, res) => {
 /* ────────────────────────────────────────────────────────── */
 /*  Template management API (DB integration TODO)            */
 /* ────────────────────────────────────────────────────────── */
-app.get('/api/templates', requireAuth, async (_req, res) => {
+app.get("/api/templates", requireAuth, async (_req, res) => {
   // TODO: query list from DB
   res.json({ data: [] });
 });
 
-app.get('/api/templates/:id', requireAuth, async (req, res) => {
+app.get("/api/templates/:id", requireAuth, async (req, res) => {
   // TODO: fetch single template
   const { id } = req.params;
-  res.json({ data: { id, html: '', css: '', components: [], styles: [] } });
+  res.json({ data: { id, html: "", css: "", components: [], styles: [] } });
 });
 
-app.post('/api/templates', requireAuth, async (req, res) => {
+app.post("/api/templates", requireAuth, async (req, res) => {
   const { html, css, components, styles } = req.body as {
     html: string;
     css: string;
@@ -198,53 +213,63 @@ app.post('/api/templates', requireAuth, async (req, res) => {
 /* ────────────────────────────────────────────────────────── */
 /*  Asset upload → S3/MinIO                                  */
 /* ────────────────────────────────────────────────────────── */
-app.post('/api/assets/upload', requireAuth, upload.array('files'), async (req, res) => {
-  try {
-    const files = req.files as Express.Multer.File[] | undefined;
-    if (!files?.length) {
-      res.status(400).json({ error: 'No files uploaded' });
-      return;
+app.post(
+  "/api/assets/upload",
+  requireAuth,
+  upload.array("files"),
+  async (req, res) => {
+    try {
+      const files = req.files as Express.Multer.File[] | undefined;
+      if (!files?.length) {
+        res.status(400).json({ error: "No files uploaded" });
+        return;
+      }
+
+      const uploads = files.map(async (file) => {
+        const key = `grapesjs/${Date.now()}-${file.originalname}`;
+
+        await s3Client.send(
+          new PutObjectCommand({
+            Bucket: env.S3_BUCKET,
+            Key: key,
+            Body: file.buffer,
+            ContentType: file.mimetype,
+          }),
+        );
+
+        return {
+          src: `${env.S3_ENDPOINT}/${env.S3_BUCKET}/${key}`,
+          type: file.mimetype.startsWith("image/") ? "image" : "file",
+          name: file.originalname,
+          size: file.size,
+        };
+      });
+
+      const data = await Promise.all(uploads);
+      res.json({ data });
+    } catch (err) {
+      console.error("Upload error:", err);
+      res.status(500).json({ error: "Upload failed" });
     }
-
-    const uploads = files.map(async (file) => {
-      const key = `grapesjs/${Date.now()}-${file.originalname}`;
-
-      await s3Client.send(
-        new PutObjectCommand({
-          Bucket: env.S3_BUCKET,
-          Key:    key,
-          Body:   file.buffer,
-          ContentType: file.mimetype,
-        }),
-      );
-
-      return {
-        src:  `${env.S3_ENDPOINT}/${env.S3_BUCKET}/${key}`,
-        type: file.mimetype.startsWith('image/') ? 'image' : 'file',
-        name: file.originalname,
-        size: file.size,
-      };
-    });
-
-    const data = await Promise.all(uploads);
-    res.json({ data });
-  } catch (err) {
-    console.error('Upload error:', err);
-    res.status(500).json({ error: 'Upload failed' });
-  }
-});
+  },
+);
 
 /* ────────────────────────────────────────────────────────── */
 /*  404 & generic error handlers                             */
 /* ────────────────────────────────────────────────────────── */
 app.use((_req, res) => {
-  res.status(404).json({ error: 'Not found' });
+  res.status(404).json({ error: "Not found" });
 });
 
 app.use(
-  (err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  (
+    err: Error,
+    _req: express.Request,
+    res: express.Response,
+    _next: express.NextFunction,
+  ) => {
     console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   },
 );
 
@@ -256,10 +281,9 @@ const server = app.listen(env.PORT, () => {
   console.log(`📝  Editor available at http://localhost:${env.PORT}/editor`);
 });
 
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received, shutting down gracefully');
-  server.close(() => console.log('Process terminated'));
+process.on("SIGTERM", () => {
+  console.log("SIGTERM received, shutting down gracefully");
+  server.close(() => console.log("Process terminated"));
 });
 
 export default app;
-
