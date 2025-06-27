@@ -21,7 +21,6 @@ LIXIT provides a full-stack solution for loan origination and submission, built 
 - [API Reference](api.md) - REST and GraphQL API documentation
 - [Operations Guide](operations.md) - Monitoring, backup, and maintenance
 - [Deployment Guide](deployment.md) - Production deployment procedures
-- [Contributing](contributing.md) - Development workflow and guidelines
 
 ## Service Catalog
 

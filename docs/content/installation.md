@@ -348,5 +348,4 @@ Monitor system performance via Grafana dashboards:
 5. **Monitor Logs** - Visit http://localhost:3007 → Explore → Loki
 6. **Manage Database** - Visit http://localhost:3011 (pgAdmin)
 
-For detailed development workflows, see the [Contributing Guide](contributing.md).
 For production deployment, see the [Deployment Guide](deployment.md).
