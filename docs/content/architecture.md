@@ -10,29 +10,29 @@ The following table provides the authoritative reference for all services, their
 
 ### Core Application Services
 
-| Service                | URL                   | Dev Port | Prod Port | Status      | Purpose                   | Technology                     |
-| ---------------------- | --------------------- | -------- | --------- | ----------- | ------------------------- | ------------------------------ |
-| **Web Application**    | http://localhost:8000 | 8000     | 3000      | ✅ Active   | Primary user interface    | Next.js 15, React, TailwindCSS |
-| **Mobile Application** | Expo CLI              | -        | -         | 🔧 Planned  | Cross-platform mobile app | React Native, Expo             |
-| **Ingestion API**      | http://localhost:3001 | 3001     | 3000      | ✅ Active   | Main backend API          | NestJS, TypeScript             |
-| **Document Renderer**  | http://localhost:3002 | 3002     | 3000      | 🔧 Planned  | PDF/Excel generation      | Express, Puppeteer, ExcelJS    |
-| **LIXI Transform**     | http://localhost:3003 | 3003     | 3000      | 🔧 Planned  | LIXI format conversion    | Express, TypeScript            |
-| **Submission Broker**  | http://localhost:3004 | 3004     | 3000      | 🔧 Planned  | Lender integrations       | Express, TypeScript            |
-| **GrapesJS Server**    | http://localhost:3005 | 3005     | 3000      | ✅ Active   | Template editor           | Express, GrapesJS              |
-| **PII Redaction**      | http://localhost:3006 | 3006     | 3000      | 🔧 Planned  | Privacy compliance        | Python, FastAPI, Presidio      |
+| Service                | URL                   | Dev Port | Prod Port | Status     | Purpose                   | Technology                     |
+| ---------------------- | --------------------- | -------- | --------- | ---------- | ------------------------- | ------------------------------ |
+| **Web Application**    | http://localhost:8000 | 8000     | 3000      | ✅ Active  | Primary user interface    | Next.js 15, React, TailwindCSS |
+| **Mobile Application** | Expo CLI              | -        | -         | 🔧 Planned | Cross-platform mobile app | React Native, Expo             |
+| **Ingestion API**      | http://localhost:3001 | 3001     | 3000      | ✅ Active  | Main backend API          | NestJS, TypeScript             |
+| **Document Renderer**  | http://localhost:3002 | 3002     | 3000      | 🔧 Planned | PDF/Excel generation      | Express, Puppeteer, ExcelJS    |
+| **LIXI Transform**     | http://localhost:3003 | 3003     | 3000      | 🔧 Planned | LIXI format conversion    | Express, TypeScript            |
+| **Submission Broker**  | http://localhost:3004 | 3004     | 3000      | 🔧 Planned | Lender integrations       | Express, TypeScript            |
+| **GrapesJS Server**    | http://localhost:3005 | 3005     | 3000      | ✅ Active  | Template editor           | Express, GrapesJS              |
+| **PII Redaction**      | http://localhost:3006 | 3006     | 3000      | 🔧 Planned | Privacy compliance        | Python, FastAPI, Presidio      |
 
 ### Database & Storage Layer
 
-| Service                 | URL                    | Dev Port | Prod Port | Status     | Purpose            | Credentials              |
-| ----------------------- | ---------------------- | -------- | --------- | ---------- | ------------------ | ------------------------ |
-| **PostgreSQL**          | localhost:5432         | 5432     | 5432      | ✅ Active  | Primary database   | lixit/lixit_dev_password |
-| **PgBouncer**           | localhost:6432         | 6432     | 6432      | ✅ Active  | Connection pooling | lixit/lixit_dev_password |
-| **Redis**               | localhost:6379         | 6379     | 6379      | ✅ Active  | Caching & sessions | -                        |
-| **MinIO**               | http://localhost:9000  | 9000     | 9000      | ✅ Active  | Object storage     | minioadmin/minioadmin123 |
-| **MinIO Console**       | http://localhost:9001  | 9001     | 9001      | ✅ Active  | Storage admin UI   | minioadmin/minioadmin123 |
-| **OpenSearch**          | http://localhost:9200  | 9200     | 9200      | ✅ Active  | Search & analytics | -                        |
-| **RabbitMQ**            | localhost:5672         | 5672     | 5672      | ✅ Active  | Message broker     | lixit/lixit_dev_password |
-| **RabbitMQ Management** | http://localhost:15672 | 15672    | 15672     | ✅ Active  | Queue admin UI     | lixit/lixit_dev_password |
+| Service                 | URL                    | Dev Port | Prod Port | Status    | Purpose            | Credentials              |
+| ----------------------- | ---------------------- | -------- | --------- | --------- | ------------------ | ------------------------ |
+| **PostgreSQL**          | localhost:5432         | 5432     | 5432      | ✅ Active | Primary database   | lixit/lixit_dev_password |
+| **PgBouncer**           | localhost:6432         | 6432     | 6432      | ✅ Active | Connection pooling | lixit/lixit_dev_password |
+| **Redis**               | localhost:6379         | 6379     | 6379      | ✅ Active | Caching & sessions | -                        |
+| **MinIO**               | http://localhost:9000  | 9000     | 9000      | ✅ Active | Object storage     | minioadmin/minioadmin123 |
+| **MinIO Console**       | http://localhost:9001  | 9001     | 9001      | ✅ Active | Storage admin UI   | minioadmin/minioadmin123 |
+| **OpenSearch**          | http://localhost:9200  | 9200     | 9200      | ✅ Active | Search & analytics | -                        |
+| **RabbitMQ**            | localhost:5672         | 5672     | 5672      | ✅ Active | Message broker     | lixit/lixit_dev_password |
+| **RabbitMQ Management** | http://localhost:15672 | 15672    | 15672     | ✅ Active | Queue admin UI     | lixit/lixit_dev_password |
 
 ### API Layer
 

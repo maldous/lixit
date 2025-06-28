@@ -50,26 +50,26 @@ For the complete service catalog with all ports and details, see the [Architectu
 
 ### Core Application Services
 
-| Service                | URL                   | Purpose                   | Technology                     |
-| ---------------------- | --------------------- | ------------------------- | ------------------------------ |
-| **Web Application**    | http://localhost:8000 | Primary user interface    | Next.js 15, React, TailwindCSS |
-| **Mobile Application** | Expo CLI              | Cross-platform mobile app | React Native, Expo             |
-| **Ingestion API**      | http://localhost:3001 | Main backend API          | NestJS, TypeScript             |
-| **Document Renderer**  | http://localhost:3002 | PDF/Excel generation      | Express, Puppeteer, ExcelJS    |
-| **LIXI Transform**     | http://localhost:3003 | LIXI format conversion    | Express, TypeScript            |
-| **Submission Broker**  | http://localhost:3004 | Lender integrations       | Express, TypeScript            |
-| **GrapesJS Server**    | http://localhost:3005 | Template editor           | Express, GrapesJS              |
+| Service                | URL                   | Purpose                      | Technology                     |
+| ---------------------- | --------------------- | ---------------------------- | ------------------------------ |
+| **Web Application**    | http://localhost:8000 | Primary user interface       | Next.js 15, React, TailwindCSS |
+| **Mobile Application** | Expo CLI              | Cross-platform mobile app    | React Native, Expo             |
+| **Ingestion API**      | http://localhost:3001 | Main backend API             | NestJS, TypeScript             |
+| **Document Renderer**  | http://localhost:3002 | PDF/Excel generation         | Express, Puppeteer, ExcelJS    |
+| **LIXI Transform**     | http://localhost:3003 | LIXI format conversion       | Express, TypeScript            |
+| **Submission Broker**  | http://localhost:3004 | Lender integrations          | Express, TypeScript            |
+| **GrapesJS Server**    | http://localhost:3005 | Template editor              | Express, GrapesJS              |
 | **PII Redaction**      | http://localhost:3006 | Privacy compliance (planned) | Python, FastAPI, Presidio      |
 
 ### Key Infrastructure Services
 
-| Service                 | URL                    | Purpose            | Credentials              |
-| ----------------------- | ---------------------- | ------------------ | ------------------------ |
-| **PostgreSQL**          | localhost:5432         | Primary database   | lixit/lixit_dev_password |
-| **Redis**               | localhost:6379         | Caching & sessions | -                        |
-| **Grafana**             | http://localhost:3007  | Dashboards & monitoring | admin/admin              |
-| **Prometheus**          | http://localhost:9090  | Metrics collection | -                        |
-| **MinIO Console**       | http://localhost:9001  | Object storage     | minioadmin/minioadmin123 |
+| Service           | URL                   | Purpose                 | Credentials              |
+| ----------------- | --------------------- | ----------------------- | ------------------------ |
+| **PostgreSQL**    | localhost:5432        | Primary database        | lixit/lixit_dev_password |
+| **Redis**         | localhost:6379        | Caching & sessions      | -                        |
+| **Grafana**       | http://localhost:3007 | Dashboards & monitoring | admin/admin              |
+| **Prometheus**    | http://localhost:9090 | Metrics collection      | -                        |
+| **MinIO Console** | http://localhost:9001 | Object storage          | minioadmin/minioadmin123 |
 
 ## Package Scripts & Development Workflow
 

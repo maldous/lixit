@@ -290,7 +290,7 @@ For the complete service catalog with all ports and implementation status, see t
 1. **Real-time Metrics**: Prometheus + Grafana dashboards
 2. **Log Analysis**: Loki for centralized logging with search
 3. **Distributed Tracing**: Jaeger for request flow analysis
-5. **Synthetic Monitoring**: Blackbox Exporter for endpoint health
+4. **Synthetic Monitoring**: Blackbox Exporter for endpoint health
 
 ## Deployment Architecture
 
