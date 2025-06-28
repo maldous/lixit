@@ -1,13 +1,30 @@
+# syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
 FROM node:${NODE_MAJOR}-alpine AS deps
-
 RUN apk add --no-cache python3 make g++
-
 WORKDIR /repo
+
+# 1 ─ root manifests
 COPY package.json package-lock.json* ./
 
-COPY apps ./apps
-COPY packages ./packages
-COPY services ./services
+# 2 ─ workspace manifests only
+COPY apps/web/package.json            apps/web/
+COPY apps/mobile/package.json         apps/mobile/
+COPY packages/core/package.json       packages/core/
+COPY packages/ui-kit/package.json     packages/ui-kit/
+COPY services/ingestion-api/package.json   services/ingestion-api/
+COPY services/doc-renderer/package.json    services/doc-renderer/
+COPY services/grapesjs-server/package.json services/grapesjs-server/
+COPY services/submission-broker/package.json services/submission-broker/
+COPY services/lixi-transform/package.json services/lixi-transform/
 
-RUN npm ci --workspaces --include-workspace-root
+# 3 ─ install once, cache forever unless a manifest changes
+RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
+    --mount=type=cache,id=node-modules,target=/repo/node_modules \
+    npm ci --workspaces --include-workspace-root
+
+# 4 ─ copy the rest of the source; edits here leave the install layer cached
+COPY apps      ./apps
+COPY packages  ./packages
+COPY services  ./services
+

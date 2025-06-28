@@ -1,5 +1,8 @@
+# syntax=docker/dockerfile:1.4
 FROM caddy:builder AS builder
-RUN xcaddy build --with github.com/mholt/caddy-ratelimit
+RUN --mount=type=cache,id=go-mod,target=/go/pkg/mod \
+    --mount=type=cache,id=go-build,target=/root/.cache/go-build \
+    xcaddy build --with github.com/mholt/caddy-ratelimit
 
 FROM caddy:alpine
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy

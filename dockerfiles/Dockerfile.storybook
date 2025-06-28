@@ -1,5 +1,5 @@
+# syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
-
 FROM lixit/base-deps:${NODE_MAJOR} AS deps
 
 FROM node:${NODE_MAJOR}-alpine
@@ -7,10 +7,9 @@ WORKDIR /app
 COPY --from=deps /repo/node_modules ./node_modules
 COPY --from=deps /repo/package*.json ./
 COPY --from=deps /repo/packages ./packages
-COPY --from=deps /repo/apps ./apps
-
-# Install Storybook globally
-RUN npm install -g @storybook/cli
-
+COPY --from=deps /repo/apps/web ./apps/web
+RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
+    npm install -g @storybook/cli
 EXPOSE 6006
-CMD ["npm", "run", "storybook", "--workspace=@lixit/web"]
+CMD ["npm","run","storybook","--workspace=@lixit/web"]
+

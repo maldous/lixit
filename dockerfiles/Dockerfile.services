@@ -1,24 +1,26 @@
+# syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
 ARG SERVICE
-
 FROM lixit/base-deps:${NODE_MAJOR} AS deps
 
 FROM node:${NODE_MAJOR}-alpine AS build
 ARG SERVICE
 WORKDIR /repo
-COPY --from=deps /repo ./
-RUN npm run build --workspace=@lixit/${SERVICE}
+COPY --from=deps /repo/node_modules ./node_modules
+COPY services/${SERVICE} ./services/${SERVICE}
+COPY packages ./packages
+RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
+    npm run build --workspace=@lixit/${SERVICE}
 
 FROM node:${NODE_MAJOR}-alpine
 ARG SERVICE
 RUN addgroup -S nodejs && adduser -S svc -G nodejs -u 1001
 WORKDIR /app
 ENV NODE_ENV=production
-
 COPY --from=build /repo/services/${SERVICE}/dist ./dist
 COPY --from=build /repo/services/${SERVICE}/package.json ./
 COPY --from=deps /repo/node_modules ./node_modules
-
 USER svc
 EXPOSE 3000
 CMD ["node","dist/main.js"]
+

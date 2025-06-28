@@ -1,21 +1,23 @@
+# syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
 FROM lixit/base-deps:${NODE_MAJOR} AS deps
 
 FROM node:${NODE_MAJOR}-alpine AS build
 WORKDIR /repo
-COPY . .
 COPY --from=deps /repo/node_modules ./node_modules
-RUN npm run build --workspace=@lixit/ingestion-api
+COPY services/ingestion-api ./services/ingestion-api
+COPY packages ./packages
+RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
+    npm run build --workspace=@lixit/ingestion-api
 
 FROM node:${NODE_MAJOR}-alpine
 RUN addgroup -S nodejs && adduser -S nestjs -G nodejs -u 1001
 WORKDIR /app
 ENV NODE_ENV=production
-
 COPY --from=build /repo/services/ingestion-api/dist ./dist
 COPY --from=build /repo/services/ingestion-api/package.json ./
 COPY --from=deps /repo/node_modules ./node_modules
-
 USER nestjs
 EXPOSE 3000
 CMD ["node","dist/main.js"]
+
