@@ -1,0 +1,14 @@
+services:
+  web:
+    volumes:
+      - ./:/repo:delegated
+      - web_node_modules:/repo/apps/web/node_modules
+
+  storybook:
+    volumes:
+      - ./:/app:delegated
+      - storybook_node_modules:/app/apps/web/node_modules
+
+volumes:
+  web_node_modules: {}
+  storybook_node_modules: {}
