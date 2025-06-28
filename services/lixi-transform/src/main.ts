@@ -64,16 +64,20 @@ app.use(
 );
 
 const port = process.env.PORT || 3000;
-const server = app.listen(port, () => {
-  console.log(`🔄 LIXI Transform Service running on port ${port}`);
-});
 
-// Graceful shutdown
-process.on("SIGTERM", () => {
-  console.log("SIGTERM received, shutting down gracefully");
-  server.close(() => {
-    console.log("LIXI Transform Service terminated");
+// Only start server if this file is run directly (not imported in tests)
+if (require.main === module) {
+  const server = app.listen(port, () => {
+    console.log(`🔄 LIXI Transform Service running on port ${port}`);
   });
-});
+
+  // Graceful shutdown
+  process.on("SIGTERM", () => {
+    console.log("SIGTERM received, shutting down gracefully");
+    server.close(() => {
+      console.log("LIXI Transform Service terminated");
+    });
+  });
+}
 
 export default app;

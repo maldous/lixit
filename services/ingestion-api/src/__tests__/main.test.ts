@@ -4,6 +4,9 @@ import { AppModule } from "../app.module";
 jest.mock("@nestjs/core", () => ({
   NestFactory: {
     create: jest.fn().mockResolvedValue({
+      use: jest.fn(),
+      enableVersioning: jest.fn(),
+      enableCors: jest.fn(),
       listen: jest.fn().mockResolvedValue(undefined),
     }),
   },

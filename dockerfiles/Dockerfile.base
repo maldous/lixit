@@ -4,6 +4,7 @@ FROM node:${NODE_MAJOR}-alpine AS deps
 RUN apk add --no-cache python3 make g++
 WORKDIR /repo
 
+# Copy package.json files first for better caching
 COPY package.json package-lock.json* ./
 
 COPY apps/web/package.json            apps/web/
@@ -16,9 +17,8 @@ COPY services/grapesjs-server/package.json services/grapesjs-server/
 COPY services/submission-broker/package.json services/submission-broker/
 COPY services/lixi-transform/package.json services/lixi-transform/
 
+# Install dependencies with cache mount
 RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
     npm ci --workspaces --include-workspace-root
 
-COPY apps      ./apps
-COPY packages  ./packages
-COPY services  ./services
+# Don't copy source code here - let individual services copy only what they need

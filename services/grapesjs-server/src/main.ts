@@ -276,14 +276,18 @@ app.use(
 /* ────────────────────────────────────────────────────────── */
 /*  Start server & graceful shutdown                         */
 /* ────────────────────────────────────────────────────────── */
-const server = app.listen(env.PORT, () => {
-  console.log(`🎨  GrapesJS server running on port ${env.PORT}`);
-  console.log(`📝  Editor available at http://localhost:${env.PORT}/editor`);
-});
 
-process.on("SIGTERM", () => {
-  console.log("SIGTERM received, shutting down gracefully");
-  server.close(() => console.log("Process terminated"));
-});
+// Only start server if this file is run directly (not imported in tests)
+if (require.main === module) {
+  const server = app.listen(env.PORT, () => {
+    console.log(`🎨  GrapesJS server running on port ${env.PORT}`);
+    console.log(`📝  Editor available at http://localhost:${env.PORT}/editor`);
+  });
+
+  process.on("SIGTERM", () => {
+    console.log("SIGTERM received, shutting down gracefully");
+    server.close(() => console.log("Process terminated"));
+  });
+}
 
 export default app;

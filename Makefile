@@ -17,7 +17,7 @@ help:
 	@echo "make type-check - TypeScript checks"
 	@echo "make logs       - Tail docker-compose logs"
 	@echo "make stop       - Stop all services"
-	@echo "make clean      - Tear down & prune images"
+	@echo "make clean      - Tear down & clean images"
 	@echo "make reset      - Reset everything"
 
 setup: ; @./scripts/setup.sh
@@ -33,7 +33,7 @@ dev: build base-image ; @docker compose --profile dev up -d --remove-orphans
 prod: build base-image ; @docker compose --profile prod up -d --remove-orphans
 
 docker-config:
-	@if [ ! -f /etc/docker/daemon.json ] || ! jq -e '.features.buildkit == true and .features["containerd-snapshotter"] == true and (.["registry-mirrors"] | index("http://localhost:5000"))' /etc/docker/daemon.json > /dev/null; then \
+	@if [ ! jq -e '.features.buildkit == true and .features["containerd-snapshotter"] == true and (.["registry-mirrors"] | index("http://localhost:5000"))' /etc/docker/daemon.json > /dev/null 2>&1 ]; then \
 	  echo 'Docker: enable buildkit, containerd-snapshotter & registry-mirrors (caching)'; \
 	  exit 1; \
 	fi

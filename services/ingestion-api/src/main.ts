@@ -4,7 +4,7 @@ import { VersioningType } from "@nestjs/common";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 
-async function bootstrap() {
+export async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.use(helmet());
@@ -31,6 +31,10 @@ async function bootstrap() {
   });
 
   await app.listen(process.env.PORT || 3000, "0.0.0.0");
+}
+
+export function isMainModule(moduleToCheck?: typeof module): boolean {
+  return require.main === moduleToCheck;
 }
 
 /*  ❱❱  Prevent double-execution inside the same process  */

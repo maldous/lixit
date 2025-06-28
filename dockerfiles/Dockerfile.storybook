@@ -1,21 +1,25 @@
 # syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
-
 FROM lixit/base-deps:${NODE_MAJOR} AS deps
 
-FROM node:${NODE_MAJOR}-alpine
-WORKDIR /app
-
-ENV STORYBOOK_CACHE_DIR=/tmp/.storybook-cache
-
+FROM node:${NODE_MAJOR}-alpine AS build
+WORKDIR /repo
 COPY --from=deps /repo/node_modules ./node_modules
-COPY --from=deps /repo/package*.json ./
-COPY --from=deps /repo/packages        ./packages
-COPY --from=deps /repo/apps/web        ./apps/web
+COPY package.json package-lock.json* ./
 
-RUN --mount=type=cache,id=storybook-cache,target=/tmp/.storybook-cache \
-    npm install -g @storybook/cli
+# Copy packages needed for Storybook
+COPY packages/ui-kit ./packages/ui-kit
 
+# Build Storybook from ui-kit package
+WORKDIR /repo/packages/ui-kit
+RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
+    npm run build-storybook
+
+FROM node:${NODE_MAJOR}-alpine
+RUN addgroup -S nodejs && adduser -S storybook -G nodejs -u 1001 && \
+    npm install -g serve
+WORKDIR /app
+COPY --from=build /repo/packages/ui-kit/storybook-static ./storybook-static
+USER storybook
 EXPOSE 6006
-CMD ["npm","run","storybook","--workspace=@lixit/web"]
-
+CMD ["serve", "-s", "storybook-static", "-l", "6006"]

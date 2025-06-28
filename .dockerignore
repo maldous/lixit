@@ -123,6 +123,7 @@ docker-compose*
 # Documentation
 README.md
 *.md
+docs/
 
 # Keys and secrets
 keys/
@@ -139,5 +140,19 @@ backups/
 .vscode/
 .idea/
 
-# BuildX
+# BuildX cache
 .buildx-cache
+.buildx_cache
+
+# Logs
+logs/
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
