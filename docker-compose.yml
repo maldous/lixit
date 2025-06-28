@@ -426,7 +426,7 @@ services:
       interval: 10s
       timeout: 10s
       retries: 3
-    mem_limit: 512m
+    mem_limit: 1g
     cpus: 1.0
     ports: ["8002:8000", "8443:8443", "8003:8001", "8444:8444"]
 
@@ -630,7 +630,7 @@ services:
     depends_on:
       sonarqube-db: {condition: service_healthy}
     volumes:
-      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_es7:/opt/sonarqube/data/es7
       - sonarqube_logs:/opt/sonarqube/logs
       - sonarqube_extensions:/opt/sonarqube/extensions
     mem_limit: 2g
@@ -693,8 +693,8 @@ volumes:
   trivy_cache:
   step_ca_data:
   pgadmin_data:
+  sonarqube_es7:
   sonarqube_db_data:
-  sonarqube_data:
   sonarqube_logs:
   sonarqube_extensions:
   gitea_db_data:
