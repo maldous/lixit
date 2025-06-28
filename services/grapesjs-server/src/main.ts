@@ -219,7 +219,7 @@ app.post(
   upload.array("files"),
   async (req, res) => {
     try {
-      const files = req.files as Express.Multer.File[] | undefined;
+      const files = req.files as express.Multer.File[] | undefined;
       if (!files?.length) {
         res.status(400).json({ error: "No files uploaded" });
         return;

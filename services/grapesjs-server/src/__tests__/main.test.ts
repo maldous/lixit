@@ -1,8 +1,9 @@
 import request from "supertest";
+import { Express } from "express";
 
 describe("GrapesJS Server", () => {
   const originalEnv = process.env.NODE_ENV;
-  let app: any;
+  let app: Express;
 
   beforeEach(async () => {
     // Reset modules so envalid re-reads NODE_ENV
