@@ -143,9 +143,11 @@ dist
 
 # Storybook
 apps/web/storybook-static/
+packages/ui-kit/storybook-static
 
 # Keys
 keys/
 
 # BuildX
 .buildx_cache/
+
