@@ -19,7 +19,7 @@ describe("GrapesJS Server", () => {
 
   test("should respond to health check", async () => {
     const response = await request(app).get("/health");
-    
+
     expect(response.status).toBe(200);
     expect(response.body).toMatchObject({
       status: "ok",
@@ -30,7 +30,7 @@ describe("GrapesJS Server", () => {
 
   test("should serve editor page", async () => {
     const response = await request(app).get("/editor");
-    
+
     expect(response.status).toBe(200);
     expect(response.text).toContain("LIXIT Template Editor");
     expect(response.text).toContain("grapesjs");
@@ -38,7 +38,7 @@ describe("GrapesJS Server", () => {
 
   test("should return 404 for unknown routes", async () => {
     const response = await request(app).get("/unknown-route");
-    
+
     expect(response.status).toBe(404);
     expect(response.body).toMatchObject({
       error: "Not found",
@@ -50,16 +50,16 @@ describe("GrapesJS Server", () => {
     jest.resetModules();
     process.env.NODE_ENV = "production";
     app = (await import("../main")).default;
-    
+
     const response = await request(app).get("/api/templates");
-    
+
     expect(response.status).toBe(401);
     expect(response.body.error).toContain("Authentication required");
   });
 
   test("should allow templates API in development", async () => {
     const response = await request(app).get("/api/templates");
-    
+
     expect(response.status).toBe(200);
     expect(response.body).toMatchObject({
       data: [],

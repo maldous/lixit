@@ -12,7 +12,5 @@ module.exports = {
     "!src/**/index.ts",
   ],
   setupFilesAfterEnv: [],
-  transformIgnorePatterns: [
-    "node_modules/(?!(express|multer)/)",
-  ],
+  transformIgnorePatterns: ["node_modules/(?!(express|multer)/)"],
 };
