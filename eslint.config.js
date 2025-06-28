@@ -169,4 +169,14 @@ export default [
       "@typescript-eslint/no-explicit-any": "off",
     },
   },
+
+  // GrapesJS server
+  {
+    files: ["services/grapesjs-server/**/*.ts"],
+    languageOptions: {
+      globals: {
+        Express: "readonly",
+      },
+    },
+  },
 ];
