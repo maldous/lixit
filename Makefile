@@ -1,17 +1,9 @@
+.PHONY: help setup install build base-image dev prod test lint format type-check logs stop clean docker-config reset
 .DEFAULT_GOAL := help
 
 export COMPOSE_DOCKER_CLI_BUILD=1
 export COMPOSE_BAKE=1
 export NODE_MAJOR ?= $(shell cut -d. -f1 .node-version)
-
-BASE_TAG        := lixit/base-deps:$(NODE_MAJOR)
-CACHE_DIR       := .buildx-cache
-DOCKERFILE_BASE := dockerfiles/Dockerfile.base
-
-.PHONY: help setup install build base-image dev prod test lint format type-check logs stop clean docker-config reset
-
-$(CACHE_DIR):
-	@mkdir -p $(CACHE_DIR)
 
 help:
 	@echo "make setup      - Initial project setup"
@@ -44,16 +36,16 @@ docker-config:
 	  exit 1; \
 	fi
 
-base-image: docker-config | $(CACHE_DIR)
-	@docker buildx build \
+base-image: docker-config
+	docker buildx build \
 	  --load \
 	  --compress \
 	  --progress=plain \
-	  --cache-from=type=local,src=$(CACHE_DIR) \
-	  --cache-to=type=local,dest=$(CACHE_DIR),mode=max \
+	  --cache-from=type=local,src=.buildx_cache \
+	  --cache-to=type=local,dest=.buildx_cache,mode=max \
 	  --build-arg NODE_MAJOR=$(NODE_MAJOR) \
-	  -f $(DOCKERFILE_BASE) \
-	  -t $(BASE_TAG) .
+	  -f dockerfiles/Dockerfile.base \
+	  -t lixit/base-deps:$(NODE_MAJOR) .
 
 dev: build base-image ; @docker compose --profile dev up -d --remove-orphans
 
@@ -63,7 +55,8 @@ clean: stop
 	@npm run clean || true
 	@docker image prune -af || true
 	@docker buildx prune -af || true
-	@rm -rf $(CACHE_DIR) || true
+	@rm -rf .buildx_cache || true
+	@mkdir -p .buildx_cache || true
 
 reset: clean
 	@docker system prune -a --volumes -f || true

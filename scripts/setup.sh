@@ -2,8 +2,6 @@
 set -e
 
 NODE_VERSION=$(cat .node-version)
-NPM_VERSION=$(cat .npm-version)
-TURBO_VERISON=$(cat .turbo-version)
 
 if ! command -v volta &> /dev/null; then
   echo "📥 Installing Volta (node/tool manager)…"
@@ -16,8 +14,8 @@ export VOLTA_HOME="${VOLTA_HOME:-$HOME/.volta}"
 export PATH="$VOLTA_HOME/bin:$PATH"
 
 volta install "node@$NODE_VERSION"
-volta install "npm@$NPM_VERSION"
-volta install "turbo@$TURBO_VERISON"
+volta install "npm@latest"
+volta install "turbo@latest"
 
 if ! command -v docker &> /dev/null; then
   echo "Docker not found; please install Docker manually."
@@ -28,6 +26,7 @@ if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/
   exit 1
 fi
 
+mkdir -p .buildx_cache
 mkdir -p backups
 mkdir -p keys
 mkdir -p database/migrations
