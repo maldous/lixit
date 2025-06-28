@@ -146,3 +146,6 @@ apps/web/storybook-static/
 
 # Keys
 keys/
+
+# BuildX
+.buildx-cache/
