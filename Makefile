@@ -67,4 +67,5 @@ clean: stop
 	@npm run clean
 
 reset: clean
+	@docker system prune -a --volumes -f
 	@git clean -xfd || true

@@ -83,4 +83,4 @@ KEYCLOAK_CLIENT_ID=lixit-web
 EOF
 fi
 
-docker run -d -p 5000:5000 --name registry-proxy -e REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io registry:2
+docker run -d -p 5000:5000 --name registry-proxy -e REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io registry:2 || true
