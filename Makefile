@@ -12,7 +12,7 @@ DOCKERFILE_BASE := dockerfiles/Dockerfile.base
         type-check logs stop clean clean-env check-docker-config
 
 $(CACHE_DIR):
-	mkdir -p $(CACHE_DIR)
+	@mkdir -p $(CACHE_DIR)
 
 help:
 	@echo "make setup      - Initial project setup"
@@ -29,27 +29,24 @@ help:
 	@echo "make clean      - Tear down & prune images"
 	@echo "make reset      - Reset everything"
 
-setup: ; ./scripts/setup.sh
-install: ; npm ci --verbose
-build: ; npm run build
-test: ; npm test
-lint: ; npm run lint
-format: ; npm run format
-type-check: ; npm run type-check
-logs: ; docker compose logs -f
-stop: ; docker compose down
+setup: ; @./scripts/setup.sh
+install: ; @npm ci --verbose
+build: ; @npm run build
+test: ; @npm test
+lint: ; @npm run lint
+format: ; @npm run format
+type-check: ; @npm run type-check
+logs: ; @docker compose logs -f
+stop: ; @docker compose down
 
 check-docker-config:
-	@if ! jq -e '.features.buildkit == true \
-	  and .features["containerd-snapshotter"] == true \
-	  and ( .["registry-mirrors"] | index("http://localhost:5000") )' \
-	  /etc/docker/daemon.json > /dev/null; then \
+	@if ! jq -e '.features.buildkit == true and .features["containerd-snapshotter"] == true and (.["registry-mirrors"] | index("http://localhost:5000"))' /etc/docker/daemon.json > /dev/null; then \
 	  echo 'Docker: enable buildkit, containerd-snapshotter & registry-mirrors (caching)'; \
 	  exit 1; \
 	fi
 
 base-image: check-docker-config | $(CACHE_DIR)
-	docker buildx build \
+	@docker buildx build \
 	  --load \
 	  --compress \
 	  --progress=plain \
@@ -59,15 +56,15 @@ base-image: check-docker-config | $(CACHE_DIR)
 	  -f $(DOCKERFILE_BASE) \
 	  -t $(BASE_TAG) .
 
-dev: base-image ; docker compose --profile dev up --build -d --remove-orphans
+dev: base-image ; @docker compose --profile dev up --build -d --remove-orphans
 
-prod: base-image ; docker compose --profile prod up --build -d --remove-orphans
+prod: base-image ; @docker compose --profile prod up --build -d --remove-orphans
 
 clean: stop
-	docker image prune -af
-	docker buildx prune -af
-	rm -rf $(CACHE_DIR)
-	npm run clean
+	@docker image prune -af
+	@docker buildx prune -af
+	@rm -rf $(CACHE_DIR)
+	@npm run clean
 
 reset: clean
-	git clean -xfd
+	@git clean -xfd || true
