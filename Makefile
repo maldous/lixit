@@ -8,8 +8,7 @@ BASE_TAG        := lixit/base-deps:$(NODE_MAJOR)
 CACHE_DIR       := .buildx-cache
 DOCKERFILE_BASE := dockerfiles/Dockerfile.base
 
-.PHONY: help setup install build base-image dev prod test lint format \
-        type-check logs stop clean clean-env check-docker-config
+.PHONY: help setup install build base-image dev prod test lint format type-check logs stop clean check-docker-config reset
 
 $(CACHE_DIR):
 	@mkdir -p $(CACHE_DIR)
@@ -40,7 +39,7 @@ logs: ; @docker compose logs -f
 stop: ; @docker compose down
 
 check-docker-config:
-	@if ! jq -e '.features.buildkit == true and .features["containerd-snapshotter"] == true and (.["registry-mirrors"] | index("http://localhost:5000"))' /etc/docker/daemon.json > /dev/null; then \
+	@if [ ! -f /etc/docker/daemon.json ] || ! jq -e '.features.buildkit == true and .features["containerd-snapshotter"] == true and (.["registry-mirrors"] | index("http://localhost:5000"))' /etc/docker/daemon.json > /dev/null; then \
 	  echo 'Docker: enable buildkit, containerd-snapshotter & registry-mirrors (caching)'; \
 	  exit 1; \
 	fi
