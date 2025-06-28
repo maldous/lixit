@@ -21,7 +21,6 @@ help:
 	@echo "make reset      - Reset everything"
 
 setup: ; @./scripts/setup.sh
-install: ; @npm ci
 build: ; @npm run build
 test: ; @npm test
 lint: ; @npm run lint
@@ -29,6 +28,13 @@ format: ; @npm run format
 type-check: ; @npm run type-check
 logs: ; @docker compose logs -f
 stop: ; @docker compose down
+
+install:
+	@if [ -d node_modules ]; then \
+	  npm install --no-audit --prefer-offline; \
+	else \
+	  npm ci; \
+	fi
 
 docker-config:
 	@if [ ! -f /etc/docker/daemon.json ] || ! jq -e '.features.buildkit == true and .features["containerd-snapshotter"] == true and (.["registry-mirrors"] | index("http://localhost:5000"))' /etc/docker/daemon.json > /dev/null; then \
