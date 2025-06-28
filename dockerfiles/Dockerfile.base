@@ -20,7 +20,6 @@ COPY services/lixi-transform/package.json services/lixi-transform/
 
 # 3 ─ install once, cache forever unless a manifest changes
 RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
-    --mount=type=cache,id=node-modules,target=/repo/node_modules \
     npm ci --workspaces --include-workspace-root
 
 # 4 ─ copy the rest of the source; edits here leave the install layer cached
