@@ -4,10 +4,8 @@ FROM node:${NODE_MAJOR}-alpine AS deps
 RUN apk add --no-cache python3 make g++
 WORKDIR /repo
 
-# 1 ─ root manifests
 COPY package.json package-lock.json* ./
 
-# 2 ─ workspace manifests only
 COPY apps/web/package.json            apps/web/
 COPY apps/mobile/package.json         apps/mobile/
 COPY packages/core/package.json       packages/core/
@@ -18,12 +16,9 @@ COPY services/grapesjs-server/package.json services/grapesjs-server/
 COPY services/submission-broker/package.json services/submission-broker/
 COPY services/lixi-transform/package.json services/lixi-transform/
 
-# 3 ─ install once, cache forever unless a manifest changes
 RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
     npm ci --workspaces --include-workspace-root
 
-# 4 ─ copy the rest of the source; edits here leave the install layer cached
 COPY apps      ./apps
 COPY packages  ./packages
 COPY services  ./services
-
