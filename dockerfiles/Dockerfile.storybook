@@ -1,30 +1,21 @@
 # syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
 
-FROM node:${NODE_MAJOR}-alpine AS build
-WORKDIR /repo
-COPY package.json package-lock.json* ./
-COPY apps/web/package.json apps/web/
-RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
-    npm ci --workspaces --include-workspace-root
-COPY apps/web ./apps/web
-COPY packages ./packages
-RUN --mount=type=cache,id=storybook-cache,target=/root/.cache/storybook \
-    npm install -g @storybook/cli
+FROM lixit/base-deps:${NODE_MAJOR} AS deps
 
 FROM node:${NODE_MAJOR}-alpine
 WORKDIR /app
 
-# root manifest so npm has a project context
-COPY --from=build /repo/package*.json ./
+ENV STORYBOOK_CACHE_DIR=/tmp/.storybook-cache
 
-# runtime deps + global CLI
-COPY --from=build /repo/node_modules ./node_modules
-COPY --from=build /usr/local/bin /usr/local/bin
-COPY --from=build /usr/local/lib/node_modules/@storybook /usr/local/lib/node_modules/@storybook
+COPY --from=deps /repo/node_modules ./node_modules
+COPY --from=deps /repo/package*.json ./
+COPY --from=deps /repo/packages        ./packages
+COPY --from=deps /repo/apps/web        ./apps/web
 
-# workspace source
-COPY --from=build /repo/apps/web ./apps/web
+RUN --mount=type=cache,id=storybook-cache,target=/tmp/.storybook-cache \
+    npm install -g @storybook/cli
 
 EXPOSE 6006
 CMD ["npm","run","storybook","--workspace=@lixit/web"]
+

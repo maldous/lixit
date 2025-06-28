@@ -28,13 +28,9 @@ format: ; @npm run format
 type-check: ; @npm run type-check
 logs: ; @docker compose logs -f
 stop: ; @docker compose down
-
-install:
-	@if [ -d node_modules ]; then \
-	  npm install --no-audit --prefer-offline; \
-	else \
-	  npm ci; \
-	fi
+install: ; @if [ -d node_modules ]; then npm install --no-audit --prefer-offline; else npm ci; fi
+dev: build base-image ; @docker compose --profile dev up -d --remove-orphans
+prod: build base-image ; @docker compose --profile prod up -d --remove-orphans
 
 docker-config:
 	@if [ ! -f /etc/docker/daemon.json ] || ! jq -e '.features.buildkit == true and .features["containerd-snapshotter"] == true and (.["registry-mirrors"] | index("http://localhost:5000"))' /etc/docker/daemon.json > /dev/null; then \
@@ -52,10 +48,6 @@ base-image: docker-config
 	  --build-arg NODE_MAJOR=$(NODE_MAJOR) \
 	  -f dockerfiles/Dockerfile.base \
 	  -t lixit/base-deps:$(NODE_MAJOR) .
-
-dev: build base-image ; @docker compose --profile dev up -d --remove-orphans
-
-prod: build base-image ; @docker compose --profile prod up -d --remove-orphans
 
 clean: stop
 	@npm run clean || true
