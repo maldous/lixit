@@ -138,3 +138,6 @@ backups/
 # Development tools
 .vscode/
 .idea/
+
+# BuildX
+.buildx-cache

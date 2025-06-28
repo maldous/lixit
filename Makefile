@@ -55,9 +55,9 @@ base-image: docker-config | $(CACHE_DIR)
 	  -f $(DOCKERFILE_BASE) \
 	  -t $(BASE_TAG) .
 
-dev: build base-image ; docker compose --profile dev up --build -d --remove-orphans
+dev: build base-image ; docker compose --profile dev up -d --remove-orphans
 
-prod: build base-image ; @docker compose --profile prod up --build -d --remove-orphans
+prod: build base-image ; @docker compose --profile prod up -d --remove-orphans
 
 clean: stop
 	@npm run clean || true

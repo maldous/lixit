@@ -5,6 +5,7 @@ RUN apk add --no-cache python3 make g++
 
 WORKDIR /repo
 COPY package.json package-lock.json* ./
+
 COPY apps ./apps
 COPY packages ./packages
 COPY services ./services
