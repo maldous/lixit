@@ -1,11 +1,12 @@
-# Installation & Setup Guide
+# LIXIT Installation & Development Guide
 
 ## Prerequisites
 
 ### Required Software
 
-- **Docker & Docker Compose** - Container orchestration
-- **Node.js 24+** - JavaScript runtime
+- **Node.js 24+** - JavaScript runtime (specified in .node-version)
+- **Yarn 4** - Package manager (project default, npm also supported)
+- **Docker & Docker Compose** - For containerized development
 - **Git** - Version control
 - **Make** - Build automation (usually pre-installed on Linux/macOS)
 
@@ -16,251 +17,307 @@
 - **CPU**: 4 cores minimum (8 cores recommended)
 - **Network**: Internet connection for initial setup
 
+### Optional Tools
+
+- **VS Code** - Recommended IDE with DevContainer support
+- **mkcert** - For local HTTPS certificates (auto-installed via setup script)
+
 ## Quick Start
+
+### Option 1: DevContainer (Recommended)
+
+If using VS Code, simply open the project and click "Reopen in Container" when prompted. This provides a fully configured development environment with all tools pre-installed.
+
+### Option 2: Local Development
 
 ```bash
 # Clone the repository
 git clone <repository-url>
 cd lixit
 
-# Initial setup (installs dependencies, generates certificates)
+# Initial setup (installs dependencies, generates certificates, sets up environment)
 make setup
 
-# Start development environment
+# Start development environment (all 40+ services)
 make dev
 ```
-
-After setup completes, the web application will be available at http://localhost:8000.
 
 ## Service Catalog
 
-Once `make dev` is running, you'll have access to a comprehensive development and production-ready infrastructure:
+After running `make dev`, you'll have access to a comprehensive development and production-ready infrastructure with 40+ services.
+
+For the complete service catalog with all ports and details, see the [Architecture Guide](architecture.md#service-catalog).
 
 ### Core Application Services
 
-| Service               | URL                   | Purpose                 | Credentials |
-| --------------------- | --------------------- | ----------------------- | ----------- |
-| **Web Application**   | http://localhost:8000 | Main user interface     | -           |
-| **Mobile App**        | Expo CLI              | React Native mobile app | -           |
-| **Main API**          | http://localhost:3001 | NestJS backend API      | -           |
-| **Document Renderer** | http://localhost:3002 | PDF/Excel generation    | -           |
-| **LIXI Transform**    | http://localhost:3003 | LIXI format conversion  | -           |
-| **Submission Broker** | http://localhost:3004 | Lender integrations     | -           |
-| **GrapesJS Editor**   | http://localhost:3005 | Template editor         | -           |
-| **PII Redaction**     | http://localhost:3006 | Privacy compliance      | -           |
+| Service                | URL                   | Purpose                   | Technology                     |
+| ---------------------- | --------------------- | ------------------------- | ------------------------------ |
+| **Web Application**    | http://localhost:8000 | Primary user interface    | Next.js 15, React, TailwindCSS |
+| **Mobile Application** | Expo CLI              | Cross-platform mobile app | React Native, Expo             |
+| **Ingestion API**      | http://localhost:3001 | Main backend API          | NestJS, TypeScript             |
+| **Document Renderer**  | http://localhost:3002 | PDF/Excel generation      | Express, Puppeteer, ExcelJS    |
+| **LIXI Transform**     | http://localhost:3003 | LIXI format conversion    | Express, TypeScript            |
+| **Submission Broker**  | http://localhost:3004 | Lender integrations       | Express, TypeScript            |
+| **GrapesJS Server**    | http://localhost:3005 | Template editor           | Express, GrapesJS              |
+| **PII Redaction**      | http://localhost:3006 | Privacy compliance (planned) | Python, FastAPI, Presidio      |
 
-### Database & API Layer
+### Key Infrastructure Services
 
-| Service            | URL                   | Purpose                 | Credentials                       |
-| ------------------ | --------------------- | ----------------------- | --------------------------------- |
-| **PostgreSQL**     | localhost:5432        | Primary database        | lixit/lixit_dev_password          |
-| **PgBouncer**      | localhost:6432        | Connection pooling      | lixit/lixit_dev_password          |
-| **Redis**          | localhost:6379        | Caching & sessions      | -                                 |
-| **PostgREST**      | http://localhost:3008 | Auto-generated REST API | -                                 |
-| **Hasura GraphQL** | http://localhost:3009 | Real-time GraphQL API   | Admin secret: hasura_admin_secret |
-| **PostGraphile**   | http://localhost:3010 | GraphQL from Postgres   | -                                 |
+| Service                 | URL                    | Purpose            | Credentials              |
+| ----------------------- | ---------------------- | ------------------ | ------------------------ |
+| **PostgreSQL**          | localhost:5432         | Primary database   | lixit/lixit_dev_password |
+| **Redis**               | localhost:6379         | Caching & sessions | -                        |
+| **Grafana**             | http://localhost:3007  | Dashboards & monitoring | admin/admin              |
+| **Prometheus**          | http://localhost:9090  | Metrics collection | -                        |
+| **MinIO Console**       | http://localhost:9001  | Object storage     | minioadmin/minioadmin123 |
 
-### Database Management Tools
+## Package Scripts & Development Workflow
 
-| Service           | URL                   | Purpose              | Credentials             |
-| ----------------- | --------------------- | -------------------- | ----------------------- |
-| **pgAdmin**       | http://localhost:3011 | PostgreSQL web admin | admin@example.com/admin |
-| **Prisma Studio** | http://localhost:3012 | Modern database GUI  | -                       |
+This monorepo uses standardized Yarn scripts across all packages, orchestrated by Turbo for efficient parallel execution and caching.
 
-### API Documentation
+### Root Package Scripts
 
-| Service        | URL                   | Purpose               | Credentials |
-| -------------- | --------------------- | --------------------- | ----------- |
-| **Swagger UI** | http://localhost:3013 | Interactive REST docs | -           |
-| **Redoc**      | http://localhost:3014 | Alternative API docs  | -           |
-
-### Development Tools
-
-| Service       | URL                   | Purpose                 | Credentials |
-| ------------- | --------------------- | ----------------------- | ----------- |
-| **Storybook** | http://localhost:3015 | Component playground    | -           |
-| **SonarQube** | http://localhost:3016 | Code quality analysis   | admin/admin |
-| **Gitea**     | http://localhost:3017 | Self-hosted Git service | -           |
-| **MkDocs**    | http://localhost:8001 | Documentation site      | -           |
-
-### Infrastructure Services
-
-| Service                 | URL                    | Purpose                    | Credentials              |
-| ----------------------- | ---------------------- | -------------------------- | ------------------------ |
-| **Kong Gateway**        | http://localhost:8002  | API gateway                | Admin: localhost:8003    |
-| **Caddy**               | http://localhost:80    | Reverse proxy              | -                        |
-| **MinIO Console**       | http://localhost:9001  | Object storage admin       | minioadmin/minioadmin123 |
-| **RabbitMQ Management** | http://localhost:15672 | Message queue admin        | lixit/lixit_dev_password |
-| **Keycloak**            | http://localhost:8080  | Identity management        | admin/admin              |
-| **Docker Registry**     | http://localhost:5000  | Private container registry | -                        |
-
-### Observability Stack
-
-| Service          | URL                    | Purpose                    | Credentials |
-| ---------------- | ---------------------- | -------------------------- | ----------- |
-| **Grafana**      | http://localhost:3007  | Dashboards & visualization | admin/admin |
-| **Prometheus**   | http://localhost:9090  | Metrics collection         | -           |
-| **Jaeger**       | http://localhost:16686 | Distributed tracing        | -           |
-| **AlertManager** | http://localhost:9093  | Alert management           | -           |
-| **Loki**         | http://localhost:3100  | Log aggregation            | -           |
-
-### Search & Analytics
-
-| Service                   | URL                   | Purpose            | Credentials |
-| ------------------------- | --------------------- | ------------------ | ----------- |
-| **OpenSearch**            | http://localhost:9200 | Search & analytics | -           |
-| **OpenSearch Dashboards** | http://localhost:5601 | Data exploration   | -           |
-
-### Monitoring & Health
-
-| Service               | URL                   | Purpose              | Credentials |
-| --------------------- | --------------------- | -------------------- | ----------- |
-| **Node Exporter**     | http://localhost:9100 | Host metrics         | -           |
-| **Blackbox Exporter** | http://localhost:9115 | Synthetic monitoring | -           |
-| **Uptime Kuma**       | http://localhost:3018 | Status page          | -           |
-
-### Security & Compliance
-
-| Service     | URL                   | Purpose               | Credentials |
-| ----------- | --------------------- | --------------------- | ----------- |
-| **Trivy**   | http://localhost:8004 | Vulnerability scanner | -           |
-| **Step-CA** | http://localhost:9443 | Certificate authority | -           |
-
-### Development Support
-
-| Service     | URL                   | Purpose       | Credentials |
-| ----------- | --------------------- | ------------- | ----------- |
-| **MailHog** | http://localhost:8025 | Email testing | -           |
-
-## Development Workflow
-
-### Starting Services
+Run from project root to execute across all workspaces:
 
 ```bash
-# Start all services
+# Build all packages
+yarn build
+
+# Start all development servers
+yarn dev
+
+# Run all tests
+yarn test
+
+# Lint all packages
+yarn lint
+
+# Type check all packages
+yarn type-check
+
+# Format all code
+yarn format
+
+# Clean all build artifacts
+yarn clean
+```
+
+**Note**: npm is also supported but Yarn 4 is the project default for optimal performance and workspace management.
+
+### Makefile Commands
+
+```bash
+# Show all available commands
+make help
+
+# Initial project setup
+make setup
+
+# Start development environment (all services)
 make dev
 
-# Start specific service groups
-docker compose up -d postgres redis minio  # Core infrastructure
-docker compose up -d api web                # Application services
-docker compose up -d prometheus grafana     # Monitoring stack
-```
+# Start production-like environment
+make prod
 
-### Stopping Services
-
-```bash
-# Stop all services
-make clean
-
-# Stop specific services
-docker compose down api web
-```
-
-### Viewing Logs
-
-```bash
-# View all logs
-docker compose logs -f
-
-# View specific service logs
-docker compose logs -f api
-docker compose logs -f postgres
-
-# View logs in Grafana
-# Visit http://localhost:3007 → Explore → Loki
-```
-
-### Database Operations
-
-```bash
-# Connect to PostgreSQL
-docker compose exec postgres psql -U lixit -d lixit
-
-# Connect via pgAdmin
-# Visit http://localhost:3011
-# Add server: postgres:5432, lixit/lixit_dev_password
-
-# Browse data with Prisma Studio
-# Visit http://localhost:3012
-```
-
-### API Development
-
-```bash
-# Test REST API
-curl http://localhost:3001/api/health
-
-# Explore GraphQL API
-# Visit http://localhost:3009 (Hasura Console)
-# Visit http://localhost:3010/graphiql (PostGraphile)
-
-# View API documentation
-# Visit http://localhost:3013 (Swagger UI)
-# Visit http://localhost:3014 (Redoc)
-```
-
-### Code Quality & Testing
-
-```bash
-# Run tests
+# Run all tests
 make test
 
-# Check code quality
-# Visit http://localhost:3016 (SonarQube)
-
-# Lint code
+# Run linting
 make lint
+
+# Clean up containers and volumes
+make clean
+
+# Install dependencies
+make install
+
+# Build all packages
+make build
 
 # Format code
 make format
 
-# Type checking
+# Type check all packages
 make type-check
 ```
 
-### Component Development
+### Service-Specific Scripts
 
 ```bash
-# Start Storybook
-npm run storybook
-# Visit http://localhost:3015
+# Start individual applications
+yarn web      # Next.js web app on port 8000
+yarn mobile   # Expo mobile app
+yarn api      # NestJS Ingestion API in development mode
 
-# Develop components in isolation
-# Edit files in packages/ui-kit/src/components/
+# Component development
+yarn storybook        # Start Storybook on port 3015
+yarn build-storybook  # Build static Storybook
+
+# Mobile builds
+yarn build:android    # Build Android APK
 ```
 
-## Configuration
+## Development Workflow
 
-### Environment Variables
+### 1. Environment Setup
 
-Create `.env.local` files in service directories for custom configuration:
+```bash
+# Full stack development
+make setup && make dev
+
+# Individual service development
+cd services/ingestion-api && yarn dev
+cd apps/web && yarn dev
+```
+
+### 2. Database Development
+
+```bash
+# Connect to PostgreSQL directly
+docker compose exec postgres psql -U lixit -d lixit
+
+# Use pgAdmin web interface
+# Visit http://localhost:3011
+# Server: postgres, Port: 5432, User: lixit, Password: lixit_dev_password
+
+# Browse data with Prisma Studio
+# Visit http://localhost:3012
+
+# Auto-generated APIs
+# REST: http://localhost:3008
+# GraphQL: http://localhost:3009 (Hasura)
+# GraphQL: http://localhost:3010/graphiql (PostGraphile)
+```
+
+### 3. API Development
+
+```bash
+# Test Ingestion API
+curl http://localhost:3001/api/health
+
+# Interactive API documentation
+# Swagger UI: http://localhost:3013
+# Redoc: http://localhost:3014
+
+# GraphQL development
+# Hasura Console: http://localhost:3009
+# PostGraphile: http://localhost:3010/graphiql
+```
+
+### 4. Frontend Development
+
+```bash
+# Web development with hot reloading
+yarn web
+
+# Component development
+yarn storybook
+
+# Mobile development
+yarn mobile
+```
+
+### 5. Testing & Quality
+
+```bash
+# Run all tests
+make test
+
+# Individual package tests
+cd packages/core && yarn test
+
+# Code quality analysis
+# Visit http://localhost:3016 (SonarQube)
+
+# Vulnerability scanning
+# Visit http://localhost:8004 (Trivy)
+```
+
+### 6. Monitoring & Debugging
+
+```bash
+# System monitoring
+# Visit http://localhost:3007 (Grafana)
+
+# Log analysis
+# Visit http://localhost:3007 → Explore → Loki
+
+# Distributed tracing
+# Visit http://localhost:16686 (Jaeger)
+
+# Service health
+# Visit http://localhost:3018 (Uptime Kuma)
+```
+
+## Mobile Development
+
+### Setup
+
+```bash
+# Install Expo CLI globally (if not using DevContainer)
+yarn global add @expo/cli
+
+# Start mobile development
+yarn mobile
+
+# Build Android APK
+yarn build:android
+```
+
+### OTA Updates
+
+The mobile app supports Over-The-Air updates via EAS:
+
+- **Dev channel**: For development builds
+- **Preview channel**: For internal testing
+- **Prod channel**: For production releases
+
+## Production Deployment
+
+### Local Production Environment
+
+```bash
+# Start production-like environment
+make prod
+
+# Scale services for load testing
+docker compose up --scale web=2 --scale api=2
+```
+
+### Environment Configuration
+
+Create `.env.local` files in service directories:
 
 ```bash
 # services/ingestion-api/.env.local
-DATABASE_URL=postgres://lixit:lixit_dev_password@postgres:5432/lixit
-REDIS_URL=redis://redis:6379
-S3_ENDPOINT=http://minio:9000
+DATABASE_URL=postgresql://user:pass@host:5432/db
+REDIS_URL=redis://host:6379
+S3_ENDPOINT=https://your-s3-endpoint
+S3_ACCESS_KEY=your-access-key
+S3_SECRET_KEY=your-secret-key
 ```
 
-### Service Configuration
+## Security & Compliance
 
-Most services are configured via environment variables in `docker-compose.yml`. Key configuration files:
+### Automated Security Scanning
 
-- `observability/prometheus/prometheus.yml` - Metrics collection
-- `observability/grafana/provisioning/` - Dashboard configuration
-- `observability/loki/loki-config.yml` - Log aggregation
-- `observability/caddy/Caddyfile` - Reverse proxy rules
+- **Container Scanning**: Trivy scans all Docker images
+- **Dependency Scanning**: Automated vulnerability detection via `yarn audit`
+- **Code Quality**: SonarQube for security analysis
+- **License Compliance**: Automated license scanning
 
-### Resource Limits
+### SBOM Generation
 
-All services have memory and CPU limits configured. Adjust in `docker-compose.yml` if needed:
-
-```yaml
-services:
-  api:
-    mem_limit: 512m # Increase if needed
-    cpus: 1.0 # Adjust CPU allocation
+```bash
+# Generate Software Bill of Materials
+yarn dlx @cyclonedx/cdxgen -t js -o sbom.json --profile research . -p
 ```
+
+### Certificate Management
+
+- **Development**: Automatic mkcert certificates
+- **Production**: Step-CA for internal services
+- **Public**: Let's Encrypt via Caddy
 
 ## Troubleshooting
 
@@ -269,11 +326,25 @@ services:
 **Port conflicts:**
 
 ```bash
-# Check what's using a port
-lsof -i :8000
-
-# Stop conflicting services
+# Stop all services
 make clean
+
+# Check port usage
+lsof -i :8000  # or other port numbers
+
+# Kill conflicting processes
+sudo kill -9 $(lsof -t -i:8000)
+```
+
+**Docker issues:**
+
+```bash
+# Reset Docker environment
+docker system prune -a
+docker volume prune
+
+# Rebuild containers
+docker compose build --no-cache
 ```
 
 **Memory issues:**
@@ -282,7 +353,7 @@ make clean
 # Check Docker memory usage
 docker stats
 
-# Increase Docker memory in Docker Desktop settings
+# Increase Docker memory in Docker Desktop
 # Or adjust service limits in docker-compose.yml
 ```
 
@@ -301,51 +372,114 @@ docker volume rm lixit_postgres_data
 docker compose up -d postgres
 ```
 
-**Service startup failures:**
+### Performance Optimization
+
+**Build performance:**
 
 ```bash
-# Check service logs
-docker compose logs <service-name>
+# Use Turbo cache for faster builds
+yarn build  # Subsequent builds will be cached
 
-# Restart specific service
-docker compose restart <service-name>
+# Parallel builds
+yarn build --parallel
+```
 
-# Rebuild service
-docker compose build --no-cache <service-name>
+**Development performance:**
+
+```bash
+# Start only core services
+docker compose up -d postgres redis minio api web
+
+# Add monitoring when needed
+docker compose up -d prometheus grafana
 ```
 
 ### Health Checks
 
-Most services include health checks. Check service status:
+Check service health:
 
 ```bash
-# View service health
+# View all service status
 docker compose ps
 
 # Check specific service health
-curl http://localhost:3001/health  # API health
-curl http://localhost:9090/-/healthy  # Prometheus health
+curl http://localhost:3001/health      # Ingestion API health
+curl http://localhost:9090/-/healthy   # Prometheus health
+curl http://localhost:3100/ready       # Loki health
 ```
 
-### Performance Monitoring
+### Log Analysis
 
-Monitor system performance via Grafana dashboards:
+```bash
+# View service logs
+docker compose logs -f api
+docker compose logs -f postgres
 
-1. Visit http://localhost:3007
-2. Login with admin/admin
-3. Browse pre-configured dashboards:
-   - System Overview
-   - Application Metrics
-   - Database Performance
-   - Infrastructure Monitoring
+# Centralized logging via Grafana
+# Visit http://localhost:3007 → Explore → Loki
+```
 
-## Next Steps
+## Architecture Overview
 
-1. **Explore the Web App** - Visit http://localhost:8000
-2. **Check System Health** - Visit http://localhost:3007 (Grafana)
-3. **Browse APIs** - Visit http://localhost:3013 (Swagger UI)
-4. **Develop Components** - Visit http://localhost:3015 (Storybook)
-5. **Monitor Logs** - Visit http://localhost:3007 → Explore → Loki
-6. **Manage Database** - Visit http://localhost:3011 (pgAdmin)
+### Monorepo Structure
 
-For production deployment, see the [Deployment Guide](deployment.md).
+```
+/
+├── apps/                    # Applications
+│   ├── web/                # Next.js web app
+│   └── mobile/             # Expo mobile app
+├── packages/               # Shared packages
+│   ├── core/              # Business logic
+│   └── ui-kit/            # Shared UI components
+├── services/              # Microservices
+│   ├── ingestion-api/     # Main Ingestion API (NestJS)
+│   ├── doc-renderer/      # Document generation (planned)
+│   ├── lixi-transform/    # LIXI transformations (planned)
+│   ├── submission-broker/ # Lender integrations (planned)
+│   ├── grapesjs-server/   # Template editor
+│   └── pii-redaction/     # Privacy compliance (planned)
+├── observability/         # Monitoring configuration
+├── dockerfiles/           # Container definitions
+└── docs/                  # Documentation
+```
+
+### Technology Stack Summary
+
+- **Frontend**: Next.js 15, React, TailwindCSS, React Native/Expo
+- **Backend**: NestJS, Express, FastAPI (Python)
+- **Database**: PostgreSQL 15 + PgBouncer, Redis 7, OpenSearch
+- **Storage**: MinIO (S3-compatible)
+- **API Layer**: REST, GraphQL (Hasura, PostGraphile), PostgREST
+- **Gateway**: Kong API Gateway, Caddy reverse proxy
+- **Observability**: Prometheus, Grafana, Loki, Jaeger, OpenTelemetry
+- **Security**: Trivy, SonarQube, Step-CA
+- **Development**: Storybook, pgAdmin, Prisma Studio, Swagger UI
+- **Infrastructure**: Docker, RabbitMQ, Keycloak
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Make your changes with hot reloading active
+4. Run tests: `make test`
+5. Check code quality: `make lint && make type-check`
+6. Submit a pull request
+
+The CI pipeline automatically:
+
+- Runs tests and type checking
+- Scans for vulnerabilities and license compliance
+- Generates SBOM (Software Bill of Materials)
+- Builds and tests Docker images
+
+## Support & Resources
+
+- **Documentation**: http://localhost:8001 (MkDocs)
+- **System Health**: http://localhost:3007 (Grafana)
+- **API Documentation**: http://localhost:3013 (Swagger UI)
+- **Component Library**: http://localhost:3015 (Storybook)
+- **Code Quality**: http://localhost:3016 (SonarQube)
+- **Database Admin**: http://localhost:3011 (pgAdmin)
+- **Log Analysis**: http://localhost:3007 → Explore → Loki
+
+This comprehensive setup provides everything needed for modern full-stack development with production-grade infrastructure, monitoring, and security.

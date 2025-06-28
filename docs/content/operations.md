@@ -17,7 +17,7 @@ This guide covers operational procedures for the LIXIT platform, including backu
 
 ```bash
 # Create immediate backup
-docker compose exec backup /backup.sh
+docker compose exec postgres pg_dumpall -U lixit > ./backups/backup_$(date +%Y%m%d_%H%M%S).sql
 
 # Verify backup integrity
 gunzip -t ./backups/backup_YYYYMMDD_HHMMSS.sql.gz
@@ -31,7 +31,7 @@ docker compose down
 
 # Restore from backup
 gunzip -c ./backups/backup_YYYYMMDD_HHMMSS.sql.gz | \
-  docker compose exec -T postgres psql -U lixit
+  docker compose exec -T postgres psql -U lixit -d lixit
 
 # Start services
 docker compose up -d
@@ -65,9 +65,9 @@ Monthly restore testing is automated in CI/CD:
 
 ### Dashboards
 
-- **System Overview**: http://localhost:3000/d/system
-- **Application Metrics**: http://localhost:3000/d/app
-- **Infrastructure**: http://localhost:3000/d/infra
+- **System Overview**: http://localhost:3007/d/system
+- **Application Metrics**: http://localhost:3007/d/app
+- **Infrastructure**: http://localhost:3007/d/infra
 
 ## Security Operations
 
@@ -102,7 +102,7 @@ Monthly restore testing is automated in CI/CD:
 ### Scaling Guidelines
 
 - **Web App**: Scale horizontally (multiple instances)
-- **API**: Scale horizontally with load balancer
+- **Ingestion API**: Scale horizontally with load balancer
 - **Database**: Vertical scaling first, then read replicas
 - **Storage**: MinIO scales with additional volumes
 

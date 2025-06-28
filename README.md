@@ -44,7 +44,31 @@ The system should create multiple formats for each submission:
 
 ## Lender Integration
 
-The system should supports multiple lenders with customized transformers:
+The system should support multiple lenders with customized transformers:
 
 - Each lender may have specific LIXI requirements and integration methods
 - Supports both synchronous and asynchronous submission paths
+
+## Documentation & Resources
+
+- **[Architecture Guide](docs/content/architecture.md)** - System design and service catalog
+- **[Installation Guide](docs/content/installation.md)** - Development environment setup
+- **[Deployment Guide](docs/content/deployment.md)** - Production deployment procedures
+- **[Operations Guide](docs/content/operations.md)** - Monitoring, backup, and maintenance
+
+## Quick Start
+
+```bash
+# Clone and setup
+git clone <repository-url>
+cd lixit
+make setup
+
+# Start development environment
+make dev
+
+# Access web application
+open http://localhost:8000
+```
+
+For detailed setup instructions, see the [Installation Guide](docs/content/installation.md).

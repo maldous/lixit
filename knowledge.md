@@ -13,18 +13,20 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 - **Production Ready**: Complete observability, security, and deployment pipeline
 - **Developer Experience First**: Comprehensive tooling for development velocity
 
-### Complete Service Catalog (40+ Services)
+## Service Catalog
+
+For the complete service catalog with all ports and implementation status, see the [Architecture Guide](docs/content/architecture.md#service-catalog--port-matrix).
 
 ### Core Application Services (8 services)
 
 - **Web App** (Next.js, port 8000) - Primary user interface
-- **Mobile App** (React Native/Expo) - Cross-platform mobile application
-- **Ingestion API** (NestJS, port 3001) - Main backend API with authentication
-- **Document Renderer** (Express, port 3002) - PDF/Excel generation service
-- **LIXI Transform** (Express, port 3003) - LIXI format transformation
-- **Submission Broker** (Express, port 3004) - Lender integration service
+- **Mobile App** (React Native/Expo) - Cross-platform mobile application (planned)
+- **Ingestion API** (NestJS, port 3001 dev / 3000 prod) - Main backend API with authentication
+- **Document Renderer** (Express, port 3002) - PDF/Excel generation service (planned)
+- **LIXI Transform** (Express, port 3003) - LIXI format transformation (planned)
+- **Submission Broker** (Express, port 3004) - Lender integration service (planned)
 - **GrapesJS Server** (Express, port 3005) - Template editor service
-- **PII Redaction** (Python/FastAPI, port 3006) - Privacy compliance service
+- **PII Redaction** (Python/FastAPI, port 3006) - Privacy compliance service (planned)
 
 ### Database & Storage Layer (6 services)
 
@@ -98,7 +100,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 ### Frontend Technologies
 
 - **Next.js 15** - React framework with SSR/SSG and App Router
-- **React Native/Expo** - Cross-platform mobile development
+- **React Native/Expo** - Cross-platform mobile development (planned)
 - **TailwindCSS** - Utility-first CSS framework
 - **TypeScript** - Type-safe JavaScript development
 - **Storybook** - Component development and documentation
@@ -107,9 +109,9 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 
 - **NestJS** - Node.js framework with decorators and dependency injection
 - **Express** - Lightweight Node.js web framework for microservices
-- **FastAPI** - Modern Python framework for ML/AI services
+- **FastAPI** - Modern Python framework for ML/AI services (planned)
 - **TypeScript** - Primary language for all Node.js services
-- **Python** - For PII redaction and ML services
+- **Python** - For PII redaction and ML services (planned)
 
 ### Database Technologies
 
@@ -147,7 +149,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 
 ### 🔧 Business Logic Implementation Needed
 
-#### 1. File Generation Services
+#### 1. File Generation Services (Planned)
 
 **Location**: `packages/core/src/services/file-generation.ts`, `services/doc-renderer/`
 **Current State**: Framework exists, implementations are placeholders
@@ -157,7 +159,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 - PDF generation using Puppeteer with branded templates
 - JSON validation and formatting
 
-#### 2. Document Categorization
+#### 2. Document Categorization (Planned)
 
 **Location**: `packages/core/src/services/document-categorization.ts`
 **Current State**: Rule-based placeholder implementation
@@ -167,7 +169,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 - ML classification model for document types
 - Data extraction from bank statements, payslips, tax returns
 
-#### 3. Lender Transformers
+#### 3. Lender Transformers (Planned)
 
 **Location**: `packages/core/src/transformers/`
 **Current State**: Base transformer class exists, no lender-specific implementations
@@ -177,7 +179,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 - Custom field mappings per lender
 - Integration endpoints and authentication methods
 
-#### 4. Web Application Business Logic
+#### 4. Web Application Business Logic (Planned)
 
 **Location**: `apps/web/`
 **Current State**: Basic Next.js setup with placeholder page
@@ -188,7 +190,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 - Submission status dashboard
 - Lender selection and configuration
 
-#### 5. Mobile Application
+#### 5. Mobile Application (Planned)
 
 **Location**: `apps/mobile/`
 **Current State**: Basic Expo setup with placeholder screen
@@ -199,7 +201,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 - Push notifications for status updates
 - Biometric authentication
 
-#### 6. PII Redaction Service
+#### 6. PII Redaction Service (Planned)
 
 **Location**: `services/pii-redaction/`
 **Current State**: Not implemented
@@ -211,7 +213,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 - Consent management for data processing
 - GDPR/privacy compliance features
 
-#### 7. Event Bus Integration
+#### 7. Event Bus Integration (Planned)
 
 **Location**: `docker-compose.yml`, service configurations
 **Current State**: Not implemented
@@ -221,7 +223,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 - Implement event-driven architecture for submissions
 - Add event handlers for status updates and notifications
 
-#### 8. Database Migrations
+#### 8. Database Migrations (Planned)
 
 **Location**: `database/migrations/`
 **Current State**: Basic setup exists
@@ -231,7 +233,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 - Create migration scripts for LIXI schema
 - Add rollback procedures and testing
 
-#### 9. API Versioning
+#### 9. API Versioning (Planned)
 
 **Location**: `services/ingestion-api/`
 **Current State**: Single version API
@@ -241,7 +243,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 - Maintain backward compatibility
 - Version-specific transformers and validation
 
-#### 10. Component Visual Testing
+#### 10. Component Visual Testing (Planned)
 
 **Location**: `apps/web/.storybook/`
 **Current State**: Basic Storybook setup
@@ -310,7 +312,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 
 - **Vulnerability Scanning**: Trivy scans all containers and dependencies
 - **Certificate Management**: Automated TLS certificate provisioning
-- **PII Compliance**: Automated detection and redaction of sensitive data
+- **PII Compliance**: Automated detection and redaction of sensitive data (planned)
 - **Access Control**: Keycloak for centralized identity management
 - **Rate Limiting**: Kong Gateway with configurable rate limits
 
@@ -340,7 +342,7 @@ LIXIT is a modern LIXI (Lending and Investment eXchange Initiative) loan submiss
 
 ### External Services
 
-- **Lender APIs**: Configurable integration endpoints
+- **Lender APIs**: Configurable integration endpoints (planned)
 - **Document Storage**: S3-compatible via MinIO
 - **Email**: SMTP via MailHog (development) or external provider
 - **Authentication**: OAuth2/OIDC via Keycloak

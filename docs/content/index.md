@@ -20,20 +20,23 @@ LIXIT provides a full-stack solution for loan origination and submission, built 
 - [Architecture Overview](architecture.md) - System design and components
 - [API Reference](api.md) - REST and GraphQL API documentation
 - [Operations Guide](operations.md) - Monitoring, backup, and maintenance
-- [Deployment Guide](deployment.md) - Production deployment procedures
+- [Deployment Guide](deployment-plan.md) - Production deployment procedures
+- [Contributing Guide](contributing.md) - Development guidelines and setup
 
 ## Service Catalog
+
+For the complete service catalog with all ports and implementation status, see the [Architecture Guide](architecture.md#service-catalog--port-matrix).
 
 ### Core Application Services
 
 - **Web Application** (port 8000) - Next.js frontend
-- **Mobile Application** - React Native/Expo mobile app
-- **Ingestion API** (port 3001) - Main NestJS API backend
-- **Document Renderer** (port 3002) - PDF/Excel generation service
-- **LIXI Transform** (port 3003) - LIXI format transformation service
-- **Submission Broker** (port 3004) - Lender integration service
+- **Mobile Application** - React Native/Expo mobile app (planned)
+- **Ingestion API** (port 3001 dev, 3000 prod) - Main NestJS API backend
+- **Document Renderer** (port 3002) - PDF/Excel generation service (planned)
+- **LIXI Transform** (port 3003) - LIXI format transformation service (planned)
+- **Submission Broker** (port 3004) - Lender integration service (planned)
 - **GrapesJS Server** (port 3005) - Template editor service
-- **PII Redaction** (port 3006) - Privacy compliance service
+- **PII Redaction** (port 3006) - Privacy compliance service (planned)
 
 ### Database & API Layer
 
@@ -124,7 +127,7 @@ LIXIT provides a full-stack solution for loan origination and submission, built 
 
 - Automated vulnerability scanning
 - Certificate management with Step-CA
-- PII redaction and privacy compliance
+- PII redaction and privacy compliance (planned)
 - Rate limiting and authentication
 
 ### Developer Experience
@@ -146,7 +149,7 @@ For detailed setup instructions, see [Installation Guide](installation.md).
 ## Support & Resources
 
 - **Documentation**: Complete guides for all components
-- **Monitoring**: Real-time system health via Grafana
+- **Monitoring**: Real-time system health via Grafana (port 3007)
 - **API Docs**: Interactive documentation via Swagger UI
 - **Component Library**: Design system via Storybook
 - **Code Quality**: Continuous analysis via SonarQube
