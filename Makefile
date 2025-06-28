@@ -45,7 +45,7 @@ docker-config:
 	fi
 
 base-image: docker-config | $(CACHE_DIR)
-	docker buildx build \
+	@docker buildx build \
 	  --load \
 	  --compress \
 	  --progress=plain \
@@ -55,7 +55,7 @@ base-image: docker-config | $(CACHE_DIR)
 	  -f $(DOCKERFILE_BASE) \
 	  -t $(BASE_TAG) .
 
-dev: build base-image ; docker compose --profile dev up -d --remove-orphans
+dev: build base-image ; @docker compose --profile dev up -d --remove-orphans
 
 prod: build base-image ; @docker compose --profile prod up -d --remove-orphans
 
