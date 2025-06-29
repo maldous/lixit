@@ -1,10 +1,26 @@
 x-node-args: &node-args
   NODE_MAJOR: "${NODE_MAJOR:-24}"
 
+x-build-env: &build-env
+  DOCKER_BUILDKIT: 1
+  BUILDKIT_PROGRESS: plain
+  BUILDKIT_INLINE_CACHE: 1
+
 services:
   postgres:
     image: postgres:15-alpine
-    command: ["postgres","-c","password_encryption=md5"]
+    command: [
+      "postgres",
+      "-c", "password_encryption=md5",
+      "-c", "shared_buffers=256MB",
+      "-c", "effective_cache_size=1GB",
+      "-c", "maintenance_work_mem=64MB",
+      "-c", "checkpoint_completion_target=0.9",
+      "-c", "wal_buffers=16MB",
+      "-c", "default_statistics_target=100",
+      "-c", "random_page_cost=1.1",
+      "-c", "effective_io_concurrency=200"
+    ]
     environment:
       POSTGRES_DB: lixit
       POSTGRES_USER: lixit
@@ -206,7 +222,15 @@ services:
 
   redis:
     image: redis:7-alpine
-    command: redis-server --appendonly yes
+    command: [
+      "redis-server",
+      "--appendonly", "yes",
+      "--maxmemory", "128mb",
+      "--maxmemory-policy", "allkeys-lru",
+      "--save", "900", "1",
+      "--save", "300", "10",
+      "--save", "60", "10000"
+    ]
     volumes: [redis_data:/data]
     healthcheck:
       test: ["CMD","redis-cli","ping"]
