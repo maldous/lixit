@@ -4,7 +4,5 @@
     "buildkit": true,
     "containerd-snapshotter": true
   },
-  "registry-mirrors": [
-    "http://localhost:5000"
-  ]
+  "registry-mirrors": ["http://localhost:5000"]
 }
