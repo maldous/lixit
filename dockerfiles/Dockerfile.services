@@ -12,9 +12,12 @@ ARG SERVICE
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # Copy root-level config files if present
 COPY .npmrc* ./
-RUN mkdir -p services/${SERVICE} packages/core
+
+# Copy workspace libs this service depends on
+RUN mkdir -p services/${SERVICE} packages/core packages/ui-kit
 COPY services/${SERVICE}/package.json ./services/${SERVICE}/
 COPY packages/core/package.json ./packages/core/
+COPY packages/ui-kit/package.json ./packages/ui-kit/
 
 # Install all dependencies (including dev) with cache mount
 RUN --mount=type=cache,id=pnpm-store-${NODE_MAJOR}-${SERVICE},target=/root/.pnpm-store,sharing=locked \

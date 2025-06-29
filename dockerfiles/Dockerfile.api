@@ -10,9 +10,12 @@ ARG NODE_MAJOR
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # Copy root-level config files if present
 COPY .npmrc* ./
-RUN mkdir -p services/ingestion-api packages/core
+
+# Copy workspace libs this service depends on
+RUN mkdir -p services/ingestion-api packages/core packages/ui-kit
 COPY services/ingestion-api/package.json ./services/ingestion-api/
 COPY packages/core/package.json ./packages/core/
+COPY packages/ui-kit/package.json ./packages/ui-kit/
 
 # Install all dependencies with cache mount
 RUN --mount=type=cache,id=pnpm-store-${NODE_MAJOR}-ingestion-api,target=/root/.pnpm-store,sharing=locked \
