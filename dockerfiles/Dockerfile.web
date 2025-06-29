@@ -1,6 +1,5 @@
 # syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
-FROM lixit/base-deps:${NODE_MAJOR} AS deps
 FROM lixit/base-deps:${NODE_MAJOR} AS build
 ENV PNPM_STORE_PATH=/root/.pnpm-store
 WORKDIR /repo
@@ -8,16 +7,18 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/core ./packages/core
 COPY packages/ui-kit ./packages/ui-kit
 COPY apps/web ./apps/web
-COPY --from=deps /repo/node_modules ./node_modules
-RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH pnpm --filter @lixit/web run build
+RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH \
+  pnpm install --frozen-lockfile --prod --filter @lixit/web
+RUN pnpm --filter @lixit/web run build
 FROM node:${NODE_MAJOR}-alpine
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs -u 1001
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=deps /repo/node_modules ./node_modules
+COPY --from=build /repo/node_modules ./node_modules
 COPY --from=build /repo/apps/web/public ./public
 COPY --from=build /repo/apps/web/.next/standalone ./
 COPY --from=build /repo/apps/web/.next/static ./apps/web/.next/static
 USER nextjs
 EXPOSE 3000
 CMD ["node","apps/web/server.js"]
+
