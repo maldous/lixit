@@ -12,10 +12,9 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY .npmrc* ./
 
 # Copy workspace libs this service depends on
-RUN mkdir -p services/ingestion-api packages/core packages/ui-kit
+RUN mkdir -p services/ingestion-api packages/core
 COPY services/ingestion-api/package.json ./services/ingestion-api/
 COPY packages/core/package.json ./packages/core/
-COPY packages/ui-kit/package.json ./packages/ui-kit/
 
 # Install all dependencies with cache mount
 RUN --mount=type=cache,id=pnpm-store-${NODE_MAJOR}-ingestion-api,target=/root/.pnpm-store,sharing=locked \
@@ -31,6 +30,9 @@ RUN pnpm --filter @lixit/ingestion-api run build
 #FROM deps AS prod-deps
 #RUN pnpm prune --filter @lixit/ingestion-api --prod
 
+FROM deps AS prod-deps
+RUN pnpm install --filter @lixit/ingestion-api --prod --prefer-offline
+
 # Runtime stage
 FROM node:${NODE_MAJOR}-alpine AS runtime
 RUN addgroup -S nodejs && adduser -S nestjs -G nodejs -u1001
@@ -39,7 +41,7 @@ ENV NODE_ENV=production
 
 COPY --from=build /app/services/ingestion-api/dist ./dist
 COPY --from=build /app/services/ingestion-api/package.json ./
-#COPY --from=prod-deps /app/node_modules ./node_modules
+COPY --from=prod-deps /app/node_modules ./node_modules
 
 USER nestjs
 EXPOSE 3000
