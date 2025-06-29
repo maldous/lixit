@@ -88,7 +88,7 @@ docker run -d \
   --restart=always \
   -p 5000:5000 \
   -v registry_data:/var/lib/registry \
-  -v "registry_data_config.yml":/etc/docker/registry/config.yml:ro \
+  -v "$PWD/registry_data_config.yml":/etc/docker/registry/config.yml:ro \
   registry:2
 
 docker volume create registry_write_data >/dev/null 2>&1 || true
