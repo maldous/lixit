@@ -1,8 +1,9 @@
 # syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
+ARG REGISTRY_CACHE=localhost:5001/lixit-cache
 
 # Deps stage - all dependencies for building
-FROM lixit/base-deps:${NODE_MAJOR} AS deps
+FROM ${REGISTRY_CACHE}/base-deps:${NODE_MAJOR} AS deps
 
 # Copy only package manifests
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
