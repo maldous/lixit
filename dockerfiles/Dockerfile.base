@@ -4,10 +4,7 @@ FROM node:${NODE_MAJOR}-alpine AS deps
 ENV PNPM_STORE_PATH=/root/.pnpm-store
 RUN apk add --no-cache python3 make g++ && corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /repo
-
-# Copy package.json files first for better caching
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
 COPY apps/web/package.json            apps/web/
 COPY apps/mobile/package.json         apps/mobile/
 COPY packages/core/package.json       packages/core/
@@ -17,8 +14,4 @@ COPY services/doc-renderer/package.json    services/doc-renderer/
 COPY services/grapesjs-server/package.json services/grapesjs-server/
 COPY services/submission-broker/package.json services/submission-broker/
 COPY services/lixi-transform/package.json services/lixi-transform/
-
-# Install dependencies with cache mount
 RUN --mount=type=cache,id=pnpm-cache,target=/root/.pnpm-store pnpm install --frozen-lockfile
-
-# Don't copy source code here - let individual services copy only what they need

@@ -1,27 +1,23 @@
 # syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
 FROM lixit/base-deps:${NODE_MAJOR} AS deps
-
-FROM node:${NODE_MAJOR}-alpine AS build
+FROM lixit/base-deps:${NODE_MAJOR} AS build
 ENV PNPM_STORE_PATH=/root/.pnpm-store
-RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /repo
 COPY --from=deps /repo/node_modules ./node_modules
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
-# Only copy the packages this service actually needs
 COPY packages/core ./packages/core
 COPY services/grapesjs-server ./services/grapesjs-server
-
-RUN --mount=type=cache,id=pnpm-cache,target=/root/.pnpm-store pnpm --workspace=@lixit/grapesjs-server run build
-
+RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH pnpm --filter @lixit/grapesjs-server run build
 FROM node:${NODE_MAJOR}-alpine
+ENV PNPM_STORE_PATH=/root/.pnpm-store
 RUN addgroup -S nodejs && adduser -S grapesjs -G nodejs -u 1001
 WORKDIR /app
 ENV NODE_ENV=production
+COPY --from=deps  /root/.pnpm-store $PNPM_STORE_PATH
+COPY --from=deps  /repo/node_modules   ./node_modules
 COPY --from=build /repo/services/grapesjs-server/dist ./dist
 COPY --from=build /repo/services/grapesjs-server/package.json ./
-COPY --from=deps /repo/node_modules ./node_modules
 USER grapesjs
 EXPOSE 3000
 CMD ["node","dist/main.js"]

@@ -1,26 +1,18 @@
 # syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
 FROM lixit/base-deps:${NODE_MAJOR} AS deps
-
-FROM node:${NODE_MAJOR}-alpine AS build
+FROM lixit/base-deps:${NODE_MAJOR} AS build
 ENV PNPM_STORE_PATH=/root/.pnpm-store
-RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /repo
-COPY --from=deps /repo/node_modules ./node_modules
-COPY package.json package-lock.json* ./
-
-# Copy packages needed for Storybook
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/ui-kit ./packages/ui-kit
-
-# Build Storybook from ui-kit package
+COPY --from=deps /repo/node_modules ./node_modules
 WORKDIR /repo/packages/ui-kit
-RUN --mount=type=cache,id=pnpm-cache,target=/root/.pnpm-store pnpm run build-storybook
-
+RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH pnpm run build-storybook
 FROM node:${NODE_MAJOR}-alpine
-RUN addgroup -S nodejs && adduser -S storybook -G nodejs -u 1001 && \
-    pnpm add -g serve
+RUN addgroup -S nodejs && adduser -S storybook -G nodejs -u 1001
 WORKDIR /app
 COPY --from=build /repo/packages/ui-kit/storybook-static ./storybook-static
 USER storybook
 EXPOSE 6006
-CMD ["serve", "-s", "storybook-static", "-l", "6006"]
+CMD ["npx","serve","-s","storybook-static","-l","6006"]

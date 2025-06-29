@@ -1,24 +1,14 @@
 # syntax=docker/dockerfile:1.4
 FROM caddy:builder AS builder
-
-# Build Caddy with rate limiting module
 RUN --mount=type=cache,id=go-mod,target=/go/pkg/mod \
     --mount=type=cache,id=go-build,target=/root/.cache/go-build \
     xcaddy build \
     --with github.com/RussellLuo/caddy-ext/ratelimit
-
 FROM caddy:alpine
-
-# Install mkcert for local development
 RUN apk add --no-cache curl && \
     curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64" && \
     chmod +x mkcert-v*-linux-amd64 && \
     mv mkcert-v*-linux-amd64 /usr/local/bin/mkcert
-
-# Copy custom Caddy binary with rate limiting support
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
-
-# Copy custom Caddyfile
 COPY observability/caddy/Caddyfile /etc/caddy/Caddyfile
-
 EXPOSE 80 443
