@@ -1,17 +1,32 @@
 # syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
-FROM lixit/base-deps:${NODE_MAJOR} AS build
-ENV PNPM_STORE_PATH=/root/.pnpm-store
-WORKDIR /repo
+
+# Deps stage - all dependencies for building
+FROM lixit/base-deps:${NODE_MAJOR} AS deps
+
+# Copy package manifests
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Copy root-level config files if present
+COPY .npmrc* ./
+RUN mkdir -p packages/ui-kit
+COPY packages/ui-kit/package.json ./packages/ui-kit/
+
+# Install all dependencies with cache mount (Storybook needs dev deps)
+RUN --mount=type=cache,id=pnpm-store-${NODE_MAJOR}-ui-kit,target=/root/.pnpm-store,sharing=locked \
+    pnpm install --filter @lixit/ui-kit --prefer-offline
+
+# Build stage
+FROM deps AS build
 COPY packages/ui-kit packages/ui-kit/
-RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH pnpm install --frozen-lockfile
 RUN pnpm --filter @lixit/ui-kit run build-storybook
-FROM node:${NODE_MAJOR}-alpine
+
+# Runtime stage - parameterized Node version
+FROM node:${NODE_MAJOR}-alpine AS runtime
 RUN addgroup -S nodejs && adduser -S storybook -G nodejs -u1001
 WORKDIR /app
-COPY --from=build /repo/packages/ui-kit/storybook-static ./storybook-static
+
+COPY --from=build /app/packages/ui-kit/storybook-static ./storybook-static
+
 USER storybook
 EXPOSE 6006
-CMD ["npx","serve","-s","storybook-static","-l","6006"]
-
+CMD ["npx", "serve", "-s", "storybook-static", "-l", "6006"]

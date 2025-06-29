@@ -4,6 +4,7 @@
 export COMPOSE_DOCKER_CLI_BUILD=1
 export COMPOSE_BAKE=1
 export NODE_MAJOR ?= $(shell cut -d. -f1 .node-version)
+export REGISTRY_CACHE ?= localhost:5000/lixit-cache
 
 help:
 	@echo "make setup      - Initial project setup"
@@ -29,8 +30,8 @@ type-check: ; @pnpm type-check
 logs: ; @docker compose logs -f
 stop: ; @docker compose down
 install: ; @if [ -d node_modules ]; then pnpm install --offline; else pnpm ci --immutable; fi
-start: base-image build; @docker compose --profile dev up -d --remove-orphans --build
-prod: base-image build; @docker compose --profile prod up -d --remove-orphans --build
+start: base-image; @docker compose --profile dev build --pull --parallel && docker compose --profile dev up -d --remove-orphans
+prod: base-image; @docker compose --profile prod build --pull --parallel && docker compose --profile prod up -d --remove-orphans
 
 docker-config:
 	@if [ ! jq -e '.features.buildkit == true and .features["containerd-snapshotter"] == true and (.["registry-mirrors"] | index("http://localhost:5000"))' /etc/docker/daemon.json > /dev/null 2>&1 ]; then \
@@ -40,11 +41,11 @@ docker-config:
 
 base-image: docker-config
 	@docker buildx build \
-	  --load \
+	  --push \
 	  --compress \
 	  --progress=plain \
-	  --cache-from=type=local,src=.buildx_cache \
-	  --cache-to=type=local,dest=.buildx_cache,mode=max \
+	  --cache-from=type=registry,ref=$(REGISTRY_CACHE) \
+	  --cache-to=type=registry,ref=$(REGISTRY_CACHE),mode=max,oci-mediatypes=true \
 	  --build-arg NODE_MAJOR=$(NODE_MAJOR) \
 	  -f dockerfiles/Dockerfile.base \
 	  -t lixit/base-deps:$(NODE_MAJOR) .

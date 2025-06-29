@@ -1,17 +1,14 @@
 # syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
-FROM node:${NODE_MAJOR}-alpine AS deps
+FROM node:${NODE_MAJOR}-alpine AS base
+
+# Install build dependencies and enable pnpm
+RUN apk add --no-cache python3 make g++ && \
+    corepack enable && \
+    corepack prepare pnpm@latest --activate && \
+    pnpm config set node-linker hoisted
+
+# Set pnpm store path for cache mounting
 ENV PNPM_STORE_PATH=/root/.pnpm-store
-RUN apk add --no-cache python3 make g++ && corepack enable && corepack prepare pnpm@latest --activate && pnpm config set node-linker hoisted
-WORKDIR /repo
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/web/package.json apps/web/
-COPY apps/mobile/package.json apps/mobile/
-COPY packages/core/package.json packages/core/
-COPY packages/ui-kit/package.json packages/ui-kit/
-COPY services/ingestion-api/package.json services/ingestion-api/
-COPY services/doc-renderer/package.json services/doc-renderer/
-COPY services/grapesjs-server/package.json services/grapesjs-server/
-COPY services/submission-broker/package.json services/submission-broker/
-COPY services/lixi-transform/package.json services/lixi-transform/
-RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH pnpm install --frozen-lockfile
+
+WORKDIR /app

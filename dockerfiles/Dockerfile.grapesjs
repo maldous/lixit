@@ -1,22 +1,41 @@
 # syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
-FROM lixit/base-deps:${NODE_MAJOR} AS build
-ENV PNPM_STORE_PATH=/root/.pnpm-store
-WORKDIR /repo
+
+# Deps stage - all dependencies for building
+FROM lixit/base-deps:${NODE_MAJOR} AS deps
+
+# Copy package manifests
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Copy root-level config files if present
+COPY .npmrc* ./
+RUN mkdir -p services/grapesjs-server packages/core
+COPY services/grapesjs-server/package.json ./services/grapesjs-server/
+COPY packages/core/package.json ./packages/core/
+
+# Install all dependencies with cache mount
+RUN --mount=type=cache,id=pnpm-store-${NODE_MAJOR}-grapesjs-server,target=/root/.pnpm-store,sharing=locked \
+    pnpm install --filter @lixit/grapesjs-server --prefer-offline
+
+# Build stage
+FROM deps AS build
 COPY packages/core packages/core/
 COPY services/grapesjs-server services/grapesjs-server/
-RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH pnpm install --frozen-lockfile
 RUN pnpm --filter @lixit/grapesjs-server run build
-RUN pnpm prune --prod
-FROM node:${NODE_MAJOR}-alpine
+
+# Production deps stage
+FROM deps AS prod-deps
+RUN pnpm prune --filter @lixit/grapesjs-server --prod
+
+# Runtime stage
+FROM node:${NODE_MAJOR}-alpine AS runtime
 RUN addgroup -S nodejs && adduser -S grapesjs -G nodejs -u1001
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=build /repo/services/grapesjs-server/dist ./dist
-COPY --from=build /repo/services/grapesjs-server/package.json ./
-COPY --from=build /repo/node_modules ./node_modules
+
+COPY --from=build /app/services/grapesjs-server/dist ./dist
+COPY --from=build /app/services/grapesjs-server/package.json ./
+COPY --from=prod-deps /app/node_modules ./node_modules
+
 USER grapesjs
 EXPOSE 3000
-CMD ["node","dist/main.js"]
-
+CMD ["node", "dist/main.js"]

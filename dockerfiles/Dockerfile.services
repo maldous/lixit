@@ -1,24 +1,44 @@
 # syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
 ARG SERVICE
-FROM lixit/base-deps:${NODE_MAJOR} AS build
-ENV PNPM_STORE_PATH=/root/.pnpm-store
-WORKDIR /repo
+
+# Deps stage - installs all dependencies (including dev) for building
+FROM lixit/base-deps:${NODE_MAJOR} AS deps
+
+# Copy only package manifests for dependency resolution
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Copy root-level config files if present
+COPY .npmrc* ./
+RUN mkdir -p services/${SERVICE} packages/core
+COPY services/${SERVICE}/package.json ./services/${SERVICE}/
+COPY packages/core/package.json ./packages/core/
+
+# Install all dependencies (including dev) with cache mount
+RUN --mount=type=cache,id=pnpm-store-${NODE_MAJOR}-${SERVICE},target=/root/.pnpm-store,sharing=locked \
+    pnpm install --filter @lixit/${SERVICE} --prefer-offline
+
+# Build stage - copies source and builds
+FROM deps AS build
 COPY packages/core packages/core/
 COPY services/${SERVICE} services/${SERVICE}/
-RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH pnpm install --frozen-lockfile
 RUN pnpm --filter @lixit/${SERVICE} run build
-RUN pnpm prune --prod
-FROM node:${NODE_MAJOR}-alpine
+
+# Production deps stage - prune dev dependencies
+FROM deps AS prod-deps
+RUN pnpm prune --filter @lixit/${SERVICE} --prod
+
+# Runtime stage - minimal final image
+FROM node:${NODE_MAJOR}-alpine AS runtime
 ARG SERVICE
 RUN addgroup -S nodejs && adduser -S svc -G nodejs -u1001
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=build /repo/services/${SERVICE}/dist ./dist
-COPY --from=build /repo/services/${SERVICE}/package.json ./
-COPY --from=build /repo/node_modules ./node_modules
+
+# Copy build output and production node_modules
+COPY --from=build /app/services/${SERVICE}/dist ./dist
+COPY --from=build /app/services/${SERVICE}/package.json ./
+COPY --from=prod-deps /app/node_modules ./node_modules
+
 USER svc
 EXPOSE 3000
-CMD ["node","dist/main.js"]
-
+CMD ["node", "dist/main.js"]
