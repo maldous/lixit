@@ -26,9 +26,11 @@ COPY packages/ui-kit packages/ui-kit/
 COPY apps/web apps/web/
 RUN pnpm --filter @lixit/web run build
 
-# Production deps stage
+# Production deps stage – only production packages for this service
 FROM deps AS prod-deps
-RUN pnpm prune --filter @lixit/web --prod
+ARG NODE_MAJOR
+RUN --mount=type=cache,id=pnpm-store-${NODE_MAJOR}-web,target=/root/.pnpm-store,sharing=locked \
+    pnpm install --filter @lixit/web --prod --prefer-offline
 
 # Runtime stage
 FROM node:${NODE_MAJOR}-alpine AS runtime
