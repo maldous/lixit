@@ -15,9 +15,9 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "storybook": "turbo run storybook --filter=@lixit/web",
     "build-storybook": "turbo run build-storybook --filter=@lixit/web",
-    "web": "cd apps/web && npm run dev",
-    "mobile": "cd apps/mobile && npm run start",
-    "api": "cd services/ingestion-api && npm run dev"
+    "web": "cd apps/web && pnpm dev",
+    "mobile": "cd apps/mobile && pnpm start",
+    "api": "cd services/ingestion-api && pnpm dev"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",

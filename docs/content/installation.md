@@ -143,16 +143,16 @@ make type-check
 
 ```bash
 # Start individual applications
-npm web      # Next.js web app on port 8000
-npm mobile   # Expo mobile app
-npm api      # NestJS Ingestion API in development mode
+pnpm web      # Next.js web app on port 8000
+pnpm mobile   # Expo mobile app
+pnpm api      # NestJS Ingestion API in development mode
 
 # Component development
-npm storybook        # Start Storybook on port 3015
-npm build-storybook  # Build static Storybook
+pnpm storybook        # Start Storybook on port 3015
+pnpm build-storybook  # Build static Storybook
 
 # Mobile builds
-npm build:android    # Build Android APK
+pnpm build:android    # Build Android APK
 ```
 
 ## Development Workflow
@@ -161,11 +161,11 @@ npm build:android    # Build Android APK
 
 ```bash
 # Full stack development
-make setup && make dev
+make setup && make start
 
 # Individual service development
-cd services/ingestion-api && npm dev
-cd apps/web && npm dev
+cd services/ingestion-api && pnpm dev
+cd apps/web && pnpm dev
 ```
 
 ### 2. Database Development
@@ -206,13 +206,13 @@ curl http://localhost:3001/api/health
 
 ```bash
 # Web development with hot reloading
-npm web
+pnpm web
 
 # Component development
-npm storybook
+pnpm storybook
 
 # Mobile development
-npm mobile
+pnpm mobile
 ```
 
 ### 5. Testing & Quality
@@ -222,7 +222,7 @@ npm mobile
 make test
 
 # Individual package tests
-cd packages/core && npm test
+cd packages/core && pnpm test
 
 # Code quality analysis
 # Visit http://localhost:3016 (SonarQube)
@@ -253,13 +253,13 @@ cd packages/core && npm test
 
 ```bash
 # Install Expo CLI globally (if not using DevContainer)
-npm global add @expo/cli
+pnpm global add @expo/cli
 
 # Start mobile development
-npm mobile
+pnpm mobile
 
 # Build Android APK
-npm build:android
+pnpm build:android
 ```
 
 ### OTA Updates
@@ -300,7 +300,7 @@ S3_SECRET_KEY=your-secret-key
 ### Automated Security Scanning
 
 - **Container Scanning**: Trivy scans all Docker images
-- **Dependency Scanning**: Automated vulnerability detection via `npm audit`
+- **Dependency Scanning**: Automated vulnerability detection via `pnpm audit`
 - **Code Quality**: SonarQube for security analysis
 - **License Compliance**: Automated license scanning
 
@@ -308,7 +308,7 @@ S3_SECRET_KEY=your-secret-key
 
 ```bash
 # Generate Software Bill of Materials
-npm dlx @cyclonedx/cdxgen -t js -o sbom.json --profile research . -p
+pnpm dlx @cyclonedx/cdxgen -t js -o sbom.json --profile research . -p
 ```
 
 ### Certificate Management
@@ -376,10 +376,10 @@ docker compose up -d postgres
 
 ```bash
 # Use Turbo cache for faster builds
-npm build  # Subsequent builds will be cached
+pnpm build  # Subsequent builds will be cached
 
 # Parallel builds
-npm build --parallel
+pnpm build --parallel
 ```
 
 **Development performance:**
