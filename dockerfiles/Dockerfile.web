@@ -3,16 +3,17 @@ ARG NODE_MAJOR=24
 FROM lixit/base-deps:${NODE_MAJOR} AS deps
 
 FROM node:${NODE_MAJOR}-alpine AS build
+ENV PNPM_STORE_PATH=/root/.pnpm-store
 WORKDIR /repo
 COPY --from=deps /repo/node_modules ./node_modules
-COPY package.json package-lock.json* ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Only copy the packages this service actually needs
 COPY packages/core ./packages/core
 COPY packages/ui-kit ./packages/ui-kit
 COPY apps/web ./apps/web
 
-RUN --mount=type=cache,id=pnpm-cache,target=/root/.npm pnpm --workspace=@lixit/web run build
+RUN --mount=type=cache,id=pnpm-cache,target=/root/.pnpm-store pnpm --workspace=@lixit/web run build
 
 FROM node:${NODE_MAJOR}-alpine
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs -u 1001

@@ -4,16 +4,17 @@ ARG SERVICE
 FROM lixit/base-deps:${NODE_MAJOR} AS deps
 
 FROM node:${NODE_MAJOR}-alpine AS build
+ENV PNPM_STORE_PATH=/root/.pnpm-store
 ARG SERVICE
 WORKDIR /repo
 COPY --from=deps /repo/node_modules ./node_modules
-COPY package.json package-lock.json* ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Only copy the packages this service actually needs
 COPY packages/core ./packages/core
 COPY services/${SERVICE} ./services/${SERVICE}
 
-RUN --mount=type=cache,id=pnpm-cache,target=/root/.npm pnpm --workspace=@lixit/${SERVICE} run build
+RUN --mount=type=cache,id=pnpm-cache,target=/root/.pnpm-store pnpm --workspace=@lixit/${SERVICE} run build
 
 FROM node:${NODE_MAJOR}-alpine
 ARG SERVICE
