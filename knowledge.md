@@ -42,7 +42,8 @@ For the complete service catalog with all ports and implementation status, see t
 - **PostgREST** (port 3008) - Auto-generated REST API from PostgreSQL schemas
 - **Hasura GraphQL** (port 3009) - Real-time GraphQL with admin console and subscriptions
 - **PostGraphile** (port 3010) - High-performance GraphQL with fine-grained RBAC
-- **Kong Gateway** (ports 8002-8003) - API gateway with rate limiting and authentication
+- **Kong Gateway** (ports 8002, 8444) - API gateway with rate limiting and authentication
+- **Kong Admin** (ports 8003, 8445) - Gateway administration interface
 
 ### Database Management Tools (2 services)
 
@@ -85,10 +86,10 @@ For the complete service catalog with all ports and implementation status, see t
 
 ### Infrastructure Services (4 services)
 
-- **Caddy** (ports 80, 443) - Reverse proxy with automatic HTTPS
-- **Keycloak** (port 8080) - Identity and access management (SSO, OAuth2)
+- **Caddy** (ports 8080, 8443) - Reverse proxy with automatic HTTPS
+- **Keycloak** (port 8081) - Identity and access management (SSO, OAuth2)
 - **Docker Registry** (port 5000) - Private container registry
-- **MailHog** (ports 1025, 8025) - Email testing and debugging
+- **MailHog** (ports 2025, 8025) - Email testing and debugging
 
 ### Support Services (2 services)
 
@@ -258,7 +259,7 @@ For the complete service catalog with all ports and implementation status, see t
 ### Environment Setup
 
 - **DevContainer**: VS Code development container with all tools pre-installed
-- **Local Development**: `make setup && make dev` for full stack
+- **Local Development**: `make setup && make start` for full stack
 - **Service-Specific**: Individual service development with hot reloading
 
 ### Code Quality Pipeline

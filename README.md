@@ -65,7 +65,7 @@ cd lixit
 make setup
 
 # Start development environment
-make dev
+make start
 
 # Access web application
 open http://localhost:8000

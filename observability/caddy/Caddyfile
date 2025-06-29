@@ -8,7 +8,7 @@ localhost, 127.0.0.1 {
 		rate_limit {remote.ip} 100r/m 10000 429 
 
 		handle_path /api/* {
-			reverse_proxy api:3000
+			reverse_proxy kong:8000
 		}
 
 		handle_path /docs/* {
@@ -47,7 +47,7 @@ localhost, 127.0.0.1 {
 		rate_limit {remote.ip} 1000r/m 10000 429 
 
 		handle_path /api/* {
-			reverse_proxy api:3000
+			reverse_proxy kong:8000
 		}
 
 		handle_path /docs/* {
@@ -80,4 +80,3 @@ localhost, 127.0.0.1 {
 		format json
 	}
 }
-

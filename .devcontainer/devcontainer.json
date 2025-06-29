@@ -73,7 +73,7 @@
   },
 
   "postCreateCommand": "make setup",
-  "postStartCommand": "make dev",
+  "postStartCommand": "make start",
 
   "remoteUser": "node"
 }

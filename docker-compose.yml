@@ -213,7 +213,7 @@ services:
     image: mailhog/mailhog:latest
     mem_limit: 128m
     cpus: 0.25
-    ports: ["1025:1025","8025:8025"]
+    ports: ["2025:1025","8025:8025"]
     healthcheck:
       test: ["CMD", "true"]
       interval: 30s
@@ -329,7 +329,7 @@ services:
     command: start-dev
     mem_limit: 512m
     cpus: 0.5
-    ports: ["8080:8080"]
+    ports: ["8081:8080"]
 
   caddy:
     build:
@@ -343,7 +343,7 @@ services:
       - caddy_config:/config
     mem_limit: 128m
     cpus: 0.25
-    ports: ["80:80","443:443"]
+    ports: ["8080:80","8443:443"]
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -428,7 +428,7 @@ services:
       retries: 3
     mem_limit: 1g
     cpus: 1.0
-    ports: ["8002:8000", "8443:8443", "8003:8001", "8444:8444"]
+    ports: ["8002:8000", "8444:8443", "8003:8001", "8445:8444"]
 
   opensearch:
     image: opensearchproject/opensearch:latest

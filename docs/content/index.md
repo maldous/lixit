@@ -141,7 +141,7 @@ For the complete service catalog with all ports and implementation status, see t
 
 1. **Prerequisites**: Docker, Node.js 24+, Git
 2. **Setup**: `make setup` - Installs dependencies and certificates
-3. **Development**: `make dev` - Starts all services
+3. **Development**: `make start` - Starts all services
 4. **Access**: Visit http://localhost:8000 for the web application
 
 For detailed setup instructions, see [Installation Guide](installation.md).

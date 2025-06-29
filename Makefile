@@ -1,4 +1,4 @@
-.PHONY: help setup install build base-image dev prod test lint format type-check logs stop clean docker-config reset
+.PHONY: help setup install build base-image start prod test lint format type-check logs stop clean docker-config reset
 .DEFAULT_GOAL := help
 
 export COMPOSE_DOCKER_CLI_BUILD=1
@@ -9,7 +9,7 @@ help:
 	@echo "make setup      - Initial project setup"
 	@echo "make install    - npm ci for all workspaces"
 	@echo "make build      - npm run build (monorepo)"
-	@echo "make dev        - Build & start full dev stack"
+	@echo "make start      - Build & start full dev stack"
 	@echo "make prod       - Build & start prod-like stack"
 	@echo "make test       - Run all tests"
 	@echo "make lint       - ESLint across workspace"
@@ -29,7 +29,7 @@ type-check: ; @npm run type-check
 logs: ; @docker compose logs -f
 stop: ; @docker compose down
 install: ; @if [ -d node_modules ]; then npm install --no-audit --prefer-offline; else npm ci; fi
-dev: build base-image ; @docker compose --profile dev up -d --remove-orphans
+start: build base-image ; @docker compose --profile dev up -d --remove-orphans
 prod: build base-image ; @docker compose --profile prod up -d --remove-orphans
 
 docker-config:

@@ -39,12 +39,12 @@ cd lixit
 make setup
 
 # Start development environment (all 40+ services)
-make dev
+make start
 ```
 
 ## Service Catalog
 
-After running `make dev`, you'll have access to a comprehensive development and production-ready infrastructure with 40+ services.
+After running `make start`, you'll have access to a comprehensive development and production-ready infrastructure with 40+ services.
 
 For the complete service catalog with all ports and details, see the [Architecture Guide](architecture.md#service-catalog).
 

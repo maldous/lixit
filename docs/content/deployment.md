@@ -84,7 +84,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 
 ### 1.10 Developer Tooling
 
-- **Makefile**: With `make dev / prod / test / clean / lint`
+- **Makefile**: With `make start / prod / test / clean / lint`
 - **DevContainer**: `.devcontainer/devcontainer.json` so VS Code users get consistent toolchain without local installs (all Docker-based, still free)
 - **Dependency Updates**: Add `renovate.json` (or `dependabot.yml`) to keep OSS libs patched
 
