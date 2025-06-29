@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
 FROM node:${NODE_MAJOR}-alpine AS deps
-RUN apk add --no-cache python3 make g++
+RUN apk add --no-cache python3 make g++ && corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /repo
 
 # Copy package.json files first for better caching
