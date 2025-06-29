@@ -13,8 +13,7 @@ COPY package.json package-lock.json* ./
 COPY packages/core ./packages/core
 COPY services/${SERVICE} ./services/${SERVICE}
 
-RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
-    pnpm --workspace=@lixit/${SERVICE} run build
+RUN --mount=type=cache,id=pnpm-cache,target=/root/.npm pnpm --workspace=@lixit/${SERVICE} run build
 
 FROM node:${NODE_MAJOR}-alpine
 ARG SERVICE
