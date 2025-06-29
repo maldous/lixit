@@ -4,18 +4,18 @@ FROM lixit/base-deps:${NODE_MAJOR} AS build
 ENV PNPM_STORE_PATH=/root/.pnpm-store
 WORKDIR /repo
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY packages/core ./packages/core
-COPY services/grapesjs-server ./services/grapesjs-server
-RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH \
-  pnpm install --frozen-lockfile --prod --filter @lixit/grapesjs-server
+COPY packages/core packages/core/
+COPY services/grapesjs-server services/grapesjs-server/
+RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH pnpm install --frozen-lockfile
 RUN pnpm --filter @lixit/grapesjs-server run build
+RUN pnpm prune --prod
 FROM node:${NODE_MAJOR}-alpine
-RUN addgroup -S nodejs && adduser -S grapesjs -G nodejs -u 1001
+RUN addgroup -S nodejs && adduser -S grapesjs -G nodejs -u1001
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=build /repo/node_modules ./node_modules
 COPY --from=build /repo/services/grapesjs-server/dist ./dist
 COPY --from=build /repo/services/grapesjs-server/package.json ./
+COPY --from=build /repo/node_modules ./node_modules
 USER grapesjs
 EXPOSE 3000
 CMD ["node","dist/main.js"]

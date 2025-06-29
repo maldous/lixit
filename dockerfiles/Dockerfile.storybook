@@ -4,14 +4,11 @@ FROM lixit/base-deps:${NODE_MAJOR} AS build
 ENV PNPM_STORE_PATH=/root/.pnpm-store
 WORKDIR /repo
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY packages/ui-kit ./packages/ui-kit
-RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH \
-  pnpm install --frozen-lockfile
-WORKDIR /repo/packages/ui-kit
-RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH \
-  pnpm run build-storybook
+COPY packages/ui-kit packages/ui-kit/
+RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH pnpm install --frozen-lockfile
+RUN pnpm --filter @lixit/ui-kit run build-storybook
 FROM node:${NODE_MAJOR}-alpine
-RUN addgroup -S nodejs && adduser -S storybook -G nodejs -u 1001
+RUN addgroup -S nodejs && adduser -S storybook -G nodejs -u1001
 WORKDIR /app
 COPY --from=build /repo/packages/ui-kit/storybook-static ./storybook-static
 USER storybook
