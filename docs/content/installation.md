@@ -5,7 +5,7 @@
 ### Required Software
 
 - **Node.js 24+** - JavaScript runtime (specified in .node-version)
-- **Yarn 4** - Package manager (project default, npm also supported)
+- **pnpm** - Package manager (project default)
 - **Docker & Docker Compose** - For containerized development
 - **Git** - Version control
 - **Make** - Build automation (usually pre-installed on Linux/macOS)
@@ -73,7 +73,7 @@ For the complete service catalog with all ports and details, see the [Architectu
 
 ## Package Scripts & Development Workflow
 
-This monorepo uses standardized Yarn scripts across all packages, orchestrated by Turbo for efficient parallel execution and caching.
+This monorepo uses standardized pnpm scripts across all packages, orchestrated by Turbo for efficient parallel execution and caching.
 
 ### Root Package Scripts
 
@@ -101,8 +101,6 @@ make format
 # Clean all build artifacts
 make clean
 ```
-
-**Note**: npm is also supported but Yarn 4 is the project default for optimal performance and workspace management.
 
 ### Makefile Commands
 
