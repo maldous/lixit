@@ -39,7 +39,7 @@ docker-config:
 	fi
 
 base-image: docker-config
-	docker buildx build \
+	@docker buildx build \
 	  --load \
 	  --compress \
 	  --progress=plain \
@@ -50,7 +50,7 @@ base-image: docker-config
 	  -t lixit/base-deps:$(NODE_MAJOR) .
 
 clean: stop
-	@pnpm clean -parallel || true
+	@pnpm clean || true
 	@docker image prune -af || true
 	@docker buildx prune -af || true
 	@rm -rf .buildx_cache || true
