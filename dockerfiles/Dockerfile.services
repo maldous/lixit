@@ -13,14 +13,12 @@ COPY services/${SERVICE} ./services/${SERVICE}
 RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH pnpm --filter @lixit/${SERVICE} run build
 FROM node:${NODE_MAJOR}-alpine
 ARG SERVICE
-ENV PNPM_STORE_PATH=/root/.pnpm-store
 RUN addgroup -S nodejs && adduser -S svc -G nodejs -u 1001
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=deps  /root/.pnpm-store $PNPM_STORE_PATH
-COPY --from=deps  /repo/node_modules   ./node_modules
 COPY --from=build /repo/services/${SERVICE}/dist ./dist
 COPY --from=build /repo/services/${SERVICE}/package.json ./
+COPY --from=deps /repo/node_modules ./node_modules
 USER svc
 EXPOSE 3000
 CMD ["node","dist/main.js"]

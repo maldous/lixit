@@ -29,8 +29,8 @@ type-check: ; @pnpm type-check
 logs: ; @docker compose logs -f
 stop: ; @docker compose down
 install: ; @if [ -d node_modules ]; then pnpm install --offline; else pnpm install --frozen-lockfile; fi
-start: base-image build; @docker compose --profile dev up -d --remove-orphans
-prod: base-image build; @docker compose --profile prod up -d --remove-orphans
+start: base-image build; @docker compose --profile dev up -d --remove-orphans --build
+prod: base-image build; @docker compose --profile prod up -d --remove-orphans --build
 
 docker-config:
 	@if [ ! jq -e '.features.buildkit == true and .features["containerd-snapshotter"] == true and (.["registry-mirrors"] | index("http://localhost:5000"))' /etc/docker/daemon.json > /dev/null 2>&1 ]; then \

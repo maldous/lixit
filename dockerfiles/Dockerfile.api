@@ -10,14 +10,12 @@ COPY packages/core ./packages/core
 COPY services/ingestion-api ./services/ingestion-api
 RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH pnpm --filter @lixit/ingestion-api run build
 FROM node:${NODE_MAJOR}-alpine
-ENV PNPM_STORE_PATH=/root/.pnpm-store
 RUN addgroup -S nodejs && adduser -S nestjs -G nodejs -u 1001
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=deps  /root/.pnpm-store $PNPM_STORE_PATH
-COPY --from=deps  /repo/node_modules   ./node_modules
 COPY --from=build /repo/services/ingestion-api/dist ./dist
 COPY --from=build /repo/services/ingestion-api/package.json ./
+COPY --from=deps /repo/node_modules ./node_modules
 USER nestjs
 EXPOSE 3000
 CMD ["node","dist/main.js"]
