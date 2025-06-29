@@ -1,13 +1,18 @@
+// Apply ESLint patch for Next.js compatibility
+require("@rushstack/eslint-patch/modern-module-resolution");
+
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
+const storybook = require("eslint-plugin-storybook");
 
-import js from "@eslint/js";
-import tseslint from "@typescript-eslint/eslint-plugin";
-import tsparser from "@typescript-eslint/parser";
-import react from "eslint-plugin-react";
-import reactNative from "eslint-plugin-react-native";
+const js = require("@eslint/js");
+const tseslint = require("@typescript-eslint/eslint-plugin");
+const tsparser = require("@typescript-eslint/parser");
+const react = require("eslint-plugin-react");
+const reactNative = require("eslint-plugin-react-native");
+const nextPlugin = require("@next/eslint-plugin-next");
 
-export default [// Base configuration for all files
+module.exports = [
+// Base configuration for all files
 {
   ignores: [
     "**/node_modules/**",
@@ -18,7 +23,8 @@ export default [// Base configuration for all files
     "**/.turbo/**",
     "**/.expo/**",
   ],
-}, // JavaScript/TypeScript base config
+}, 
+// JavaScript/TypeScript base config
 {
   files: ["**/*.{js,mjs,cjs,ts,tsx}"],
   languageOptions: {
@@ -51,7 +57,8 @@ export default [// Base configuration for all files
     ],
     "@typescript-eslint/no-explicit-any": "warn",
   },
-}, // Test files
+}, 
+// Test files
 {
   files: [
     "**/__tests__/**/*.{ts,tsx}",
@@ -76,7 +83,8 @@ export default [// Base configuration for all files
       clearInterval: "readonly",
     },
   },
-}, // React/React Native files
+}, 
+// React/React Native files
 {
   files: [
     "apps/mobile/**/*.{ts,tsx,js,jsx}",
@@ -113,7 +121,8 @@ export default [// Base configuration for all files
       version: "detect",
     },
   },
-}, // Next.js web app
+}, 
+// Next.js web app
 {
   files: ["apps/web/**/*.{ts,tsx,js,jsx}"],
   languageOptions: {
@@ -135,6 +144,7 @@ export default [// Base configuration for all files
   plugins: {
     "@typescript-eslint": tseslint,
     react: react,
+    "@next/next": nextPlugin,
   },
   rules: {
     "no-unused-vars": "off",
@@ -145,13 +155,15 @@ export default [// Base configuration for all files
     "@typescript-eslint/no-explicit-any": "warn",
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
+    "@next/next/no-html-link-for-pages": "error",
   },
   settings: {
     react: {
       version: "detect",
     },
   },
-}, // NestJS API service
+}, 
+// NestJS API service
 {
   files: ["services/ingestion-api/**/*.ts"],
   rules: {
@@ -160,7 +172,8 @@ export default [// Base configuration for all files
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
   },
-}, // GrapesJS server
+}, 
+// GrapesJS server
 {
   files: ["services/grapesjs-server/**/*.ts"],
   languageOptions: {
@@ -168,4 +181,6 @@ export default [// Base configuration for all files
       Express: "readonly",
     },
   },
-}, ...storybook.configs["flat/recommended"]];
+}, 
+...storybook.configs["flat/recommended"]
+];
