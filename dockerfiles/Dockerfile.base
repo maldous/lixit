@@ -2,7 +2,7 @@
 ARG NODE_MAJOR=24
 FROM node:${NODE_MAJOR}-alpine AS deps
 ENV PNPM_STORE_PATH=/root/.pnpm-store
-RUN apk add --no-cache python3 make g++ && corepack enable && corepack prepare pnpm@latest --activate
+RUN apk add --no-cache python3 make g++ && corepack enable && corepack prepare pnpm@latest --activate && pnpm config set node-linker hoisted
 WORKDIR /repo
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json apps/web/

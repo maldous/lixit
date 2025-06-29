@@ -156,3 +156,8 @@ logs/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# never send local deps to the daemon
+**/node_modules
+**/.pnpm-store
+
