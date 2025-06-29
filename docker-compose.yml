@@ -49,6 +49,10 @@ services:
       dockerfile: dockerfiles/Dockerfile.api
       args:
         <<: *node-args
+      cache_from:
+        - type=registry,ref=localhost:5001/lixit-cache
+      cache_to:
+        - type=registry,ref=localhost:5001/lixit-cache,mode=max
     environment:
       NODE_ENV: development
       DATABASE_URL: postgres://lixit:lixit_dev_password@postgres:5432/lixit
@@ -74,6 +78,10 @@ services:
       dockerfile: dockerfiles/Dockerfile.web
       args:
         <<: *node-args
+      cache_from:
+        - type=registry,ref=localhost:5001/lixit-cache
+      cache_to:
+        - type=registry,ref=localhost:5001/lixit-cache,mode=max
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_URL: http://localhost:3001
@@ -93,6 +101,10 @@ services:
       args:
         <<: *node-args
         SERVICE: doc-renderer
+      cache_from:
+        - type=registry,ref=localhost:5001/lixit-cache
+      cache_to:
+        - type=registry,ref=localhost:5001/lixit-cache,mode=max
     command: [ "node", "dist/main.js" ]
     environment:
       NODE_ENV: development
@@ -119,6 +131,10 @@ services:
       args:
         <<: *node-args
         SERVICE: lixi-transform
+      cache_from:
+        - type=registry,ref=localhost:5001/lixit-cache
+      cache_to:
+        - type=registry,ref=localhost:5001/lixit-cache,mode=max
     command: [ "node", "dist/main.js" ]
     environment:
       NODE_ENV: development
@@ -141,6 +157,10 @@ services:
       args:
         <<: *node-args
         SERVICE: submission-broker
+      cache_from:
+        - type=registry,ref=localhost:5001/lixit-cache
+      cache_to:
+        - type=registry,ref=localhost:5001/lixit-cache,mode=max
     command: [ "node", "dist/main.js" ]
     environment:
       NODE_ENV: development
@@ -162,6 +182,10 @@ services:
       dockerfile: dockerfiles/Dockerfile.grapesjs
       args:
         <<: *node-args
+      cache_from:
+        - type=registry,ref=localhost:5001/lixit-cache
+      cache_to:
+        - type=registry,ref=localhost:5001/lixit-cache,mode=max
     environment:
       NODE_ENV: development
       DATABASE_URL: postgres://lixit:lixit_dev_password@pgbouncer:5432/lixit
@@ -221,7 +245,13 @@ services:
       retries: 3
 
   pii-redaction:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.pii-redaction}
+    build: 
+      context: .
+      dockerfile: dockerfiles/Dockerfile.pii-redaction
+      cache_from:
+        - type=registry,ref=localhost:5001/lixit-cache
+      cache_to:
+        - type=registry,ref=localhost:5001/lixit-cache,mode=max
     environment:
       NODE_ENV: development
       PORT: 3000
@@ -335,6 +365,10 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile.caddy
+      cache_from:
+        - type=registry,ref=localhost:5001/lixit-cache
+      cache_to:
+        - type=registry,ref=localhost:5001/lixit-cache,mode=max
     environment: [CADDY_MKCERT=true]
     volumes:
       - ./observability/caddy/Caddyfile:/etc/caddy/Caddyfile
@@ -597,6 +631,10 @@ services:
       dockerfile: dockerfiles/Dockerfile.storybook
       args:
         <<: *node-args
+      cache_from:
+        - type=registry,ref=localhost:5001/lixit-cache
+      cache_to:
+        - type=registry,ref=localhost:5001/lixit-cache,mode=max
     environment:
       NODE_ENV: development
     volumes:
