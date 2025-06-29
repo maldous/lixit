@@ -1,0 +1,10 @@
+{
+  "insecure-registries": ["localhost:5000"],
+  "features": {
+    "buildkit": true,
+    "containerd-snapshotter": true
+  },
+  "registry-mirrors": [
+    "http://localhost:5000"
+  ]
+}

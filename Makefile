@@ -4,7 +4,7 @@
 export COMPOSE_DOCKER_CLI_BUILD=1
 export COMPOSE_BAKE=1
 export NODE_MAJOR ?= $(shell cut -d. -f1 .node-version)
-export REGISTRY_CACHE ?= localhost:5000/lixit-cache
+export REGISTRY_CACHE ?= localhost:5001/lixit-cache
 
 help:
 	@echo "make setup      - Initial project setup"
@@ -29,7 +29,7 @@ format: ; @pnpm format
 type-check: ; @pnpm type-check
 logs: ; @docker compose logs -f
 stop: ; @docker compose down
-install: ; @if [ -d node_modules ]; then pnpm install --offline; else pnpm ci --immutable; fi
+install: ; @if [ -d node_modules ]; then pnpm install --offline; else pnpm install --frozen-lockfile; fi
 start: base-image; @docker compose --profile dev build --pull --parallel && docker compose --profile dev up -d --remove-orphans
 prod: base-image; @docker compose --profile prod build --pull --parallel && docker compose --profile prod up -d --remove-orphans
 
@@ -48,7 +48,7 @@ base-image: docker-config
 	  --cache-to=type=registry,ref=$(REGISTRY_CACHE),mode=max,oci-mediatypes=true \
 	  --build-arg NODE_MAJOR=$(NODE_MAJOR) \
 	  -f dockerfiles/Dockerfile.base \
-	  -t lixit/base-deps:$(NODE_MAJOR) .
+	  -t $(REGISTRY_CACHE)/base-deps:$(NODE_MAJOR) .
 
 clean: stop
 	@pnpm clean || true

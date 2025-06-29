@@ -82,12 +82,21 @@ KEYCLOAK_CLIENT_ID=lixit-web
 EOF
 fi
 
-if ! docker ps -a --format '{{.Names}}' | grep -qx 'registry-proxy'; then
-  docker run -d \
-    --restart=always \
-    -p 5000:5000 \
-    --name registry-proxy \
-    -v registry_data:/var/lib/registry \
-    -e REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io \
-    registry:2 || true
-fi
+docker rm -f registry-proxy 2>/dev/null || true
+docker run -d \
+  --name registry-proxy \
+  --restart=always \
+  -p 5000:5000 \
+  -v registry_data:/var/lib/registry \
+  -v "registry_data_config.yml":/etc/docker/registry/config.yml:ro \
+  registry:2
+
+docker volume create registry_write_data >/dev/null 2>&1 || true
+
+docker rm -f registry-write 2>/dev/null || true
+docker run -d \
+  --name registry-write \
+  --restart=always \
+  -p 5001:5000 \
+  -v registry_write_data:/var/lib/registry \
+  registry:2

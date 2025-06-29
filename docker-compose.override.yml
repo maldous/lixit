@@ -11,8 +11,15 @@ services:
       - storybook_node_modules:/app/apps/web/node_modules
       - storybook_next:/app/.next
 
+  grafana:
+    volumes:
+      - grafana_provisioning:/etc/grafana/provisioning
+      - grafana_dashboards:/var/lib/grafana/dashboards
+
 volumes:
   web_node_modules: {}
   storybook_node_modules: {}
   web_next: {}
   storybook_next: {}
+  grafana_provisioning: {}
+  grafana_dashboards: {}
