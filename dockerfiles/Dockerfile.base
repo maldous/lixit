@@ -1,15 +1,12 @@
-# syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
 
 FROM node:${NODE_MAJOR}-alpine AS base
 
-# Install build dependencies and enable pnpm
 RUN apk add --no-cache python3 make g++ && \
     corepack enable && \
     corepack prepare pnpm@latest --activate && \
     pnpm config set node-linker hoisted
 
-# Set pnpm store path for cache mounting
 ENV PNPM_STORE_PATH=/root/.pnpm-store
 
 WORKDIR /app

@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1.4
 FROM python:3.11-slim AS base
 RUN --mount=type=cache,id=apt-cache,target=/var/cache/apt \
     --mount=type=cache,id=apt-lists,target=/var/lib/apt/lists \

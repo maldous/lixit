@@ -1,38 +1,29 @@
-# syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
 ARG REGISTRY_CACHE=localhost:5001/lixit-cache
 
-# Deps stage - all dependencies for building
 FROM ${REGISTRY_CACHE}/base-deps:${NODE_MAJOR} AS deps
 ARG NODE_MAJOR
 
-# Copy package manifests
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-# Copy root-level config files if present
-COPY .npmrc* ./
 RUN mkdir -p apps/web packages/core packages/ui-kit
 COPY apps/web/package.json ./apps/web/
 COPY packages/core/package.json ./packages/core/
 COPY packages/ui-kit/package.json ./packages/ui-kit/
 
-# Install all dependencies with cache mount
 RUN --mount=type=cache,id=pnpm-store-${NODE_MAJOR}-web,target=/root/.pnpm-store,sharing=locked \
     pnpm install --filter @lixit/web --prefer-offline
 
-# Build stage
 FROM deps AS build
 COPY packages/core packages/core/
 COPY packages/ui-kit packages/ui-kit/
 COPY apps/web apps/web/
 RUN pnpm --filter @lixit/web run build
 
-# Production deps stage – only production packages for this service
 FROM deps AS prod-deps
 ARG NODE_MAJOR
 RUN --mount=type=cache,id=pnpm-store-${NODE_MAJOR}-web,target=/root/.pnpm-store,sharing=locked \
     pnpm install --filter @lixit/web --prod --prefer-offline
 
-# Runtime stage
 FROM node:${NODE_MAJOR}-alpine AS runtime
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs -u1001
 WORKDIR /app

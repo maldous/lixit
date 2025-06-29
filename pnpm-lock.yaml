@@ -394,6 +394,9 @@ importers:
       '@lixit/core':
         specifier: file:../../packages/core
         version: link:../../packages/core
+      '@types/express':
+        specifier: ^5.0.3
+        version: 5.0.3
       bull:
         specifier: ^4.16.5
         version: 4.16.5
@@ -422,9 +425,6 @@ importers:
       '@types/cors':
         specifier: ^2.8.17
         version: 2.8.19
-      '@types/express':
-        specifier: ^5.0.3
-        version: 5.0.3
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -464,6 +464,9 @@ importers:
       '@lixit/core':
         specifier: file:../../packages/core
         version: link:../../packages/core
+      '@types/express':
+        specifier: ^5.0.3
+        version: 5.0.3
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -486,9 +489,6 @@ importers:
       '@types/cors':
         specifier: ^2.8.17
         version: 2.8.19
-      '@types/express':
-        specifier: ^5.0.3
-        version: 5.0.3
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -543,6 +543,15 @@ importers:
       '@nestjs/platform-express':
         specifier: ^11.0.0
         version: 11.1.3(@nestjs/common@11.1.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.3)
+      '@types/express':
+        specifier: ^5.0.3
+        version: 5.0.3
+      '@types/express-rate-limit':
+        specifier: ^5.1.3
+        version: 5.1.3
+      express:
+        specifier: ^5.1.0
+        version: 5.1.0
       express-rate-limit:
         specifier: ^6.11.2
         version: 6.11.2(express@5.1.0)
@@ -565,12 +574,6 @@ importers:
       '@nestjs/testing':
         specifier: ^11.1.3
         version: 11.1.3(@nestjs/common@11.1.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.3)(@nestjs/platform-express@11.1.3)
-      '@types/express':
-        specifier: ^5.0.3
-        version: 5.0.3
-      '@types/express-rate-limit':
-        specifier: ^5.1.3
-        version: 5.1.3
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -595,9 +598,6 @@ importers:
       eslint-plugin-prettier:
         specifier: ^5.5.0
         version: 5.5.1(@types/eslint@9.6.1)(eslint-config-prettier@10.1.5(eslint@9.30.0(jiti@1.21.7)))(eslint@9.30.0(jiti@1.21.7))(prettier@3.6.2)
-      express:
-        specifier: ^5.1.0
-        version: 5.1.0
       jest:
         specifier: ^30.0.2
         version: 30.0.3(@types/node@24.0.7)(esbuild-register@3.6.0(esbuild@0.25.5))(ts-node@10.9.2(@types/node@24.0.7)(typescript@5.8.3))
@@ -634,6 +634,9 @@ importers:
       '@lixit/core':
         specifier: file:../../packages/core
         version: link:../../packages/core
+      '@types/express':
+        specifier: ^5.0.3
+        version: 5.0.3
       ajv:
         specifier: ^8.17.1
         version: 8.17.1
@@ -656,9 +659,6 @@ importers:
       '@types/cors':
         specifier: ^2.8.17
         version: 2.8.19
-      '@types/express':
-        specifier: ^5.0.3
-        version: 5.0.3
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -695,6 +695,9 @@ importers:
       '@lixit/core':
         specifier: file:../../packages/core
         version: link:../../packages/core
+      '@types/express':
+        specifier: ^5.0.3
+        version: 5.0.3
       amqplib:
         specifier: ^0.10.8
         version: 0.10.8
@@ -726,9 +729,6 @@ importers:
       '@types/cors':
         specifier: ^2.8.17
         version: 2.8.19
-      '@types/express':
-        specifier: ^5.0.3
-        version: 5.0.3
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -1650,59 +1650,6 @@ packages:
 
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
-
-  '@biomejs/biome@2.0.6':
-    resolution: {integrity: sha512-RRP+9cdh5qwe2t0gORwXaa27oTOiQRQvrFf49x2PA1tnpsyU7FIHX4ZOFMtBC4QNtyWsN7Dqkf5EDbg4X+9iqA==}
-    engines: {node: '>=14.21.3'}
-    hasBin: true
-
-  '@biomejs/cli-darwin-arm64@2.0.6':
-    resolution: {integrity: sha512-AzdiNNjNzsE6LfqWyBvcL29uWoIuZUkndu+wwlXW13EKcBHbbKjNQEZIJKYDc6IL+p7bmWGx3v9ZtcRyIoIz5A==}
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@biomejs/cli-darwin-x64@2.0.6':
-    resolution: {integrity: sha512-wJjjP4E7bO4WJmiQaLnsdXMa516dbtC6542qeRkyJg0MqMXP0fvs4gdsHhZ7p9XWTAmGIjZHFKXdsjBvKGIJJQ==}
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
-    os: [darwin]
-
-  '@biomejs/cli-linux-arm64-musl@2.0.6':
-    resolution: {integrity: sha512-CVPEMlin3bW49sBqLBg2x016Pws7eUXA27XYDFlEtponD0luYjg2zQaMJ2nOqlkKG9fqzzkamdYxHdMDc2gZFw==}
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@biomejs/cli-linux-arm64@2.0.6':
-    resolution: {integrity: sha512-ZSVf6TYo5rNMUHIW1tww+rs/krol7U5A1Is/yzWyHVZguuB0lBnIodqyFuwCNqG9aJGyk7xIMS8HG0qGUPz0SA==}
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@biomejs/cli-linux-x64-musl@2.0.6':
-    resolution: {integrity: sha512-mKHE/e954hR/hSnAcJSjkf4xGqZc/53Kh39HVW1EgO5iFi0JutTN07TSjEMg616julRtfSNJi0KNyxvc30Y4rQ==}
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
-    os: [linux]
-
-  '@biomejs/cli-linux-x64@2.0.6':
-    resolution: {integrity: sha512-geM1MkHTV1Kh2Cs/Xzot9BOF3WBacihw6bkEmxkz4nSga8B9/hWy5BDiOG3gHDGIBa8WxT0nzsJs2f/hPqQIQw==}
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
-    os: [linux]
-
-  '@biomejs/cli-win32-arm64@2.0.6':
-    resolution: {integrity: sha512-290V4oSFoKaprKE1zkYVsDfAdn0An5DowZ+GIABgjoq1ndhvNxkJcpxPsiYtT7slbVe3xmlT0ncdfOsN7KruzA==}
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [win32]
-
-  '@biomejs/cli-win32-x64@2.0.6':
-    resolution: {integrity: sha512-bfM1Bce0d69Ao7pjTjUS+AWSZ02+5UHdiAP85Th8e9yV5xzw6JrHXbL5YWlcEKQ84FIZMdDc7ncuti1wd2sdbw==}
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
-    os: [win32]
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -4122,8 +4069,8 @@ packages:
   '@urql/core@4.0.11':
     resolution: {integrity: sha512-FFdY97vF5xnUrElcGw9erOLvtu+KGMLfwrLNDfv4IPgdp2IBsiGe+Kb7Aypfd3kH//BETewVSLm3+y2sSzjX6A==}
 
-  '@urql/core@5.1.2':
-    resolution: {integrity: sha512-u1uBQgLyqRyPZ/7Mft8kFBsO/ckM74wy5mdfPKQK49hc02Ogfh5NTPieCOYiaCIDJ8A5wkf/OJz9sAkv2/8ILQ==}
+  '@urql/core@5.2.0':
+    resolution: {integrity: sha512-/n0ieD0mvvDnVAXEQgX/7qJiVcvYvNkOHeBvkwtylfjydar123caCXcl58PXFY11oU1oquJocVXHxLAbtv4x1A==}
 
   '@urql/exchange-retry@1.2.0':
     resolution: {integrity: sha512-1O/biKiVhhn0EtvDF4UOvz325K4RrLupfL8rHcmqD2TBLv4qVDWQuzx4JGa1FfqjjRb+C9TNZ6w19f32Mq85Ug==}
@@ -9325,8 +9272,8 @@ packages:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
 
-  token-types@6.0.1:
-    resolution: {integrity: sha512-jK12SoPQ9D33HTOIQaOhc5tN4Vr+hlbiP/GSPviCyo8/7xgPG5j4AYvl7Zd4k8RhL55eT/IUhBGl7fL06w3mrQ==}
+  token-types@6.0.2:
+    resolution: {integrity: sha512-p04i+HzAr5Ro1ZBPwE03gf948+F2bwxXNa4xqNy5Z9iHlcWravI1u8lmEW2q0Dg0NKErOHM1OcybFV5UtJ2I4Q==}
     engines: {node: '>=14.16'}
 
   tough-cookie@5.1.2:
@@ -11420,41 +11367,6 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@biomejs/biome@2.0.6':
-    optionalDependencies:
-      '@biomejs/cli-darwin-arm64': 2.0.6
-      '@biomejs/cli-darwin-x64': 2.0.6
-      '@biomejs/cli-linux-arm64': 2.0.6
-      '@biomejs/cli-linux-arm64-musl': 2.0.6
-      '@biomejs/cli-linux-x64': 2.0.6
-      '@biomejs/cli-linux-x64-musl': 2.0.6
-      '@biomejs/cli-win32-arm64': 2.0.6
-      '@biomejs/cli-win32-x64': 2.0.6
-
-  '@biomejs/cli-darwin-arm64@2.0.6':
-    optional: true
-
-  '@biomejs/cli-darwin-x64@2.0.6':
-    optional: true
-
-  '@biomejs/cli-linux-arm64-musl@2.0.6':
-    optional: true
-
-  '@biomejs/cli-linux-arm64@2.0.6':
-    optional: true
-
-  '@biomejs/cli-linux-x64-musl@2.0.6':
-    optional: true
-
-  '@biomejs/cli-linux-x64@2.0.6':
-    optional: true
-
-  '@biomejs/cli-win32-arm64@2.0.6':
-    optional: true
-
-  '@biomejs/cli-win32-x64@2.0.6':
-    optional: true
-
   '@colors/colors@1.5.0':
     optional: true
 
@@ -11651,8 +11563,8 @@ snapshots:
       '@expo/ws-tunnel': 1.0.6
       '@expo/xcpretty': 4.3.2
       '@react-native/dev-middleware': 0.79.4
-      '@urql/core': 5.1.2(graphql@16.8.1)
-      '@urql/exchange-retry': 1.3.2(@urql/core@5.1.2(graphql@16.8.1))
+      '@urql/core': 5.2.0(graphql@16.8.1)
+      '@urql/exchange-retry': 1.3.2(@urql/core@5.2.0(graphql@16.8.1))
       accepts: 1.3.8
       arg: 5.0.2
       better-opn: 3.0.2
@@ -11735,7 +11647,7 @@ snapshots:
       getenv: 1.0.0
       glob: 10.4.5
       resolve-from: 5.0.0
-      semver: 7.7.2
+      semver: 7.5.4
       slash: 3.0.0
       slugify: 1.6.6
       xcode: 3.0.1
@@ -11981,8 +11893,8 @@ snapshots:
       ejs: 3.1.10
       fs-extra: 10.1.0
       http-call: 5.3.0
-      semver: 7.7.2
-      tslib: 2.8.1
+      semver: 7.5.4
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@swc/core'
       - '@swc/wasm'
@@ -12029,7 +11941,7 @@ snapshots:
       '@segment/loosely-validate-event': 2.0.0
       fetch-retry: 4.1.1
       md5: 2.3.0
-      node-fetch: 2.7.0
+      node-fetch: 2.6.7
       remove-trailing-slash: 0.1.1
       uuid: 8.3.2
     transitivePeerDependencies:
@@ -12054,7 +11966,7 @@ snapshots:
       lodash.get: 4.4.2
       this-file: 2.0.3
       uuid: 9.0.1
-      yaml: 2.8.0
+      yaml: 2.6.0
 
   '@expo/sudo-prompt@9.3.2': {}
 
@@ -12919,12 +12831,12 @@ snapshots:
       natural-orderby: 2.0.3
       object-treeify: 1.1.33
       password-prompt: 1.1.3
-      semver: 7.7.2
+      semver: 7.5.4
       string-width: 4.2.3
       strip-ansi: 6.0.1
       supports-color: 8.1.1
       supports-hyperlinks: 2.3.0
-      tslib: 2.8.1
+      tslib: 2.6.2
       widest-line: 3.1.0
       wrap-ansi: 7.0.0
 
@@ -12954,7 +12866,7 @@ snapshots:
       supports-color: 8.1.1
       supports-hyperlinks: 2.3.0
       ts-node: 10.9.2(@types/node@24.0.7)(typescript@5.8.3)
-      tslib: 2.8.1
+      tslib: 2.6.2
       widest-line: 3.1.0
       wordwrap: 1.0.0
       wrap-ansi: 7.0.0
@@ -14228,7 +14140,7 @@ snapshots:
     dependencies:
       debug: 4.4.1(supports-color@8.1.1)
       fflate: 0.8.2
-      token-types: 6.0.1
+      token-types: 6.0.2
     transitivePeerDependencies:
       - supports-color
 
@@ -14618,7 +14530,7 @@ snapshots:
     transitivePeerDependencies:
       - graphql
 
-  '@urql/core@5.1.2(graphql@16.8.1)':
+  '@urql/core@5.2.0(graphql@16.8.1)':
     dependencies:
       '@0no-co/graphql.web': 1.1.2(graphql@16.8.1)
       wonka: 6.3.5
@@ -14627,14 +14539,14 @@ snapshots:
 
   '@urql/exchange-retry@1.2.0(graphql@16.8.1)':
     dependencies:
-      '@urql/core': 5.1.2(graphql@16.8.1)
+      '@urql/core': 4.0.11(graphql@16.8.1)
       wonka: 6.3.5
     transitivePeerDependencies:
       - graphql
 
-  '@urql/exchange-retry@1.3.2(@urql/core@5.1.2(graphql@16.8.1))':
+  '@urql/exchange-retry@1.3.2(@urql/core@5.2.0(graphql@16.8.1))':
     dependencies:
-      '@urql/core': 5.1.2(graphql@16.8.1)
+      '@urql/core': 5.2.0(graphql@16.8.1)
       wonka: 6.3.5
 
   '@vitest/expect@2.0.5':
@@ -15865,7 +15777,7 @@ snapshots:
     dependencies:
       cipher-base: 1.0.6
       inherits: 2.0.4
-      ripemd160: 2.0.2
+      ripemd160: 2.0.1
       sha.js: 2.4.11
 
   create-hash@1.2.0:
@@ -17022,7 +16934,7 @@ snapshots:
     dependencies:
       '@tokenizer/inflate': 0.2.7
       strtok3: 10.3.1
-      token-types: 6.0.1
+      token-types: 6.0.2
       uint8array-extras: 1.4.0
     transitivePeerDependencies:
       - supports-color
@@ -17358,8 +17270,8 @@ snapshots:
     dependencies:
       array-union: 2.1.0
       dir-glob: 3.0.1
-      fast-glob: 3.3.3
-      ignore: 5.3.2
+      fast-glob: 3.3.2
+      ignore: 5.3.0
       merge2: 1.4.1
       slash: 3.0.0
 
@@ -17388,7 +17300,7 @@ snapshots:
   graphql-tag@2.12.6(graphql@16.8.1):
     dependencies:
       graphql: 16.8.1
-      tslib: 2.8.1
+      tslib: 2.6.2
 
   graphql@16.8.1: {}
 
@@ -18378,7 +18290,7 @@ snapshots:
       jws: 3.2.2
       lodash: 4.17.21
       ms: 2.1.3
-      semver: 7.7.2
+      semver: 7.5.4
 
   jsx-ast-utils@3.3.5:
     dependencies:
@@ -21039,9 +20951,8 @@ snapshots:
 
   toidentifier@1.0.1: {}
 
-  token-types@6.0.1:
+  token-types@6.0.2:
     dependencies:
-      '@biomejs/biome': 2.0.6
       '@tokenizer/token': 0.3.0
       ieee754: 1.2.1
 

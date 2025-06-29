@@ -1,48 +1,33 @@
-# syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
 ARG REGISTRY_CACHE=localhost:5001/lixit-cache
 
-# Deps stage - all dependencies for building
 FROM ${REGISTRY_CACHE}/base-deps:${NODE_MAJOR} AS deps
 ARG NODE_MAJOR
 
-# Copy package manifests
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-# Copy root-level config files if present
-COPY .npmrc* ./
-RUN mkdir -p services/grapesjs-server packages/core
-COPY services/grapesjs-server/package.json ./services/grapesjs-server/
+
+RUN mkdir -p packages/core packages/ui-kit services/grapesjs-server
 COPY packages/core/package.json ./packages/core/
+COPY packages/ui-kit/package.json ./packages/ui-kit/
+COPY services/grapesjs-server/package.json ./services/grapesjs-server/
 
-# Install all dependencies with cache mount
-RUN --mount=type=cache,id=pnpm-store-${NODE_MAJOR}-grapesjs-server,target=/root/.pnpm-store,sharing=locked \
-    pnpm install --filter @lixit/grapesjs-server --prefer-offline
+RUN --mount=type=cache,id=pnpm-store-${NODE_MAJOR}-full,target=/root/.pnpm-store,sharing=locked \
+    pnpm install --prefer-offline
 
-# Build stage
 FROM deps AS build
 COPY packages/core packages/core/
 COPY services/grapesjs-server services/grapesjs-server/
 RUN pnpm --filter @lixit/grapesjs-server run build
 
-# Build stage
-FROM deps AS build
-COPY packages/core packages/core/
-COPY services/grapesjs-server services/grapesjs-server/
-RUN pnpm --filter @lixit/grapesjs-server run build
+FROM build AS deploy
+RUN pnpm deploy --filter @lixit/grapesjs-server --legacy --prod  /app/deploy
 
-# Production deps stage
-FROM deps AS prod-deps
-RUN pnpm install --filter @lixit/grapesjs-server --prod --prefer-offline
-
-# Runtime stage
 FROM node:${NODE_MAJOR}-alpine AS runtime
 RUN addgroup -S nodejs && adduser -S grapesjs -G nodejs -u1001
 WORKDIR /app
 ENV NODE_ENV=production
 
-COPY --from=build /app/services/grapesjs-server/dist ./dist
-COPY --from=build /app/services/grapesjs-server/package.json ./
-COPY --from=prod-deps /app/node_modules ./node_modules
+COPY --from=deploy /app/deploy ./
 
 USER grapesjs
 EXPOSE 3000
