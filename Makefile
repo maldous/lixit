@@ -28,7 +28,7 @@ format: ; @pnpm format
 type-check: ; @pnpm type-check
 logs: ; @docker compose logs -f
 stop: ; @docker compose down
-install: ; @if [ -d node_modules ]; then pnpm install --offline; else pnpm install --frozen-lockfile; fi
+install: ; @if [ -d node_modules ]; then pnpm install --offline; else pnpm ci --immutable; fi
 start: base-image build; @docker compose --profile dev up -d --remove-orphans --build
 prod: base-image build; @docker compose --profile prod up -d --remove-orphans --build
 
