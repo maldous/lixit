@@ -12,7 +12,7 @@ COPY packages/core ./packages/core
 COPY services/grapesjs-server ./services/grapesjs-server
 
 RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
-    npm run build --workspace=@lixit/grapesjs-server
+    pnpm --workspace=@lixit/grapesjs-server run build
 
 FROM node:${NODE_MAJOR}-alpine
 RUN addgroup -S nodejs && adduser -S grapesjs -G nodejs -u 1001

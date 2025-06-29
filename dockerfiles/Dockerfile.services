@@ -14,7 +14,7 @@ COPY packages/core ./packages/core
 COPY services/${SERVICE} ./services/${SERVICE}
 
 RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
-    npm run build --workspace=@lixit/${SERVICE}
+    pnpm --workspace=@lixit/${SERVICE} run build
 
 FROM node:${NODE_MAJOR}-alpine
 ARG SERVICE

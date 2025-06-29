@@ -12,7 +12,7 @@ echo "🗄️ Running database migrations..."
 # Check if node-pg-migrate is available
 if ! command -v node-pg-migrate &> /dev/null; then
     echo "📦 Installing node-pg-migrate..."
-    npm install -g node-pg-migrate
+    pnpm add -g node-pg-migrate
 fi
 
 # Set migration directory

@@ -13,7 +13,7 @@ COPY packages/ui-kit ./packages/ui-kit
 COPY apps/web ./apps/web
 
 RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
-    npm run build --workspace=@lixit/web
+    pnpm --workspace=@lixit/web run build
 
 FROM node:${NODE_MAJOR}-alpine
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs -u 1001

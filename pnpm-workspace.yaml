@@ -1,0 +1,16 @@
+packages:
+  - apps/*
+  - packages/*
+  - services/*
+
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - core-js-pure
+  - dtrace-provider
+  - esbuild
+  - msgpackr-extract
+  - puppeteer
+  - sharp
+  - unrs-resolver
+
+workspace-concurrency: 0

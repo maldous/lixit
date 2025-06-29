@@ -14,7 +14,7 @@ export VOLTA_HOME="${VOLTA_HOME:-$HOME/.volta}"
 export PATH="$VOLTA_HOME/bin:$PATH"
 
 volta install "node@$NODE_VERSION"
-volta install "npm@latest"
+volta install "pnpm@latest"
 volta install "turbo@latest"
 
 if ! command -v docker &> /dev/null; then

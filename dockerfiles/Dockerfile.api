@@ -12,7 +12,7 @@ COPY packages/core ./packages/core
 COPY services/ingestion-api ./services/ingestion-api
 
 RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
-    npm run build --workspace=@lixit/ingestion-api
+    pnpm --filter=@lixit/ingestion-api run build
 
 FROM node:${NODE_MAJOR}-alpine
 RUN addgroup -S nodejs && adduser -S nestjs -G nodejs -u 1001

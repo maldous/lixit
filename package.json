@@ -4,13 +4,7 @@
   "description": "Modern cross-platform LIXI loan submission system",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "services/*"
-  ],
   "scripts": {
-    "build": "turbo run build",
     "build:prod": "turbo run build:prod",
     "build:android": "turbo run build:android --filter=@lixit/mobile",
     "dev": "turbo run dev --parallel",
@@ -44,8 +38,11 @@
     "typescript": "^5.8.3"
   },
   "engines": {
-    "node": ">=24.0.0",
-    "npm": ">=11.0.0"
+    "node": ">=24.3.0",
+    "pnpm": ">=10.12.4"
   },
-  "packageManager": "npm@11.4.2"
+  "packageManager": "pnpm@10.12.4",
+  "dependencies": {
+    "react-native-reanimated": "^3.18.0"
+  }
 }

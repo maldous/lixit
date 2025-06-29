@@ -113,10 +113,10 @@ docker compose up -d ingestion-api
 
 ```bash
 # Run migrations
-docker compose exec ingestion-api npm run migrate
+docker compose exec ingestion-api pnpm run migrate
 
 # Check migration status
-docker compose exec ingestion-api npm run migrate:status
+docker compose exec ingestion-api pnpm run migrate:status
 ```
 
 ## Security

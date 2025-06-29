@@ -19,6 +19,6 @@ COPY services/lixi-transform/package.json services/lixi-transform/
 
 # Install dependencies with cache mount
 RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
-    npm ci --workspaces --include-workspace-root
+    pnpm install --frozen-lockfile
 
 # Don't copy source code here - let individual services copy only what they need

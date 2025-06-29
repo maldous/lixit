@@ -7,8 +7,8 @@ export NODE_MAJOR ?= $(shell cut -d. -f1 .node-version)
 
 help:
 	@echo "make setup      - Initial project setup"
-	@echo "make install    - npm ci for all workspaces"
-	@echo "make build      - npm run build (monorepo)"
+	@echo "make install    - pnpm ci for all workspaces"
+	@echo "make build      - pnpm run build (monorepo)"
 	@echo "make start      - Build & start full dev stack"
 	@echo "make prod       - Build & start prod-like stack"
 	@echo "make test       - Run all tests"
@@ -21,14 +21,14 @@ help:
 	@echo "make reset      - Reset everything"
 
 setup: ; @./scripts/setup.sh
-build: ; @npm run build --parallel
-test: ; @npm test -parallel
-lint: ; @npm run lint -parallel
-format: ; @npm run format -parallel
-type-check: ; @npm run type-check -parallel
+build: ; @pnpm -r --parallel build
+test: ; @pnpm test
+lint: ; @pnpm lint
+format: ; @pnpm format
+type-check: ; @pnpm type-check
 logs: ; @docker compose logs -f
 stop: ; @docker compose down
-install: ; @if [ -d node_modules ]; then npm install --no-audit --prefer-offline; else npm ci; fi
+install: ; @if [ -d node_modules ]; then pnpm install --offline; else pnpm install --frozen-lockfile; fi
 start: build base-image ; @docker compose --profile dev up -d --remove-orphans
 prod: build base-image ; @docker compose --profile prod up -d --remove-orphans
 
@@ -50,7 +50,7 @@ base-image: docker-config
 	  -t lixit/base-deps:$(NODE_MAJOR) .
 
 clean: stop
-	@npm run clean -parallel || true
+	@pnpm clean -parallel || true
 	@docker image prune -af || true
 	@docker buildx prune -af || true
 	@rm -rf .buildx_cache || true

@@ -13,11 +13,11 @@ COPY packages/ui-kit ./packages/ui-kit
 # Build Storybook from ui-kit package
 WORKDIR /repo/packages/ui-kit
 RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
-    npm run build-storybook
+    pnpm run build-storybook
 
 FROM node:${NODE_MAJOR}-alpine
 RUN addgroup -S nodejs && adduser -S storybook -G nodejs -u 1001 && \
-    npm install -g serve
+    pnpm add -g serve
 WORKDIR /app
 COPY --from=build /repo/packages/ui-kit/storybook-static ./storybook-static
 USER storybook
