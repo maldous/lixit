@@ -21,7 +21,7 @@ help:
 	@echo "make reset      - Reset everything"
 
 setup: ; @./scripts/setup.sh
-build: ; @pnpm -r --parallel build
+build: ; @pnpm turbo run build
 test: ; @pnpm test
 lint: ; @pnpm lint
 format: ; @pnpm format
