@@ -1,29 +1,24 @@
 # syntax=docker/dockerfile:1.4
 ARG NODE_MAJOR=24
 ARG SERVICE
-
 FROM lixit/base-deps:${NODE_MAJOR} AS deps
-
 FROM lixit/base-deps:${NODE_MAJOR} AS build
 ARG SERVICE
 ENV PNPM_STORE_PATH=/root/.pnpm-store
 WORKDIR /repo
-COPY --from=deps /repo/node_modules ./node_modules
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/core ./packages/core
 COPY services/${SERVICE} ./services/${SERVICE}
-RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH \
-    pnpm --filter @lixit/${SERVICE} run build
-
+COPY --from=deps /repo/node_modules ./node_modules
+RUN --mount=type=cache,id=pnpm-cache,target=$PNPM_STORE_PATH pnpm --filter @lixit/${SERVICE} run build
 FROM node:${NODE_MAJOR}-alpine
 ARG SERVICE
 RUN addgroup -S nodejs && adduser -S svc -G nodejs -u 1001
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=deps  /repo/node_modules ./node_modules
+COPY --from=deps /repo/node_modules ./node_modules
 COPY --from=build /repo/services/${SERVICE}/dist ./dist
 COPY --from=build /repo/services/${SERVICE}/package.json ./
 USER svc
 EXPOSE 3000
 CMD ["node","dist/main.js"]
-
