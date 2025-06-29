@@ -4,6 +4,7 @@ FROM lixit/base-deps:${NODE_MAJOR} AS deps
 
 FROM node:${NODE_MAJOR}-alpine AS build
 ENV PNPM_STORE_PATH=/root/.pnpm-store
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /repo
 COPY --from=deps /repo/node_modules ./node_modules
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
