@@ -21,11 +21,11 @@ help:
 	@echo "make reset      - Reset everything"
 
 setup: ; @./scripts/setup.sh
-build: ; @npm run build
-test: ; @npm test
-lint: ; @npm run lint
-format: ; @npm run format
-type-check: ; @npm run type-check
+build: ; @npm run build --parallel
+test: ; @npm test -parallel
+lint: ; @npm run lint -parallel
+format: ; @npm run format -parallel
+type-check: ; @npm run type-check -parallel
 logs: ; @docker compose logs -f
 stop: ; @docker compose down
 install: ; @if [ -d node_modules ]; then npm install --no-audit --prefer-offline; else npm ci; fi
@@ -50,7 +50,7 @@ base-image: docker-config
 	  -t lixit/base-deps:$(NODE_MAJOR) .
 
 clean: stop
-	@npm run clean || true
+	@npm run clean -parallel || true
 	@docker image prune -af || true
 	@docker buildx prune -af || true
 	@rm -rf .buildx_cache || true

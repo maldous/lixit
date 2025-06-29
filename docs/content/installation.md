@@ -81,25 +81,25 @@ Run from project root to execute across all workspaces:
 
 ```bash
 # Build all packages
-yarn build
+make build
 
 # Start all development servers
-yarn dev
+make start
 
 # Run all tests
-yarn test
+make test
 
 # Lint all packages
-yarn lint
+make lint
 
 # Type check all packages
-yarn type-check
+make type-check
 
 # Format all code
-yarn format
+make format
 
 # Clean all build artifacts
-yarn clean
+make clean
 ```
 
 **Note**: npm is also supported but Yarn 4 is the project default for optimal performance and workspace management.
@@ -145,16 +145,16 @@ make type-check
 
 ```bash
 # Start individual applications
-yarn web      # Next.js web app on port 8000
-yarn mobile   # Expo mobile app
-yarn api      # NestJS Ingestion API in development mode
+npm web      # Next.js web app on port 8000
+npm mobile   # Expo mobile app
+npm api      # NestJS Ingestion API in development mode
 
 # Component development
-yarn storybook        # Start Storybook on port 3015
-yarn build-storybook  # Build static Storybook
+npm storybook        # Start Storybook on port 3015
+npm build-storybook  # Build static Storybook
 
 # Mobile builds
-yarn build:android    # Build Android APK
+npm build:android    # Build Android APK
 ```
 
 ## Development Workflow
@@ -166,8 +166,8 @@ yarn build:android    # Build Android APK
 make setup && make dev
 
 # Individual service development
-cd services/ingestion-api && yarn dev
-cd apps/web && yarn dev
+cd services/ingestion-api && npm dev
+cd apps/web && npm dev
 ```
 
 ### 2. Database Development
@@ -208,13 +208,13 @@ curl http://localhost:3001/api/health
 
 ```bash
 # Web development with hot reloading
-yarn web
+npm web
 
 # Component development
-yarn storybook
+npm storybook
 
 # Mobile development
-yarn mobile
+npm mobile
 ```
 
 ### 5. Testing & Quality
@@ -224,7 +224,7 @@ yarn mobile
 make test
 
 # Individual package tests
-cd packages/core && yarn test
+cd packages/core && npm test
 
 # Code quality analysis
 # Visit http://localhost:3016 (SonarQube)
@@ -255,13 +255,13 @@ cd packages/core && yarn test
 
 ```bash
 # Install Expo CLI globally (if not using DevContainer)
-yarn global add @expo/cli
+npm global add @expo/cli
 
 # Start mobile development
-yarn mobile
+npm mobile
 
 # Build Android APK
-yarn build:android
+npm build:android
 ```
 
 ### OTA Updates
@@ -302,7 +302,7 @@ S3_SECRET_KEY=your-secret-key
 ### Automated Security Scanning
 
 - **Container Scanning**: Trivy scans all Docker images
-- **Dependency Scanning**: Automated vulnerability detection via `yarn audit`
+- **Dependency Scanning**: Automated vulnerability detection via `npm audit`
 - **Code Quality**: SonarQube for security analysis
 - **License Compliance**: Automated license scanning
 
@@ -310,7 +310,7 @@ S3_SECRET_KEY=your-secret-key
 
 ```bash
 # Generate Software Bill of Materials
-yarn dlx @cyclonedx/cdxgen -t js -o sbom.json --profile research . -p
+npm dlx @cyclonedx/cdxgen -t js -o sbom.json --profile research . -p
 ```
 
 ### Certificate Management
@@ -378,10 +378,10 @@ docker compose up -d postgres
 
 ```bash
 # Use Turbo cache for faster builds
-yarn build  # Subsequent builds will be cached
+npm build  # Subsequent builds will be cached
 
 # Parallel builds
-yarn build --parallel
+npm build --parallel
 ```
 
 **Development performance:**

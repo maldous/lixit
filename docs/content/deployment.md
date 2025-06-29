@@ -50,7 +50,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 - Decrypt in CI via `AGE_KEY_FILE`
 - **Rate Limiting**: Enable Caddy `rate_limit` directive or express `helmet` for basic DoS guard
 - **API Rate Limiting**: Add `express-rate-limit` to Ingestion API for extra hardening
-- **Dependency CVEs**: Run `yarn audit --recursive --json` in CI to fail builds on high-sev vulns
+- **Dependency CVEs**: Run `npm audit --recursive --json` in CI to fail builds on high-sev vulns
 
 ### 1.5 Observability Stack
 
@@ -90,7 +90,7 @@ Complete containerized deployment solution for the LIXIT monorepo with Docker, P
 
 ### 1.11 Supply Chain Security
 
-- **SBOM Generation**: Generate CycloneDX via `yarn dlx @cyclonedx/bom` in CI
+- **SBOM Generation**: Generate CycloneDX via `npm dlx @cyclonedx/bom` in CI
 - **License Scan**: Add `licensee` GitHub Action to flag non-OSS deps
 - **Artifact Retention**: `gh-actions` step: `upload-artifact` Docker SBOM & Trivy report for 30 d
 
