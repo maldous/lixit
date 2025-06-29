@@ -28,8 +28,8 @@ COPY services/ingestion-api services/ingestion-api/
 RUN pnpm --filter @lixit/ingestion-api run build
 
 # Production deps stage
-FROM deps AS prod-deps
-RUN pnpm prune --filter @lixit/ingestion-api --prod
+#FROM deps AS prod-deps
+#RUN pnpm prune --filter @lixit/ingestion-api --prod
 
 # Runtime stage
 FROM node:${NODE_MAJOR}-alpine AS runtime
@@ -39,7 +39,7 @@ ENV NODE_ENV=production
 
 COPY --from=build /app/services/ingestion-api/dist ./dist
 COPY --from=build /app/services/ingestion-api/package.json ./
-COPY --from=prod-deps /app/node_modules ./node_modules
+#COPY --from=prod-deps /app/node_modules ./node_modules
 
 USER nestjs
 EXPOSE 3000

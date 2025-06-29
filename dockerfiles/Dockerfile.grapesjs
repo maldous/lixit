@@ -13,6 +13,7 @@ COPY .npmrc* ./
 RUN mkdir -p services/grapesjs-server packages/core
 COPY services/grapesjs-server/package.json ./services/grapesjs-server/
 COPY packages/core/package.json ./packages/core/
+COPY packages/ui-kit/package.json ./packages/ui-kit/
 
 # Install all dependencies with cache mount
 RUN --mount=type=cache,id=pnpm-store-${NODE_MAJOR}-grapesjs-server,target=/root/.pnpm-store,sharing=locked \
@@ -24,9 +25,15 @@ COPY packages/core packages/core/
 COPY services/grapesjs-server services/grapesjs-server/
 RUN pnpm --filter @lixit/grapesjs-server run build
 
+# Build stage
+FROM deps AS build
+COPY packages/core packages/core/
+COPY services/grapesjs-server services/grapesjs-server/
+RUN pnpm --filter @lixit/grapejs-server run build
+
 # Production deps stage
-FROM deps AS prod-deps
-RUN pnpm prune --filter @lixit/grapesjs-server --prod
+#FROM deps AS prod-deps
+#RUN pnpm prune --filter @lixit/grapesjs-server --prod
 
 # Runtime stage
 FROM node:${NODE_MAJOR}-alpine AS runtime
@@ -36,7 +43,7 @@ ENV NODE_ENV=production
 
 COPY --from=build /app/services/grapesjs-server/dist ./dist
 COPY --from=build /app/services/grapesjs-server/package.json ./
-COPY --from=prod-deps /app/node_modules ./node_modules
+#COPY --from=prod-deps /app/node_modules ./node_modules
 
 USER grapesjs
 EXPOSE 3000

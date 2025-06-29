@@ -31,9 +31,9 @@ COPY services/${SERVICE} services/${SERVICE}/
 RUN pnpm --filter @lixit/${SERVICE} run build
 
 # Production deps stage - prune dev dependencies
-FROM deps AS prod-deps
-ARG SERVICE
-RUN pnpm prune --filter @lixit/${SERVICE} --prod
+#FROM deps AS prod-deps
+#ARG SERVICE
+#RUN pnpm prune --filter @lixit/${SERVICE} --prod
 
 # Runtime stage - minimal final image
 FROM node:${NODE_MAJOR}-alpine AS runtime
@@ -45,7 +45,7 @@ ENV NODE_ENV=production
 # Copy build output and production node_modules
 COPY --from=build /app/services/${SERVICE}/dist ./dist
 COPY --from=build /app/services/${SERVICE}/package.json ./
-COPY --from=prod-deps /app/node_modules ./node_modules
+#COPY --from=prod-deps /app/node_modules ./node_modules
 
 USER svc
 EXPOSE 3000
