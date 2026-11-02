@@ -1,4 +1,14 @@
-# lixit
+# Lixit
+
+**An archived exploration of lending submissions and LIXI-oriented data exchange.**
+
+Lixit explores the journey from an initial lending prospect to a structured application: collecting information, transforming it for a lender, generating submission files and tracking progress.
+
+This repository is a prototype and design reference. The workflow below describes intended capabilities; it does not certify LIXI compliance, production lending integrations or suitability for real borrower data.
+
+[Matthew Aldous](https://aldous.info/) · [Architecture](docs/content/architecture.md) · [Installation](docs/content/installation.md)
+
+## Workflow and technical reference
 
 The system should handle **two main submission types**:
 
